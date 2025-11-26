@@ -1,0 +1,108 @@
+.multi-asset-card {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-md);
+}
+
+.asset-tabs {
+  display: inline-flex;
+  gap: var(--spacing-sm);
+  padding: var(--spacing-xs);
+  background-color: var(--bg-tertiary);
+  border-radius: var(--radius-full);
+}
+
+.asset-tab {
+  border: none;
+  background: transparent;
+  color: var(--text-secondary);
+  padding: 0.35rem 1rem;
+  border-radius: var(--radius-full);
+  font-size: 0.9rem;
+  cursor: pointer;
+  transition: all var(--transition-fast);
+}
+
+.asset-tab-active {
+  background-color: var(--accent-primary);
+  color: var(--text-primary);
+}
+
+.asset-table-wrapper {
+  border: 1px solid var(--border-primary);
+  border-radius: var(--radius-lg);
+  overflow-x: auto;
+}
+
+.asset-table {
+  width: 100%;
+  border-collapse: collapse;
+  min-width: 600px;
+}
+
+.asset-table th,
+.asset-table td {
+  padding: 0.65rem 0.95rem;
+  text-align: left;
+  border-bottom: 1px solid var(--border-primary);
+}
+
+.asset-table th {
+  font-size: 0.8rem;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--text-tertiary);
+}
+
+.asset-table tr:last-child td {
+  border-bottom: none;
+}
+
+.change.pos {
+  color: var(--accent-success);
+}
+
+.change.neg {
+  color: var(--accent-error);
+}
+
+.action-pill {
+  padding: 0.2rem 0.75rem;
+  border-radius: var(--radius-full);
+  font-size: 0.8rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.action-pill.action-buy,
+.action-pill.action-accumulate {
+  background-color: rgba(52, 199, 89, 0.15);
+  color: var(--accent-success);
+}
+
+.action-pill.action-sell {
+  background-color: rgba(255, 59, 48, 0.15);
+  color: var(--accent-error);
+}
+
+.action-pill.action-hold,
+.action-pill.action-watch {
+  background-color: rgba(142, 142, 147, 0.15);
+  color: var(--neutral);
+}
+
+.asset-table-empty {
+  margin: 0;
+  padding: var(--spacing-lg);
+  color: var(--text-secondary);
+  text-align: center;
+}
+
+@media (max-width: 768px) {
+  .asset-tabs {
+    width: 100%;
+    justify-content: space-between;
+  }
+}
+

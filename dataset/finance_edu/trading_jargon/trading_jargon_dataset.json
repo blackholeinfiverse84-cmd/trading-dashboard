@@ -1,0 +1,675 @@
+[
+  {
+    "question": "What does it mean to \"book profits\"?",
+    "answer": "Booking profits means closing a winning position to realize gains in cash rather than letting them remain unrealized.",
+    "context": "trading_jargon",
+    "difficulty": "basic"
+  },
+  {
+    "question": "What is \"averaging down\"?",
+    "answer": "Averaging down involves buying additional shares after a price drop to lower the average entry cost of a position.",
+    "context": "trading_jargon",
+    "difficulty": "basic"
+  },
+  {
+    "question": "Who is a \"bagholder\"?",
+    "answer": "A bagholder is an investor stuck holding a sharply fallen asset because they failed to exit before the decline.",
+    "context": "trading_jargon",
+    "difficulty": "basic"
+  },
+  {
+    "question": "What does \"long on gold\" imply?",
+    "answer": "Being long on gold means holding a bullish position expecting gold prices to rise, often as an inflation hedge.",
+    "context": "trading_jargon",
+    "difficulty": "basic"
+  },
+  {
+    "question": "What is a \"short squeeze\"?",
+    "answer": "A short squeeze occurs when rising prices force short sellers to buy back shares, accelerating the rally.",
+    "context": "trading_jargon",
+    "difficulty": "intermediate"
+  },
+  {
+    "question": "Define \"dead cat bounce\".",
+    "answer": "A dead cat bounce is a brief rebound in a downtrend that fails quickly, luring in premature buyers.",
+    "context": "trading_jargon",
+    "difficulty": "basic"
+  },
+  {
+    "question": "What does \"buy the dip\" mean?",
+    "answer": "Buy the dip is the practice of purchasing assets after a pullback, betting the uptrend resumes.",
+    "context": "trading_jargon",
+    "difficulty": "basic"
+  },
+  {
+    "question": "What is meant by \"sell the rip\"?",
+    "answer": "Sell the rip refers to shorting or taking profits during sharp rallies, expecting a retracement.",
+    "context": "trading_jargon",
+    "difficulty": "basic"
+  },
+  {
+    "question": "Explain \"risk-on\".",
+    "answer": "Risk-on describes market conditions where investors rotate into higher-beta assets, signaling confidence in growth.",
+    "context": "macro_sentiment",
+    "difficulty": "intermediate"
+  },
+  {
+    "question": "Explain \"risk-off\".",
+    "answer": "Risk-off is when investors flee to safe havens like bonds or gold, reflecting fear of economic or geopolitical stress.",
+    "context": "macro_sentiment",
+    "difficulty": "intermediate"
+  },
+  {
+    "question": "What is a \"flight to quality\"?",
+    "answer": "Flight to quality is the rapid move from risky assets to high-grade bonds or currencies during turmoil.",
+    "context": "macro_sentiment",
+    "difficulty": "intermediate"
+  },
+  {
+    "question": "What triggers a \"margin call\"?",
+    "answer": "A margin call happens when account equity falls below maintenance requirements, forcing the trader to add funds or liquidate.",
+    "context": "risk_management",
+    "difficulty": "basic"
+  },
+  {
+    "question": "What is a \"circuit breaker\" in markets?",
+    "answer": "Circuit breakers halt trading temporarily after steep index moves to curb panic and allow information digestion.",
+    "context": "market_structure",
+    "difficulty": "basic"
+  },
+  {
+    "question": "What does \"gap up\" mean?",
+    "answer": "A gap up occurs when an asset opens significantly higher than the previous close, leaving unused prices in between.",
+    "context": "technical_analysis",
+    "difficulty": "basic"
+  },
+  {
+    "question": "What does \"gap down\" signify?",
+    "answer": "A gap down opens below the prior close, signaling overnight bearish news or sentiment.",
+    "context": "technical_analysis",
+    "difficulty": "basic"
+  },
+  {
+    "question": "What is \"window dressing\"?",
+    "answer": "Window dressing is when fund managers tweak holdings near quarter-end to make portfolios look better in reports.",
+    "context": "fund_management",
+    "difficulty": "intermediate"
+  },
+  {
+    "question": "What happens on \"quadruple witching\"?",
+    "answer": "Quadruple witching is the simultaneous expiry of stock index futures, options, single-stock futures, and options, often boosting volatility.",
+    "context": "derivatives",
+    "difficulty": "intermediate"
+  },
+  {
+    "question": "What does \"FOMO\" stand for?",
+    "answer": "FOMO means fear of missing out, the anxiety traders feel when watching others profit without them.",
+    "context": "trading_psychology",
+    "difficulty": "basic"
+  },
+  {
+    "question": "What is \"FUD\"?",
+    "answer": "FUD stands for fear, uncertainty, and doubt—negative sentiment or rumors that pressure prices lower.",
+    "context": "trading_psychology",
+    "difficulty": "basic"
+  },
+  {
+    "question": "What does \"HODL\" mean?",
+    "answer": "HODL, born from crypto slang, means holding an asset through volatility instead of trading in and out.",
+    "context": "trading_jargon",
+    "difficulty": "basic"
+  },
+  {
+    "question": "What are \"diamond hands\"?",
+    "answer": "Diamond hands describes investors who refuse to sell despite large swings, signaling resolve.",
+    "context": "trading_psychology",
+    "difficulty": "basic"
+  },
+  {
+    "question": "What are \"paper hands\"?",
+    "answer": "Paper hands refers to traders who exit positions quickly at the first sign of stress, lacking conviction.",
+    "context": "trading_psychology",
+    "difficulty": "basic"
+  },
+  {
+    "question": "What does \"stonks\" refer to?",
+    "answer": "\"Stonks\" is meme slang for stocks, often used humorously in retail communities.",
+    "context": "trading_jargon",
+    "difficulty": "basic"
+  },
+  {
+    "question": "Who is a \"whale\"?",
+    "answer": "A whale is a trader or entity with enough capital to move markets or dominate order flow.",
+    "context": "market_structure",
+    "difficulty": "intermediate"
+  },
+  {
+    "question": "Who is a \"shark\" in markets?",
+    "answer": "A shark is an aggressive trader known for exploiting inefficiencies or weaker participants.",
+    "context": "market_structure",
+    "difficulty": "intermediate"
+  },
+  {
+    "question": "What defines a \"bull market\"?",
+    "answer": "A bull market is a prolonged period of rising prices and positive sentiment, typically defined by a 20% gain.",
+    "context": "macro_sentiment",
+    "difficulty": "basic"
+  },
+  {
+    "question": "What defines a \"bear market\"?",
+    "answer": "A bear market is a sustained decline of 20% or more, marked by pessimism and risk aversion.",
+    "context": "macro_sentiment",
+    "difficulty": "basic"
+  },
+  {
+    "question": "What is \"sideways chop\"?",
+    "answer": "Sideways chop describes a range-bound market with whipsaws that punish trend followers.",
+    "context": "technical_analysis",
+    "difficulty": "basic"
+  },
+  {
+    "question": "What is \"accumulation\"?",
+    "answer": "Accumulation is the quiet buying phase where informed players build positions before an uptrend becomes obvious.",
+    "context": "market_structure",
+    "difficulty": "intermediate"
+  },
+  {
+    "question": "What is \"distribution\"?",
+    "answer": "Distribution is when large holders sell into strength while price stalls, often preceding declines.",
+    "context": "market_structure",
+    "difficulty": "intermediate"
+  },
+  {
+    "question": "What is a \"breakout retest\"?",
+    "answer": "A breakout retest occurs when price revisits the broken level to confirm it as new support or resistance.",
+    "context": "technical_analysis",
+    "difficulty": "intermediate"
+  },
+  {
+    "question": "What is a \"pivot level\"?",
+    "answer": "Pivot levels are calculated support and resistance zones derived from prior high, low, and close.",
+    "context": "technical_analysis",
+    "difficulty": "intermediate"
+  },
+  {
+    "question": "What is a \"liquidity hunt\"?",
+    "answer": "Liquidity hunts intentionally push price to trigger stops and fill large orders at better prices.",
+    "context": "market_structure",
+    "difficulty": "advanced"
+  },
+  {
+    "question": "What is a \"stop run\"?",
+    "answer": "A stop run is when price spikes through clustered stop orders, causing rapid follow-through and then reversal.",
+    "context": "market_structure",
+    "difficulty": "advanced"
+  },
+  {
+    "question": "What is \"spoofing\"?",
+    "answer": "Spoofing is a banned practice of placing fake orders to mislead others, then canceling before execution.",
+    "context": "market_structure",
+    "difficulty": "advanced"
+  },
+  {
+    "question": "What is \"front running\"?",
+    "answer": "Front running is the illegal act of trading ahead of client orders after learning their intent.",
+    "context": "compliance",
+    "difficulty": "advanced"
+  },
+  {
+    "question": "What is \"tape reading\"?",
+    "answer": "Tape reading is analyzing real-time prints and order flow to gauge buying or selling pressure.",
+    "context": "technical_analysis",
+    "difficulty": "advanced"
+  },
+  {
+    "question": "What is a \"heat map\"?",
+    "answer": "A heat map visually shows sector or asset performance using color intensity to highlight winners and laggards.",
+    "context": "market_analysis",
+    "difficulty": "basic"
+  },
+  {
+    "question": "What is \"sector rotation\"?",
+    "answer": "Sector rotation is reallocating capital among industries based on economic cycle stages.",
+    "context": "macro_strategy",
+    "difficulty": "intermediate"
+  },
+  {
+    "question": "What is a \"rotation trade\"?",
+    "answer": "A rotation trade shifts exposure from one theme or asset class to another to capture changing leadership.",
+    "context": "macro_strategy",
+    "difficulty": "intermediate"
+  },
+  {
+    "question": "What is a \"Santa rally\"?",
+    "answer": "A Santa rally is the seasonal tendency for equities to rise during the final week of December and start of January.",
+    "context": "market_seasonality",
+    "difficulty": "basic"
+  },
+  {
+    "question": "What does \"sell in May and go away\" imply?",
+    "answer": "It’s a seasonal adage suggesting equity returns are weaker from May to October, so investors should reduce exposure.",
+    "context": "market_seasonality",
+    "difficulty": "intermediate"
+  },
+  {
+    "question": "What is the \"January effect\"?",
+    "answer": "The January effect is the tendency for small-cap stocks to outperform at the start of the year after tax-loss selling.",
+    "context": "market_seasonality",
+    "difficulty": "basic"
+  },
+  {
+    "question": "What is \"beta rotation\"?",
+    "answer": "Beta rotation toggles between high-beta and low-beta stocks depending on risk appetite outlook.",
+    "context": "portfolio_management",
+    "difficulty": "advanced"
+  },
+  {
+    "question": "What is the \"reflation trade\"?",
+    "answer": "Reflation trade favors cyclical equities, commodities, and steep yield curves when policymakers stimulate growth.",
+    "context": "macro_strategy",
+    "difficulty": "advanced"
+  },
+  {
+    "question": "What is a \"stagflation hedge\"?",
+    "answer": "Stagflation hedges use commodities, inflation-linked bonds, and defensive equities when growth is weak but inflation high.",
+    "context": "macro_strategy",
+    "difficulty": "advanced"
+  },
+  {
+    "question": "What is a \"barbell strategy\" in portfolios?",
+    "answer": "A barbell allocates to very safe and very risky assets simultaneously, skipping the middle to balance growth and protection.",
+    "context": "portfolio_management",
+    "difficulty": "intermediate"
+  },
+  {
+    "question": "What is \"laddering\" in bond investing?",
+    "answer": "Laddering buys bonds with staggered maturities to manage reinvestment risk and liquidity.",
+    "context": "fixed_income",
+    "difficulty": "intermediate"
+  },
+  {
+    "question": "What does \"kite flying\" mean on Dalal Street?",
+    "answer": "Kite flying refers to rumors or tips floated to influence prices, often lacking substance.",
+    "context": "market_culture",
+    "difficulty": "basic"
+  },
+  {
+    "question": "What is \"dabba trading\"?",
+    "answer": "Dabba trading is an illegal off-exchange bucket-shop style trading common in some Indian markets.",
+    "context": "compliance",
+    "difficulty": "advanced"
+  },
+  {
+    "question": "What are \"BTST\" trades?",
+    "answer": "Buy Today Sell Tomorrow trades aim to capture T+1 momentum before shares actually credit to the account.",
+    "context": "market_structure",
+    "difficulty": "intermediate"
+  },
+  {
+    "question": "What are \"STBT\" trades?",
+    "answer": "Sell Today Buy Tomorrow trades short first and cover the next day, often using derivatives.",
+    "context": "market_structure",
+    "difficulty": "intermediate"
+  },
+  {
+    "question": "What is \"swing failure pattern\" (SFP)?",
+    "answer": "An SFP happens when price makes a new high/low but swiftly reverses, trapping late entries.",
+    "context": "technical_analysis",
+    "difficulty": "advanced"
+  },
+  {
+    "question": "What is \"wick hunting\"?",
+    "answer": "Wick hunting refers to aggressive moves that leave long shadows on candles, often clearing stops before reverting.",
+    "context": "technical_analysis",
+    "difficulty": "advanced"
+  },
+  {
+    "question": "What does \"stacked bids\" imply?",
+    "answer": "Stacked bids show multiple large buy orders layered below price, hinting at strong support.",
+    "context": "order_flow",
+    "difficulty": "intermediate"
+  },
+  {
+    "question": "What is a \"ladder offer\"?",
+    "answer": "A ladder offer is a series of sell orders placed incrementally higher to control price ascent.",
+    "context": "order_flow",
+    "difficulty": "intermediate"
+  },
+  {
+    "question": "What does \"crossing the spread\" mean?",
+    "answer": "Crossing the spread means accepting the opposite side’s price, paying the spread for immediate execution.",
+    "context": "market_structure",
+    "difficulty": "basic"
+  },
+  {
+    "question": "What is \"inventory risk\" for market makers?",
+    "answer": "Inventory risk is the exposure dealers hold while warehousing securities before they can offload them.",
+    "context": "market_structure",
+    "difficulty": "advanced"
+  },
+  {
+    "question": "What is a \"gamma squeeze\"?",
+    "answer": "A gamma squeeze happens when call buying forces dealers to hedge by buying shares, amplifying upside moves.",
+    "context": "derivatives",
+    "difficulty": "advanced"
+  },
+  {
+    "question": "What is \"theta decay\" slang for?",
+    "answer": "Theta decay refers to the daily erosion of option premium purely due to time passing.",
+    "context": "derivatives",
+    "difficulty": "basic"
+  },
+  {
+    "question": "What are \"lottery ticket\" options?",
+    "answer": "Lottery ticket options are cheap, far-out-of-the-money contracts bought for asymmetric payouts.",
+    "context": "derivatives",
+    "difficulty": "intermediate"
+  },
+  {
+    "question": "What is \"accrued carry\"?",
+    "answer": "Accrued carry is the income accrued on a carry trade from interest differentials since the last settlement.",
+    "context": "macro_strategy",
+    "difficulty": "advanced"
+  },
+  {
+    "question": "What does \"bleeding premium\" mean?",
+    "answer": "Bleeding premium describes steady losses from holding long options that decay without price movement.",
+    "context": "derivatives",
+    "difficulty": "intermediate"
+  },
+  {
+    "question": "What are \"vol sellers\"?",
+    "answer": "Vol sellers short implied volatility via options, collecting premium in quiet markets but risking large losses on spikes.",
+    "context": "derivatives",
+    "difficulty": "advanced"
+  },
+  {
+    "question": "What is \"panic capitulation\"?",
+    "answer": "Capitulation is the capitulating sell-off where weak holders dump positions en masse, often marking bottoms.",
+    "context": "trading_psychology",
+    "difficulty": "intermediate"
+  },
+  {
+    "question": "What does \"limit down\" mean?",
+    "answer": "Limit down is an exchange-imposed price floor for the session; trading halts if price hits that lower bound.",
+    "context": "market_structure",
+    "difficulty": "basic"
+  },
+  {
+    "question": "What does \"limit up\" mean?",
+    "answer": "Limit up is the maximum price a contract is allowed to rise during a session before trading pauses.",
+    "context": "market_structure",
+    "difficulty": "basic"
+  },
+  {
+    "question": "What is a \"hammer candle\"?",
+    "answer": "A hammer candle has a long lower wick and small body, signaling buying interest after intraday selling.",
+    "context": "technical_analysis",
+    "difficulty": "basic"
+  },
+  {
+    "question": "What is a \"shooting star\"?",
+    "answer": "A shooting star is a bearish candle with a long upper wick and small body, hinting at failed breakout.",
+    "context": "technical_analysis",
+    "difficulty": "basic"
+  },
+  {
+    "question": "What is \"topping tail\" slang?",
+    "answer": "A topping tail refers to a candle wick on top indicating rejection of higher prices.",
+    "context": "technical_analysis",
+    "difficulty": "basic"
+  },
+  {
+    "question": "What is a \"wick fill\" trade?",
+    "answer": "A wick fill trade bets that price will revisit and trade through the range of a prior wick.",
+    "context": "technical_analysis",
+    "difficulty": "advanced"
+  },
+  {
+    "question": "What does \"underwater\" mean in positions?",
+    "answer": "Being underwater means a position is currently at a loss relative to its entry price.",
+    "context": "trading_jargon",
+    "difficulty": "basic"
+  },
+  {
+    "question": "What is \"bagging a multi-bagger\"?",
+    "answer": "Bagging a multi-bagger means holding a stock that appreciates multiple times the original investment.",
+    "context": "trading_jargon",
+    "difficulty": "basic"
+  },
+  {
+    "question": "What is \"churn\" in accounts?",
+    "answer": "Churn is excessive trading that racks up fees without adding value, often frowned upon.",
+    "context": "compliance",
+    "difficulty": "intermediate"
+  },
+  {
+    "question": "What is \"passive drift\"?",
+    "answer": "Passive drift is the natural change in index weights as winners grow and laggards shrink.",
+    "context": "portfolio_management",
+    "difficulty": "intermediate"
+  },
+  {
+    "question": "What is \"crowded trade\"?",
+    "answer": "A crowded trade is a popular position held by many managers, risking violent unwinds if sentiment shifts.",
+    "context": "trading_jargon",
+    "difficulty": "advanced"
+  },
+  {
+    "question": "What does \"window of liquidity\" mean?",
+    "answer": "A window of liquidity is the brief period when an asset can be traded in size without large impact, often around news.",
+    "context": "market_structure",
+    "difficulty": "advanced"
+  },
+  {
+    "question": "What are \"junk bonds\"?",
+    "answer": "Junk bonds are high-yield, low-credit-quality debt that pay higher rates to compensate for default risk.",
+    "context": "fixed_income",
+    "difficulty": "basic"
+  },
+  {
+    "question": "What is a \"roll-down\" trade?",
+    "answer": "Roll-down seeks gains as bonds age and their yields drift lower along a steep yield curve.",
+    "context": "fixed_income",
+    "difficulty": "advanced"
+  },
+  {
+    "question": "What is \"storm chasing\" in trading?",
+    "answer": "Storm chasing is trading weather-sensitive commodities based on unfolding meteorological data.",
+    "context": "commodities",
+    "difficulty": "advanced"
+  },
+  {
+    "question": "What is a \"clip\" in dealer slang?",
+    "answer": "A clip is a block trade by a dealer, often used to describe standard trade sizes (e.g., a 5 million clip).",
+    "context": "market_structure",
+    "difficulty": "intermediate"
+  },
+  {
+    "question": "What is \"turn of the month\" effect?",
+    "answer": "Turn of the month effect is a mild return boost around month-end due to pension flows and window dressing.",
+    "context": "market_seasonality",
+    "difficulty": "intermediate"
+  },
+  {
+    "question": "What is \"gamma scalping\"?",
+    "answer": "Gamma scalping dynamically hedges a gamma-positive option book by buying low and selling high in the underlying.",
+    "context": "derivatives",
+    "difficulty": "advanced"
+  },
+  {
+    "question": "What is \"delta hedging\"?",
+    "answer": "Delta hedging offsets an option’s directional exposure by trading the underlying asset proportionally.",
+    "context": "derivatives",
+    "difficulty": "intermediate"
+  },
+  {
+    "question": "What is a \"steepener\" trade?",
+    "answer": "A steepener profits when the yield curve steepens, typically by shorting short-dated bonds and going long long-dated ones.",
+    "context": "fixed_income",
+    "difficulty": "advanced"
+  },
+  {
+    "question": "What is a \"flattener\" trade?",
+    "answer": "A flattener bets long rates fall relative to short rates, narrowing the yield curve.",
+    "context": "fixed_income",
+    "difficulty": "advanced"
+  },
+  {
+    "question": "What do traders mean by \"carry\"?",
+    "answer": "Carry is the income earned from holding an asset minus financing costs, important in FX, bonds, and commodities.",
+    "context": "macro_strategy",
+    "difficulty": "advanced"
+  },
+  {
+    "question": "What is \"backwardation\"?",
+    "answer": "Backwardation occurs when commodity futures trade below spot, usually due to short-term scarcity.",
+    "context": "commodities",
+    "difficulty": "intermediate"
+  },
+  {
+    "question": "What is \"contango\"?",
+    "answer": "Contango is when futures prices are above spot, reflecting storage and financing costs.",
+    "context": "commodities",
+    "difficulty": "intermediate"
+  },
+  {
+    "question": "What is \"roll yield\"?",
+    "answer": "Roll yield is the gain or loss from rolling futures in a contango or backwardation structure.",
+    "context": "commodities",
+    "difficulty": "advanced"
+  },
+  {
+    "question": "What does \"stale price\" mean?",
+    "answer": "A stale price is an outdated quote that has not updated with current market moves, common in illiquid assets.",
+    "context": "market_structure",
+    "difficulty": "basic"
+  },
+  {
+    "question": "What is \"haircut\" in financing?",
+    "answer": "A haircut is the discount applied to collateral value when borrowing securities or cash.",
+    "context": "risk_management",
+    "difficulty": "advanced"
+  },
+  {
+    "question": "What is an \"overhang\"?",
+    "answer": "Overhang refers to anticipated selling pressure from locked-up shares or government divestments yet to hit the market.",
+    "context": "market_structure",
+    "difficulty": "intermediate"
+  },
+  {
+    "question": "What is \"IPO pop\"?",
+    "answer": "IPO pop is the immediate surge in share price when a new listing trades above its offer price.",
+    "context": "market_structure",
+    "difficulty": "basic"
+  },
+  {
+    "question": "What is \"flip the IPO\"?",
+    "answer": "Flipping an IPO means selling allotted shares quickly on listing day to capture the initial premium.",
+    "context": "trading_jargon",
+    "difficulty": "basic"
+  },
+  {
+    "question": "What is \"grey market premium\"?",
+    "answer": "Grey market premium is the unofficial price at which IPO applications trade before listing, hinting at expected pop.",
+    "context": "market_structure",
+    "difficulty": "intermediate"
+  },
+  {
+    "question": "What is a \"lock-up period\"?",
+    "answer": "Lock-up period is the post-IPO timeframe during which insiders cannot sell their shares.",
+    "context": "market_structure",
+    "difficulty": "basic"
+  },
+  {
+    "question": "What is \"capitulation bottom\"?",
+    "answer": "A capitulation bottom is the climax sell-off where panic volume exhausts sellers, often marking reversal points.",
+    "context": "market_sentiment",
+    "difficulty": "intermediate"
+  },
+  {
+    "question": "What is \"mean reverting spread\"?",
+    "answer": "A mean reverting spread is the relationship between assets that oscillates around a historical average, used in pair trades.",
+    "context": "trading_strategy",
+    "difficulty": "advanced"
+  },
+  {
+    "question": "What is \"synthetic long\"?",
+    "answer": "A synthetic long uses options (long call + short put) at the same strike to replicate a long stock position.",
+    "context": "derivatives",
+    "difficulty": "advanced"
+  },
+  {
+    "question": "What is a \"box spread\"?",
+    "answer": "A box spread combines bull and bear spreads to lock in risk-free payoff equal to interest rate differentials.",
+    "context": "derivatives",
+    "difficulty": "advanced"
+  },
+  {
+    "question": "What is \"strangle swap\" slang?",
+    "answer": "Strangle swap refers to adjusting out-of-the-money options for different strikes or expiries to manage volatility exposure.",
+    "context": "derivatives",
+    "difficulty": "advanced"
+  },
+  {
+    "question": "What is \"bleed trade\"?",
+    "answer": "A bleed trade is a steady premium-selling strategy that earns small daily gains as long as volatility stays muted.",
+    "context": "derivatives",
+    "difficulty": "advanced"
+  },
+  {
+    "question": "What is \"grid trading\"?",
+    "answer": "Grid trading places layered buy and sell orders at predefined intervals, profiting from range-bound oscillations.",
+    "context": "trading_strategy",
+    "difficulty": "intermediate"
+  },
+  {
+    "question": "What is \"ladder trailing\"?",
+    "answer": "Ladder trailing uses multiple trailing stops at different distances to peel out of a position systematically.",
+    "context": "risk_management",
+    "difficulty": "advanced"
+  },
+  {
+    "question": "What is \"stacked confluence\"?",
+    "answer": "Stacked confluence is when multiple technical signals align at the same level, strengthening the trade thesis.",
+    "context": "technical_analysis",
+    "difficulty": "advanced"
+  },
+  {
+    "question": "What is \"alpha leak\"?",
+    "answer": "Alpha leak refers to proprietary strategy insights that become public, eroding their edge.",
+    "context": "portfolio_management",
+    "difficulty": "advanced"
+  },
+  {
+    "question": "What is \"beta bleed\"?",
+    "answer": "Beta bleed is the performance drag from holding low-beta assets during bull markets.",
+    "context": "portfolio_management",
+    "difficulty": "intermediate"
+  },
+  {
+    "question": "What does \"rolled forward\" mean?",
+    "answer": "Rolling forward means closing a near-term contract and opening a later-dated one to maintain exposure.",
+    "context": "derivatives",
+    "difficulty": "basic"
+  },
+  {
+    "question": "What is a \"calendar roll\"?",
+    "answer": "A calendar roll is when futures traders shift from expiring contracts into the next month to avoid delivery.",
+    "context": "commodities",
+    "difficulty": "intermediate"
+  },
+  {
+    "question": "What is \"position squaring\"?",
+    "answer": "Position squaring is closing open trades ahead of events or at period end to neutralize exposure.",
+    "context": "trading_jargon",
+    "difficulty": "basic"
+  },
+  {
+    "question": "What is \"snooze you lose\" order flow?",
+    "answer": "It’s trader slang reminding that hesitation can miss fast-moving opportunities when liquidity is fleeting.",
+    "context": "trading_psychology",
+    "difficulty": "basic"
+  }
+]
+

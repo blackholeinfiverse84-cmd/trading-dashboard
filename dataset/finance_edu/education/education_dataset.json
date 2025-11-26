@@ -1,0 +1,609 @@
+[
+  {
+    "question": "What is a stop-loss order?",
+    "answer": "A stop-loss order automatically exits a position once price hits a preset level, limiting downside risk without requiring manual monitoring.",
+    "context": "risk_management",
+    "difficulty": "basic"
+  },
+  {
+    "question": "How does a trailing stop differ from a fixed stop-loss?",
+    "answer": "A trailing stop moves with the market in your favor, locking in gains as price rises, while a fixed stop-loss stays at one price regardless of new highs.",
+    "context": "risk_management",
+    "difficulty": "basic"
+  },
+  {
+    "question": "What is a target return?",
+    "answer": "A target return is the percentage gain a trader aims to achieve on a position before exiting, often set alongside a stop-loss to frame risk-reward.",
+    "context": "portfolio_management",
+    "difficulty": "basic"
+  },
+  {
+    "question": "What does the risk-reward ratio measure?",
+    "answer": "Risk-reward compares potential loss to potential gain, helping traders gauge whether a trade’s upside justifies the downside.",
+    "context": "risk_management",
+    "difficulty": "basic"
+  },
+  {
+    "question": "What is drawdown in trading?",
+    "answer": "Drawdown measures the peak-to-trough decline in equity, showing how much capital is lost before a new high is achieved.",
+    "context": "risk_management",
+    "difficulty": "basic"
+  },
+  {
+    "question": "Why is position sizing important?",
+    "answer": "Position sizing ensures that no single trade jeopardizes the account by aligning trade size with risk tolerance and stop distance.",
+    "context": "risk_management",
+    "difficulty": "intermediate"
+  },
+  {
+    "question": "What is diversification?",
+    "answer": "Diversification spreads capital across uncorrelated assets to reduce portfolio volatility and single-point failure risk.",
+    "context": "portfolio_management",
+    "difficulty": "basic"
+  },
+  {
+    "question": "What does beta represent?",
+    "answer": "Beta measures an asset’s sensitivity to market moves; a beta of 1 moves in line with the market, higher than 1 amplifies market moves.",
+    "context": "portfolio_management",
+    "difficulty": "intermediate"
+  },
+  {
+    "question": "What is alpha?",
+    "answer": "Alpha is the excess return generated beyond a benchmark or expected return, showing skill or edge over passive exposure.",
+    "context": "portfolio_management",
+    "difficulty": "intermediate"
+  },
+  {
+    "question": "What does the Sharpe ratio indicate?",
+    "answer": "The Sharpe ratio measures excess return per unit of total risk, helping compare strategies on a risk-adjusted basis.",
+    "context": "portfolio_management",
+    "difficulty": "intermediate"
+  },
+  {
+    "question": "How is the Sortino ratio different from Sharpe?",
+    "answer": "Sortino only penalizes downside volatility, focusing on harmful moves, whereas Sharpe counts both upside and downside swings.",
+    "context": "portfolio_management",
+    "difficulty": "advanced"
+  },
+  {
+    "question": "What is volatility?",
+    "answer": "Volatility quantifies the degree of price variation over time, typically measured by standard deviation of returns.",
+    "context": "market_structure",
+    "difficulty": "basic"
+  },
+  {
+    "question": "What is the difference between historical and implied volatility?",
+    "answer": "Historical volatility looks backward at realized price swings, while implied volatility derives from option prices and reflects forward-looking expectations.",
+    "context": "derivatives",
+    "difficulty": "intermediate"
+  },
+  {
+    "question": "Why do traders hedge?",
+    "answer": "Hedging offsets risk in one position by taking another, reducing exposure to adverse price moves or macro shocks.",
+    "context": "risk_management",
+    "difficulty": "basic"
+  },
+  {
+    "question": "What does correlation measure?",
+    "answer": "Correlation measures how two assets move together; +1 moves in tandem, -1 moves opposite, 0 means no relationship.",
+    "context": "portfolio_management",
+    "difficulty": "basic"
+  },
+  {
+    "question": "What is covariance?",
+    "answer": "Covariance quantifies the directional relationship between asset returns and is the building block for correlation.",
+    "context": "portfolio_management",
+    "difficulty": "intermediate"
+  },
+  {
+    "question": "What is Value at Risk (VaR)?",
+    "answer": "VaR estimates the maximum expected loss over a timeframe at a given confidence level, summarizing tail risk.",
+    "context": "risk_management",
+    "difficulty": "advanced"
+  },
+  {
+    "question": "Why use stress testing?",
+    "answer": "Stress tests model extreme scenarios to reveal hidden vulnerabilities that standard volatility measures may miss.",
+    "context": "risk_management",
+    "difficulty": "advanced"
+  },
+  {
+    "question": "What is scenario analysis?",
+    "answer": "Scenario analysis evaluates portfolio performance under hypothetical macro or market events to plan responses.",
+    "context": "risk_management",
+    "difficulty": "intermediate"
+  },
+  {
+    "question": "What is a margin account?",
+    "answer": "A margin account allows borrowing from a broker to trade larger size, using assets as collateral and incurring interest.",
+    "context": "market_structure",
+    "difficulty": "basic"
+  },
+  {
+    "question": "What is leverage?",
+    "answer": "Leverage uses borrowed capital to magnify returns (and losses), enabling larger exposure for a given cash outlay.",
+    "context": "risk_management",
+    "difficulty": "intermediate"
+  },
+  {
+    "question": "What is a futures contract?",
+    "answer": "A futures contract is a standardized agreement to buy or sell an asset at a specified price on a future date.",
+    "context": "derivatives",
+    "difficulty": "basic"
+  },
+  {
+    "question": "What is a call option?",
+    "answer": "A call option gives the holder the right, not obligation, to buy an asset at a strike price before expiration.",
+    "context": "derivatives",
+    "difficulty": "basic"
+  },
+  {
+    "question": "What is a put option?",
+    "answer": "A put option gives the holder the right, not obligation, to sell an asset at the strike price before expiration.",
+    "context": "derivatives",
+    "difficulty": "basic"
+  },
+  {
+    "question": "What does delta measure?",
+    "answer": "Delta measures how much an option price changes for a one-unit move in the underlying asset.",
+    "context": "derivatives",
+    "difficulty": "intermediate"
+  },
+  {
+    "question": "What is gamma?",
+    "answer": "Gamma is the rate of change of delta, showing how option delta responds to underlying price shifts.",
+    "context": "derivatives",
+    "difficulty": "advanced"
+  },
+  {
+    "question": "What is theta?",
+    "answer": "Theta measures an option’s time decay, indicating how much value erodes each day if all else stays constant.",
+    "context": "derivatives",
+    "difficulty": "intermediate"
+  },
+  {
+    "question": "What is vega?",
+    "answer": "Vega measures an option’s sensitivity to changes in implied volatility.",
+    "context": "derivatives",
+    "difficulty": "intermediate"
+  },
+  {
+    "question": "What does rho capture?",
+    "answer": "Rho captures an option’s sensitivity to interest rate changes.",
+    "context": "derivatives",
+    "difficulty": "advanced"
+  },
+  {
+    "question": "What is intrinsic value in options?",
+    "answer": "Intrinsic value is how much an option is in-the-money; it’s the immediate exercise value.",
+    "context": "derivatives",
+    "difficulty": "basic"
+  },
+  {
+    "question": "What is extrinsic value?",
+    "answer": "Extrinsic value (time value) is the option premium beyond intrinsic value, reflecting time and volatility.",
+    "context": "derivatives",
+    "difficulty": "basic"
+  },
+  {
+    "question": "What does in-the-money mean?",
+    "answer": "An option is in-the-money if exercising it would be profitable: calls when price > strike, puts when price < strike.",
+    "context": "derivatives",
+    "difficulty": "basic"
+  },
+  {
+    "question": "What is out-of-the-money?",
+    "answer": "An option is out-of-the-money when exercising would not be profitable, so it has only time value.",
+    "context": "derivatives",
+    "difficulty": "basic"
+  },
+  {
+    "question": "What is a bull call spread?",
+    "answer": "A bull call spread buys a call and sells a higher-strike call to cap upside but lower cost, profiting from moderate rises.",
+    "context": "derivatives",
+    "difficulty": "intermediate"
+  },
+  {
+    "question": "What is a bear put spread?",
+    "answer": "A bear put spread buys a put and sells a lower-strike put, seeking limited profit from moderate declines at reduced cost.",
+    "context": "derivatives",
+    "difficulty": "intermediate"
+  },
+  {
+    "question": "What is an iron condor?",
+    "answer": "An iron condor sells an out-of-the-money call spread and put spread simultaneously, profiting if price stays in a range.",
+    "context": "derivatives",
+    "difficulty": "advanced"
+  },
+  {
+    "question": "What is a covered call?",
+    "answer": "A covered call owns the underlying and sells a call against it, collecting premium while capping upside.",
+    "context": "derivatives",
+    "difficulty": "basic"
+  },
+  {
+    "question": "What is a protective put?",
+    "answer": "A protective put buys downside insurance on a long position, limiting loss for a premium cost.",
+    "context": "risk_management",
+    "difficulty": "basic"
+  },
+  {
+    "question": "What is a calendar spread?",
+    "answer": "A calendar spread sells a near-term option and buys a longer-dated option at the same strike, betting on time decay and volatility shifts.",
+    "context": "derivatives",
+    "difficulty": "advanced"
+  },
+  {
+    "question": "What is a long straddle?",
+    "answer": "A long straddle buys a call and put at the same strike, profiting from large moves in either direction.",
+    "context": "derivatives",
+    "difficulty": "intermediate"
+  },
+  {
+    "question": "What is a strangle?",
+    "answer": "A strangle buys out-of-the-money call and put, cheaper than a straddle but needing bigger moves to profit.",
+    "context": "derivatives",
+    "difficulty": "intermediate"
+  },
+  {
+    "question": "What is a simple moving average (SMA)?",
+    "answer": "An SMA averages closing prices over a set period, smoothing price data to reveal trends.",
+    "context": "technical_analysis",
+    "difficulty": "basic"
+  },
+  {
+    "question": "How does an exponential moving average (EMA) differ from an SMA?",
+    "answer": "EMAs weight recent prices more heavily, reacting faster to new information than SMAs.",
+    "context": "technical_analysis",
+    "difficulty": "intermediate"
+  },
+  {
+    "question": "What is MACD?",
+    "answer": "MACD is a momentum indicator using moving average differentials and a signal line to flag trend shifts.",
+    "context": "technical_analysis",
+    "difficulty": "intermediate"
+  },
+  {
+    "question": "What does RSI measure?",
+    "answer": "RSI measures the speed of price moves to identify overbought or oversold conditions on a 0-100 scale.",
+    "context": "technical_analysis",
+    "difficulty": "basic"
+  },
+  {
+    "question": "What are Bollinger Bands?",
+    "answer": "Bollinger Bands wrap price with a moving average and standard deviation bands to show volatility regimes.",
+    "context": "technical_analysis",
+    "difficulty": "intermediate"
+  },
+  {
+    "question": "What is support in charting?",
+    "answer": "Support is a price area where buying historically emerges, halting declines.",
+    "context": "technical_analysis",
+    "difficulty": "basic"
+  },
+  {
+    "question": "What is resistance?",
+    "answer": "Resistance is a price zone where selling historically appears, capping rallies.",
+    "context": "technical_analysis",
+    "difficulty": "basic"
+  },
+  {
+    "question": "What defines a breakout?",
+    "answer": "A breakout occurs when price pushes through support or resistance with volume, signaling trend continuation.",
+    "context": "technical_analysis",
+    "difficulty": "intermediate"
+  },
+  {
+    "question": "What causes a false breakout?",
+    "answer": "False breakouts happen when price briefly pierces a level but quickly reverses, trapping reactive traders.",
+    "context": "technical_analysis",
+    "difficulty": "advanced"
+  },
+  {
+    "question": "What is liquidity?",
+    "answer": "Liquidity describes how easily an asset can be traded without impacting price, dependent on depth and participation.",
+    "context": "market_structure",
+    "difficulty": "basic"
+  },
+  {
+    "question": "What is an order book?",
+    "answer": "An order book lists current buy and sell orders by price level, showing supply-demand dynamics.",
+    "context": "market_structure",
+    "difficulty": "basic"
+  },
+  {
+    "question": "What is slippage?",
+    "answer": "Slippage is the difference between expected and actual execution price, often due to limited liquidity or market impact.",
+    "context": "market_structure",
+    "difficulty": "intermediate"
+  },
+  {
+    "question": "What is the bid-ask spread?",
+    "answer": "The bid-ask spread is the difference between the highest buy and lowest sell price, representing transaction cost.",
+    "context": "market_structure",
+    "difficulty": "basic"
+  },
+  {
+    "question": "When do you use a market order?",
+    "answer": "Market orders execute immediately at best available prices, prioritizing speed over price certainty.",
+    "context": "market_structure",
+    "difficulty": "basic"
+  },
+  {
+    "question": "What is a limit order?",
+    "answer": "A limit order specifies a maximum buy or minimum sell price, ensuring price control but not guaranteed execution.",
+    "context": "market_structure",
+    "difficulty": "basic"
+  },
+  {
+    "question": "What is a stop order?",
+    "answer": "A stop order becomes market or limit once price hits a trigger, often used for stop-loss or breakout entries.",
+    "context": "risk_management",
+    "difficulty": "basic"
+  },
+  {
+    "question": "What is an iceberg order?",
+    "answer": "An iceberg order hides most of the order size, showing only a slice to minimize market impact.",
+    "context": "market_structure",
+    "difficulty": "advanced"
+  },
+  {
+    "question": "What is a dark pool?",
+    "answer": "Dark pools are private trading venues where large orders execute anonymously to avoid moving the market.",
+    "context": "market_structure",
+    "difficulty": "advanced"
+  },
+  {
+    "question": "What is VWAP?",
+    "answer": "VWAP is the average price weighted by volume throughout the day, often used as a benchmark for execution quality.",
+    "context": "market_structure",
+    "difficulty": "intermediate"
+  },
+  {
+    "question": "What is TWAP?",
+    "answer": "TWAP executes evenly across time intervals, smoothing market impact for large orders.",
+    "context": "market_structure",
+    "difficulty": "intermediate"
+  },
+  {
+    "question": "What is momentum trading?",
+    "answer": "Momentum trading buys assets showing strength and sells laggards, assuming trends persist.",
+    "context": "trading_strategy",
+    "difficulty": "basic"
+  },
+  {
+    "question": "What is mean reversion?",
+    "answer": "Mean reversion bets that price deviations from average will revert, profiting from snapbacks.",
+    "context": "trading_strategy",
+    "difficulty": "intermediate"
+  },
+  {
+    "question": "What is swing trading?",
+    "answer": "Swing trading seeks multi-day moves within a trend, balancing holding time and capturing meaningful chunks.",
+    "context": "trading_strategy",
+    "difficulty": "basic"
+  },
+  {
+    "question": "What defines day trading?",
+    "answer": "Day trading opens and closes positions within the same session, avoiding overnight risk.",
+    "context": "trading_strategy",
+    "difficulty": "basic"
+  },
+  {
+    "question": "What is scalping?",
+    "answer": "Scalping targets tiny price moves repeatedly, relying on high frequency and tight risk control.",
+    "context": "trading_strategy",
+    "difficulty": "advanced"
+  },
+  {
+    "question": "What is algorithmic trading?",
+    "answer": "Algorithmic trading uses coded rules to execute trades systematically, reducing emotion and latency.",
+    "context": "trading_strategy",
+    "difficulty": "intermediate"
+  },
+  {
+    "question": "What is high-frequency trading (HFT)?",
+    "answer": "HFT deploys ultra-fast infrastructure to exploit microsecond inefficiencies across markets.",
+    "context": "market_structure",
+    "difficulty": "advanced"
+  },
+  {
+    "question": "What is pair trading?",
+    "answer": "Pair trading goes long one asset and short a correlated asset, betting on spread convergence.",
+    "context": "trading_strategy",
+    "difficulty": "intermediate"
+  },
+  {
+    "question": "What is arbitrage?",
+    "answer": "Arbitrage exploits price discrepancies of the same or related assets across venues for riskless profit.",
+    "context": "trading_strategy",
+    "difficulty": "advanced"
+  },
+  {
+    "question": "What is convertible arbitrage?",
+    "answer": "Convertible arbitrage buys convertible bonds and shorts the underlying stock, hedging equity risk while harvesting mispricing.",
+    "context": "trading_strategy",
+    "difficulty": "advanced"
+  },
+  {
+    "question": "What is merger arbitrage?",
+    "answer": "Merger arbitrage buys target stocks and sells acquirer shares to capture announced deal spreads.",
+    "context": "trading_strategy",
+    "difficulty": "advanced"
+  },
+  {
+    "question": "What is event-driven investing?",
+    "answer": "Event-driven strategies trade around catalysts like earnings, restructurings, or regulatory rulings.",
+    "context": "trading_strategy",
+    "difficulty": "intermediate"
+  },
+  {
+    "question": "What is fundamental analysis?",
+    "answer": "Fundamental analysis evaluates financial statements, industry dynamics, and macro factors to estimate intrinsic value.",
+    "context": "fundamental_analysis",
+    "difficulty": "basic"
+  },
+  {
+    "question": "What is discounted cash flow (DCF)?",
+    "answer": "DCF projects future cash flows and discounts them back at a required rate to estimate present value.",
+    "context": "fundamental_analysis",
+    "difficulty": "advanced"
+  },
+  {
+    "question": "What is the P/E ratio?",
+    "answer": "Price-to-earnings divides share price by earnings per share, showing how much investors pay per dollar of profit.",
+    "context": "fundamental_analysis",
+    "difficulty": "basic"
+  },
+  {
+    "question": "What is the PEG ratio?",
+    "answer": "PEG divides P/E by earnings growth, adjusting valuation for growth rates.",
+    "context": "fundamental_analysis",
+    "difficulty": "intermediate"
+  },
+  {
+    "question": "What does EV/EBITDA indicate?",
+    "answer": "Enterprise value divided by EBITDA compares company value to operating cash flow, neutral to capital structure.",
+    "context": "fundamental_analysis",
+    "difficulty": "intermediate"
+  },
+  {
+    "question": "What is dividend yield?",
+    "answer": "Dividend yield equals annual dividends per share divided by price, indicating cash return.",
+    "context": "fundamental_analysis",
+    "difficulty": "basic"
+  },
+  {
+    "question": "What is the payout ratio?",
+    "answer": "Payout ratio is the portion of earnings paid as dividends, signaling sustainability.",
+    "context": "fundamental_analysis",
+    "difficulty": "intermediate"
+  },
+  {
+    "question": "What is a share buyback?",
+    "answer": "A buyback is when a company repurchases stock, reducing float and boosting per-share metrics.",
+    "context": "fundamental_analysis",
+    "difficulty": "basic"
+  },
+  {
+    "question": "What is free float?",
+    "answer": "Free float is the shares available for public trading, excluding locked-in insider holdings.",
+    "context": "market_structure",
+    "difficulty": "basic"
+  },
+  {
+    "question": "What is market capitalization?",
+    "answer": "Market cap equals share price times shares outstanding, representing equity value.",
+    "context": "fundamental_analysis",
+    "difficulty": "basic"
+  },
+  {
+    "question": "What is enterprise value (EV)?",
+    "answer": "EV equals market cap plus debt minus cash, reflecting takeover cost for entire capital structure.",
+    "context": "fundamental_analysis",
+    "difficulty": "intermediate"
+  },
+  {
+    "question": "What is capital structure?",
+    "answer": "Capital structure describes the mix of debt, equity, and hybrids a company uses to finance assets.",
+    "context": "fundamental_analysis",
+    "difficulty": "basic"
+  },
+  {
+    "question": "What is WACC?",
+    "answer": "Weighted average cost of capital blends the required returns of debt and equity to discount cash flows.",
+    "context": "fundamental_analysis",
+    "difficulty": "advanced"
+  },
+  {
+    "question": "What is CAPM?",
+    "answer": "CAPM estimates expected return as risk-free rate plus beta times market risk premium.",
+    "context": "portfolio_management",
+    "difficulty": "advanced"
+  },
+  {
+    "question": "What is the efficient frontier?",
+    "answer": "The efficient frontier plots portfolios that deliver the highest return for each level of risk.",
+    "context": "portfolio_management",
+    "difficulty": "advanced"
+  },
+  {
+    "question": "What is Modern Portfolio Theory (MPT)?",
+    "answer": "MPT argues diversification optimally balances risk and return using covariance and expected returns.",
+    "context": "portfolio_management",
+    "difficulty": "advanced"
+  },
+  {
+    "question": "What is smart beta?",
+    "answer": "Smart beta strategies tilt passive portfolios toward factors like value or momentum rather than pure market cap.",
+    "context": "portfolio_management",
+    "difficulty": "intermediate"
+  },
+  {
+    "question": "What is factor investing?",
+    "answer": "Factor investing allocates to traits such as value, size, quality, or momentum that historically explain returns.",
+    "context": "portfolio_management",
+    "difficulty": "advanced"
+  },
+  {
+    "question": "What is ESG investing?",
+    "answer": "ESG integrates environmental, social, and governance criteria into investment decisions for sustainability and risk.",
+    "context": "portfolio_management",
+    "difficulty": "basic"
+  },
+  {
+    "question": "How can inflation hedging work?",
+    "answer": "Inflation hedges hold real assets like commodities, TIPS, or pricing power equities to preserve purchasing power.",
+    "context": "macro_strategy",
+    "difficulty": "intermediate"
+  },
+  {
+    "question": "What is a commodity supercycle?",
+    "answer": "A supercycle is a prolonged period of rising commodity demand and prices driven by structural shifts.",
+    "context": "macro_strategy",
+    "difficulty": "advanced"
+  },
+  {
+    "question": "What does the yield curve show?",
+    "answer": "The yield curve plots bond yields across maturities, signaling growth, inflation, and policy expectations.",
+    "context": "macro_strategy",
+    "difficulty": "basic"
+  },
+  {
+    "question": "What is interest rate parity?",
+    "answer": "Interest rate parity links FX forward rates to interest rate differentials, preventing arbitrage.",
+    "context": "forex",
+    "difficulty": "advanced"
+  },
+  {
+    "question": "What is purchasing power parity (PPP)?",
+    "answer": "PPP states exchange rates adjust so identical goods cost the same across countries after conversion.",
+    "context": "forex",
+    "difficulty": "intermediate"
+  },
+  {
+    "question": "What is a forex carry trade?",
+    "answer": "Carry trades borrow in low-rate currencies to invest in higher-yielding ones, profiting from rate differentials.",
+    "context": "forex",
+    "difficulty": "advanced"
+  },
+  {
+    "question": "What is a credit default swap (CDS)?",
+    "answer": "A CDS is insurance against bond default; buyers pay premiums and receive compensation if the issuer defaults.",
+    "context": "credit_markets",
+    "difficulty": "advanced"
+  },
+  {
+    "question": "What is duration in bonds?",
+    "answer": "Duration gauges a bond’s price sensitivity to interest rate changes, expressed in years.",
+    "context": "fixed_income",
+    "difficulty": "intermediate"
+  },
+  {
+    "question": "What is convexity?",
+    "answer": "Convexity captures how duration itself changes as yields move, refining interest rate risk estimates.",
+    "context": "fixed_income",
+    "difficulty": "advanced"
+  }
+]
+

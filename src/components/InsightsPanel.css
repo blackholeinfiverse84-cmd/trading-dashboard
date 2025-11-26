@@ -1,0 +1,103 @@
+.insights-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: var(--spacing-md);
+  width: 100%;
+}
+
+.insight-card {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-sm);
+  min-height: 150px;
+}
+
+.sentiment-score {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.sentiment-badge {
+  padding: 0.2rem 0.75rem;
+  border-radius: var(--radius-full);
+  font-size: 0.75rem;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+}
+
+.sentiment-badge.sentiment-bullish {
+  background-color: rgba(52, 199, 89, 0.15);
+  color: var(--accent-success);
+}
+
+.sentiment-badge.sentiment-bearish {
+  background-color: rgba(255, 59, 48, 0.15);
+  color: var(--accent-error);
+}
+
+.sentiment-badge.sentiment-neutral {
+  background-color: rgba(142, 142, 147, 0.15);
+  color: var(--neutral);
+}
+
+.sentiment-value {
+  font-size: 2rem;
+  font-weight: 600;
+  margin: 0;
+  color: var(--text-primary);
+}
+
+.sentiment-context {
+  margin: 0;
+  color: var(--text-secondary);
+  font-size: 0.9rem;
+}
+
+.insight-warning {
+  color: var(--accent-warning);
+  margin: 0;
+  font-size: 0.8rem;
+}
+
+.recommendation,
+.latest-trade {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+  gap: var(--spacing-md);
+}
+
+.insight-label {
+  font-size: 0.75rem;
+  color: var(--text-tertiary);
+  margin-bottom: 0.25rem;
+}
+
+.insight-value {
+  font-size: 1.1rem;
+  font-weight: 600;
+  color: var(--text-primary);
+  margin: 0;
+}
+
+.insight-value.buy {
+  color: var(--accent-success);
+}
+
+.insight-value.sell {
+  color: var(--accent-error);
+}
+
+.insight-summary {
+  margin: 0;
+  color: var(--text-secondary);
+  font-size: 0.9rem;
+  line-height: 1.4;
+}
+
+@media (max-width: 768px) {
+  .insights-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
