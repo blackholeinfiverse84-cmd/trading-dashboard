@@ -1,5 +1,6 @@
-import React, { useState } from 'react'
+import React, { useState, useMemo } from 'react'
 import Card from './common/Card'
+import Input from './common/Input'
 import './MultiAssetBoard.css'
 
 const assetTabs = [
@@ -13,20 +14,38 @@ const mockRows = {
     { symbol: 'AAPL', asset: 'Apple', price: 175.42, change: 1.32, action: 'BUY', weight: '35%' },
     { symbol: 'RELIANCE', asset: 'Reliance Industries', price: 2615.8, change: -0.45, action: 'HOLD', weight: '22%' },
     { symbol: 'HDFCBANK', asset: 'HDFC Bank', price: 1575.0, change: 0.95, action: 'BUY', weight: '18%' },
+    { symbol: 'TCS', asset: 'Tata Consultancy Services', price: 3420.5, change: 0.78, action: 'BUY', weight: '15%' },
+    { symbol: 'INFY', asset: 'Infosys Limited', price: 1520.3, change: -0.32, action: 'HOLD', weight: '10%' },
   ],
   crypto: [
     { symbol: 'BTCUSD', asset: 'Bitcoin', price: 43250, change: 2.12, action: 'ACCUMULATE', weight: '—' },
     { symbol: 'ETHUSD', asset: 'Ethereum', price: 2325, change: -1.05, action: 'WATCH', weight: '—' },
+    { symbol: 'BNBUSD', asset: 'Binance Coin', price: 315.8, change: 0.45, action: 'HOLD', weight: '—' },
   ],
   commodities: [
     { symbol: 'GOLD', asset: 'Gold Spot', price: 2045, change: 0.32, action: 'HOLD', weight: '—' },
-    { symbol: 'CRUDE', asset: 'WTI Crude', price: 79.5, change: -0.85, action: 'SELL', weight: '—' },
+    { symbol: 'CRUDE', asset: 'WTI Crude Oil', price: 79.5, change: -0.85, action: 'SELL', weight: '—' },
+    { symbol: 'SILVER', asset: 'Silver Spot', price: 24.8, change: 0.15, action: 'HOLD', weight: '—' },
   ],
 }
 
 const MultiAssetBoard = () => {
   const [activeTab, setActiveTab] = useState('stocks')
-  const rows = mockRows[activeTab] || []
+  const [searchQuery, setSearchQuery] = useState('')
+  
+  const allRows = mockRows[activeTab] || []
+  
+  // Filter rows based on search query
+  const rows = useMemo(() => {
+    if (!searchQuery.trim()) return allRows
+    
+    const query = searchQuery.toLowerCase().trim()
+    return allRows.filter(
+      (row) =>
+        row.symbol.toLowerCase().includes(query) ||
+        row.asset.toLowerCase().includes(query)
+    )
+  }, [allRows, searchQuery])
 
   return (
     <Card
@@ -35,16 +54,32 @@ const MultiAssetBoard = () => {
       className="multi-asset-card"
       padding="md"
     >
-      <div className="asset-tabs">
-        {assetTabs.map((tab) => (
-          <button
-            key={tab.value}
-            className={`asset-tab ${activeTab === tab.value ? 'asset-tab-active' : ''}`}
-            onClick={() => setActiveTab(tab.value)}
-          >
-            {tab.label}
-          </button>
-        ))}
+      <div className="multi-asset-header">
+        <div className="asset-tabs">
+          {assetTabs.map((tab) => (
+            <button
+              key={tab.value}
+              className={`asset-tab ${activeTab === tab.value ? 'asset-tab-active' : ''}`}
+              onClick={() => {
+                setActiveTab(tab.value)
+                setSearchQuery('') // Clear search when switching tabs
+              }}
+            >
+              {tab.label}
+            </button>
+          ))}
+        </div>
+        
+        <div className="multi-asset-search">
+          <Input
+            type="text"
+            placeholder="Search assets..."
+            value={searchQuery}
+            onChange={(e) => setSearchQuery(e.target.value)}
+            icon="🔍"
+            fullWidth
+          />
+        </div>
       </div>
 
       <div className="asset-table-wrapper">

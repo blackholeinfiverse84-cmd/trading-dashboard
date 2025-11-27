@@ -80,6 +80,15 @@ const ChatPanel = () => {
     setTimeout(() => handleSubmit(), 0)
   }
 
+  const handleKeyDown = (e) => {
+    // If Enter is pressed without Shift, submit the form
+    if (e.key === 'Enter' && !e.shiftKey) {
+      e.preventDefault()
+      handleSubmit(e)
+    }
+    // If Shift+Enter, allow default behavior (new line)
+  }
+
   return (
     <Card
       title="Uniguru Chat"
@@ -142,9 +151,10 @@ const ChatPanel = () => {
         <form className="chat-input-row" onSubmit={handleSubmit}>
           <textarea
             className="chat-input"
-            placeholder="Ask about trades, risk, or market education..."
+            placeholder="Ask about trades, risk, or market education... (Press Enter to send, Shift+Enter for new line)"
             value={inputValue}
             onChange={(e) => setInputValue(e.target.value)}
+            onKeyDown={handleKeyDown}
             rows={2}
           ></textarea>
           <Button

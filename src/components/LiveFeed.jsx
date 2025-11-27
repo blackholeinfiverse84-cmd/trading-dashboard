@@ -2,11 +2,13 @@ import React, { useState, useEffect, useRef } from 'react'
 import Card from './common/Card'
 import { createChart, ColorType } from 'lightweight-charts'
 import { useLiveFeed } from '../hooks/useLiveFeed'
+import AssetSearch from './AssetSearch'
 import './LiveFeed.css'
 
 const LiveFeed = () => {
   const [candles, setCandles] = useState([])
   const [activeSymbol, setActiveSymbol] = useState('Asset')
+  const [selectedSymbol, setSelectedSymbol] = useState('')
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState(null)
   const [lastUpdate, setLastUpdate] = useState(null)
@@ -112,16 +114,34 @@ const LiveFeed = () => {
       className="live-feed-card"
     >
       <div className="live-feed-chart-header">
-        <div>
-          <p className="symbol-label">{activeSymbol}</p>
-          <p className="symbol-price">
-            ${latestPrice?.toFixed(2) || '0.00'}
-            <span className={`symbol-change ${isUp ? 'positive' : 'negative'}`}>
-              {isUp ? '+' : ''}
-              {priceDelta?.toFixed(2)} ({isUp ? '+' : ''}
-              {priceDeltaPct?.toFixed(2)}%)
-            </span>
-          </p>
+        <div className="live-feed-symbol-section">
+          <div className="live-feed-search-wrapper">
+            <AssetSearch
+              value={selectedSymbol || activeSymbol}
+              onChange={(assetData) => {
+                if (assetData && assetData.symbol) {
+                  setSelectedSymbol(assetData.symbol)
+                  setActiveSymbol(assetData.symbol)
+                  // In a real app, you would fetch data for the selected symbol
+                  // For now, we'll just update the display
+                }
+              }}
+              placeholder="Search symbol..."
+              showLabel={false}
+              className="live-feed-search"
+            />
+          </div>
+          <div className="live-feed-price-display">
+            <p className="symbol-label">{activeSymbol}</p>
+            <p className="symbol-price">
+              ${latestPrice?.toFixed(2) || '0.00'}
+              <span className={`symbol-change ${isUp ? 'positive' : 'negative'}`}>
+                {isUp ? '+' : ''}
+                {priceDelta?.toFixed(2)} ({isUp ? '+' : ''}
+                {priceDeltaPct?.toFixed(2)}%)
+              </span>
+            </p>
+          </div>
         </div>
         <div className="live-feed-badges">
           {source === 'websocket' ? (

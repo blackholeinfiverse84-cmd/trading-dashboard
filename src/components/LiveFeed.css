@@ -8,8 +8,32 @@
 .live-feed-chart-header {
   display: flex;
   justify-content: space-between;
-  align-items: center;
+  align-items: flex-start;
   gap: var(--spacing-md);
+  flex-wrap: wrap;
+}
+
+.live-feed-symbol-section {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-sm);
+  flex: 1;
+  min-width: 200px;
+}
+
+.live-feed-search-wrapper {
+  width: 100%;
+  max-width: 300px;
+}
+
+.live-feed-search .asset-search-container {
+  width: 100%;
+}
+
+.live-feed-price-display {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-xs);
 }
 
 .live-feed-badges {

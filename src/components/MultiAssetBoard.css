@@ -4,12 +4,26 @@
   gap: var(--spacing-md);
 }
 
+.multi-asset-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: var(--spacing-md);
+  flex-wrap: wrap;
+}
+
 .asset-tabs {
   display: inline-flex;
   gap: var(--spacing-sm);
   padding: var(--spacing-xs);
   background-color: var(--bg-tertiary);
   border-radius: var(--radius-full);
+}
+
+.multi-asset-search {
+  flex: 1;
+  min-width: 200px;
+  max-width: 300px;
 }
 
 .asset-tab {

@@ -2,15 +2,8 @@ import React, { useState } from 'react'
 import Card from './common/Card'
 import Button from './common/Button'
 import Input from './common/Input'
+import AssetSearch from './AssetSearch'
 import './InputPanel.css'
-
-const assetOptions = [
-  { label: 'AAPL', value: 'AAPL', type: 'Stock' },
-  { label: 'TSLA', value: 'TSLA', type: 'Stock' },
-  { label: 'NIFTY', value: 'NIFTY', type: 'Index' },
-  { label: 'BTC/USD', value: 'BTCUSD', type: 'Crypto' },
-  { label: 'GOLD', value: 'GOLD', type: 'Commodity' },
-]
 
 const riskModes = [
   { label: 'Auto', value: 'auto', description: 'AI-managed risk parameters' },
@@ -19,8 +12,8 @@ const riskModes = [
 
 const InputPanel = ({ onSubmit }) => {
   const [formData, setFormData] = useState({
-    symbol: assetOptions[0].value,
-    assetType: assetOptions[0].type,
+    symbol: '',
+    assetType: '',
     stopLoss: 5,
     targetReturn: 10,
     investmentAmount: 5000,
@@ -39,10 +32,11 @@ const InputPanel = ({ onSubmit }) => {
     setErrors((prev) => ({ ...prev, [field]: '' }))
   }
 
-  const handleAssetChange = (value) => {
-    const asset = assetOptions.find((option) => option.value === value)
-    handleChange('symbol', value)
-    handleChange('assetType', asset?.type || 'Asset')
+  const handleAssetChange = (assetData) => {
+    if (assetData) {
+      handleChange('symbol', assetData.symbol)
+      handleChange('assetType', assetData.assetType || 'Asset')
+    }
   }
 
   const validateForm = () => {
@@ -127,20 +121,13 @@ const InputPanel = ({ onSubmit }) => {
       <form className="input-panel-form" onSubmit={handleSubmit}>
         <div className="input-grid">
           <div className="input-field">
-            <label className="input-panel-label">Asset</label>
-            <div className="asset-options">
-              {assetOptions.map((option) => (
-                <button
-                  type="button"
-                  key={option.value}
-                  className={`asset-option ${formData.symbol === option.value ? 'asset-option-active' : ''}`}
-                  onClick={() => handleAssetChange(option.value)}
-                >
-                  <span className="asset-label">{option.label}</span>
-                  <span className="asset-type text-muted">{option.type}</span>
-                </button>
-              ))}
-            </div>
+            <AssetSearch
+              value={formData.symbol}
+              onChange={handleAssetChange}
+              placeholder="Search stocks, crypto, commodities..."
+              showLabel={true}
+              label="Asset"
+            />
             {errors.symbol && <span className="input-error-text">{errors.symbol}</span>}
           </div>
 

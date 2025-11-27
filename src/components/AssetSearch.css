@@ -1,0 +1,204 @@
+.asset-search-wrapper {
+  width: 100%;
+  position: relative;
+}
+
+.asset-search-label {
+  display: block;
+  font-size: 0.875rem;
+  font-weight: 500;
+  color: var(--text-secondary);
+  margin-bottom: var(--spacing-sm);
+}
+
+.asset-search-container {
+  position: relative;
+  width: 100%;
+}
+
+.asset-search-input-wrapper {
+  position: relative;
+  display: flex;
+  align-items: center;
+  background-color: var(--bg-secondary);
+  border: 1px solid var(--border-primary);
+  border-radius: var(--radius-md);
+  transition: border-color var(--transition-fast);
+}
+
+.asset-search-input-wrapper:focus-within {
+  border-color: var(--accent-primary);
+  outline: 2px solid rgba(0, 122, 255, 0.1);
+  outline-offset: -1px;
+}
+
+.asset-search-icon {
+  padding: 0 var(--spacing-md);
+  color: var(--text-tertiary);
+  font-size: 1rem;
+  pointer-events: none;
+}
+
+.asset-search-input {
+  flex: 1;
+  background: transparent;
+  border: none;
+  outline: none;
+  color: var(--text-primary);
+  font-size: 0.9375rem;
+  padding: var(--spacing-md) 0;
+  font-family: inherit;
+}
+
+.asset-search-input::placeholder {
+  color: var(--text-muted);
+}
+
+.asset-search-clear {
+  background: none;
+  border: none;
+  color: var(--text-tertiary);
+  font-size: 1.5rem;
+  line-height: 1;
+  padding: 0 var(--spacing-md);
+  cursor: pointer;
+  transition: color var(--transition-fast);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 32px;
+}
+
+.asset-search-clear:hover {
+  color: var(--text-primary);
+}
+
+.asset-search-dropdown {
+  position: absolute;
+  top: calc(100% + 4px);
+  left: 0;
+  right: 0;
+  background-color: var(--bg-secondary);
+  border: 1px solid var(--border-primary);
+  border-radius: var(--radius-md);
+  max-height: 320px;
+  overflow-y: auto;
+  z-index: 1000;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+  margin-top: var(--spacing-xs);
+}
+
+.asset-search-item {
+  padding: var(--spacing-md);
+  cursor: pointer;
+  transition: background-color var(--transition-fast);
+  border-bottom: 1px solid var(--border-primary);
+}
+
+.asset-search-item:last-child {
+  border-bottom: none;
+}
+
+.asset-search-item:hover,
+.asset-search-item-selected {
+  background-color: var(--bg-hover);
+}
+
+.asset-search-item-main {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-md);
+  margin-bottom: var(--spacing-xs);
+}
+
+.asset-search-symbol {
+  font-weight: 600;
+  color: var(--text-primary);
+  font-size: 0.9375rem;
+  min-width: 80px;
+}
+
+.asset-search-name {
+  color: var(--text-secondary);
+  font-size: 0.875rem;
+  flex: 1;
+}
+
+.asset-search-item-meta {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-sm);
+  font-size: 0.75rem;
+}
+
+.asset-search-type {
+  padding: 2px 8px;
+  border-radius: var(--radius-sm);
+  font-weight: 500;
+  text-transform: uppercase;
+  font-size: 0.6875rem;
+  letter-spacing: 0.5px;
+}
+
+.asset-type-stock {
+  background-color: rgba(0, 122, 255, 0.15);
+  color: var(--accent-primary);
+}
+
+.asset-type-index {
+  background-color: rgba(88, 86, 214, 0.15);
+  color: var(--accent-secondary);
+}
+
+.asset-type-crypto {
+  background-color: rgba(255, 149, 0, 0.15);
+  color: var(--accent-warning);
+}
+
+.asset-type-commodity {
+  background-color: rgba(52, 199, 89, 0.15);
+  color: var(--accent-success);
+}
+
+.asset-type-custom {
+  background-color: rgba(142, 142, 147, 0.15);
+  color: var(--neutral);
+}
+
+.asset-search-exchange {
+  color: var(--text-muted);
+  font-size: 0.6875rem;
+}
+
+/* Scrollbar for dropdown */
+.asset-search-dropdown::-webkit-scrollbar {
+  width: 6px;
+}
+
+.asset-search-dropdown::-webkit-scrollbar-track {
+  background: var(--bg-secondary);
+}
+
+.asset-search-dropdown::-webkit-scrollbar-thumb {
+  background: var(--border-primary);
+  border-radius: 3px;
+}
+
+.asset-search-dropdown::-webkit-scrollbar-thumb:hover {
+  background: var(--border-secondary);
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .asset-search-item-main {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: var(--spacing-xs);
+  }
+
+  .asset-search-symbol {
+    min-width: auto;
+  }
+}
+
