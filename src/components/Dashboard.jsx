@@ -1,5 +1,6 @@
 import React, { useState, useMemo } from 'react'
 import { LangGraphClient } from '../services/langGraphClient'
+import ThemeToggle from './ThemeToggle'
 import LiveFeed from './LiveFeed'
 import ActionPanel from './ActionPanel'
 import InputPanel from './InputPanel'
@@ -9,6 +10,7 @@ import MultiAssetBoard from './MultiAssetBoard'
 import PortfolioOverview from './PortfolioOverview'
 import FeedbackInsights from './FeedbackInsights'
 import MarketEvents from './MarketEvents'
+import LangGraphReport from './LangGraphReport'
 import LangGraphSyncBar from './LangGraphSyncBar'
 import './Dashboard.css'
 
@@ -76,6 +78,7 @@ const Dashboard = () => {
             <span className="status-indicator"></span>
             <span>Live</span>
           </div>
+          <ThemeToggle />
         </div>
       </div>
 
@@ -89,6 +92,7 @@ const Dashboard = () => {
             <FeedbackInsights risk={riskContext} />
           </div>
           <MultiAssetBoard risk={riskContext} />
+          <LangGraphReport />
           <MarketEvents />
           <ChatPanel />
         </div>

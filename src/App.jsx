@@ -8,6 +8,7 @@ import Contact from './components/public/Contact'
 import Login from './components/auth/Login'
 import Register from './components/auth/Register'
 import Dashboard from './components/Dashboard'
+import LangGraphPage from './components/pages/LangGraphPage'
 import './App.css'
 
 function App() {
@@ -29,6 +30,7 @@ function App() {
             
             {/* Dashboard route now public */}
             <Route path="/dashboard" element={<Dashboard />} />
+            <Route path="/langgraph" element={<LangGraphPage />} />
             
             {/* Catch all - redirect to home */}
             <Route path="*" element={<Navigate to="/" replace />} />

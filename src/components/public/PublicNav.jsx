@@ -38,6 +38,11 @@ const PublicNav = () => {
         </div>
 
         <div className="public-nav-actions">
+          <Link to="/langgraph">
+            <Button variant="secondary" size="sm">
+              LangGraph Report
+            </Button>
+          </Link>
           <Link to="/dashboard">
             <Button variant="primary" size="sm">
               Launch Dashboard
