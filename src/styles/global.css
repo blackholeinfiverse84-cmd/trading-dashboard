@@ -157,6 +157,22 @@ a:hover {
   flex-direction: column;
 }
 
+@media (max-width: 900px) {
+  html {
+    font-size: 15px;
+  }
+}
+
+@media (max-width: 600px) {
+  html {
+    font-size: 14px;
+  }
+
+  body {
+    padding-bottom: var(--spacing-lg);
+  }
+}
+
 .text-success {
   color: var(--accent-success);
 }
