@@ -1,12 +1,10 @@
 import React from 'react'
 import { Link, useLocation } from 'react-router-dom'
-import { useAuth } from '../../contexts/AuthContext'
 import Button from '../common/Button'
 import './Public.css'
 
 const PublicNav = () => {
   const location = useLocation()
-  const { isAuthenticated, user } = useAuth()
 
   const isActive = (path) => location.pathname === path
 
@@ -40,29 +38,11 @@ const PublicNav = () => {
         </div>
 
         <div className="public-nav-actions">
-          {isAuthenticated ? (
-            <>
-              <span className="public-nav-user">Welcome, {user?.username}</span>
-              <Link to="/dashboard">
-                <Button variant="primary" size="sm">
-                  Dashboard
-                </Button>
-              </Link>
-            </>
-          ) : (
-            <>
-              <Link to="/login">
-                <Button variant="secondary" size="sm">
-                  Sign In
-                </Button>
-              </Link>
-              <Link to="/register">
-                <Button variant="primary" size="sm">
-                  Sign Up
-                </Button>
-              </Link>
-            </>
-          )}
+          <Link to="/dashboard">
+            <Button variant="primary" size="sm">
+              Launch Dashboard
+            </Button>
+          </Link>
         </div>
       </div>
     </nav>

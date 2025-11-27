@@ -1,5 +1,4 @@
-import React, { createContext, useState, useContext, useEffect } from 'react'
-import { authAPI } from '../services/api'
+import React, { createContext, useState, useContext } from 'react'
 
 const AuthContext = createContext(null)
 
@@ -11,80 +10,32 @@ export const useAuth = () => {
   return context
 }
 
+const DEFAULT_USER = { username: 'Guest Trader' }
+
 export const AuthProvider = ({ children }) => {
-  const [user, setUser] = useState(null)
-  const [loading, setLoading] = useState(true)
-  const [isAuthenticated, setIsAuthenticated] = useState(false)
+  const [user, setUser] = useState(DEFAULT_USER)
+  const [loading, setLoading] = useState(false)
+  const [isAuthenticated, setIsAuthenticated] = useState(true)
 
-  // Check if user is logged in on mount
-  useEffect(() => {
-    checkAuth()
-  }, [])
-
-  const checkAuth = async () => {
-    const token = localStorage.getItem('token')
-    if (!token) {
-      setLoading(false)
-      return
-    }
-
-    try {
-      const response = await authAPI.verifyToken()
-      if (response.success) {
-        setUser(response.user)
-        setIsAuthenticated(true)
-      } else {
-        localStorage.removeItem('token')
-      }
-    } catch (error) {
-      localStorage.removeItem('token')
-    } finally {
-      setLoading(false)
-    }
+  const simulateAuth = (username) => {
+    const displayName = username?.trim() || DEFAULT_USER.username
+    setUser({ username: displayName })
+    setIsAuthenticated(true)
+    return { success: true }
   }
 
-  const login = async (username, password) => {
-    try {
-      const response = await authAPI.login(username, password)
-      if (response.success) {
-        localStorage.setItem('token', response.token)
-        setUser(response.user)
-        setIsAuthenticated(true)
-        return { success: true }
-      } else {
-        return { success: false, message: response.message }
-      }
-    } catch (error) {
-      return {
-        success: false,
-        message: error.response?.data?.message || 'Login failed. Please try again.'
-      }
-    }
-  }
+  const login = async (username) => simulateAuth(username)
 
-  const register = async (username, email, password) => {
-    try {
-      const response = await authAPI.register(username, email, password)
-      if (response.success) {
-        localStorage.setItem('token', response.token)
-        setUser(response.user)
-        setIsAuthenticated(true)
-        return { success: true }
-      } else {
-        return { success: false, message: response.message }
-      }
-    } catch (error) {
-      return {
-        success: false,
-        message: error.response?.data?.message || 'Registration failed. Please try again.'
-      }
-    }
-  }
+  const register = async (username) => simulateAuth(username)
 
   const logout = () => {
-    localStorage.removeItem('token')
-    setUser(null)
-    setIsAuthenticated(false)
+    setUser(DEFAULT_USER)
+    setIsAuthenticated(true)
+  }
+
+  const checkAuth = () => {
+    setIsAuthenticated(true)
+    setUser(DEFAULT_USER)
   }
 
   const value = {

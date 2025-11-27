@@ -1,7 +1,4 @@
 import React, { useState } from 'react'
-import { useNavigate } from 'react-router-dom'
-import { useAuth } from '../contexts/AuthContext'
-import Button from './common/Button'
 import LiveFeed from './LiveFeed'
 import ActionPanel from './ActionPanel'
 import InputPanel from './InputPanel'
@@ -14,13 +11,6 @@ import './Dashboard.css'
 
 const Dashboard = () => {
   const [decisionData, setDecisionData] = useState(null)
-  const { user, logout } = useAuth()
-  const navigate = useNavigate()
-
-  const handleLogout = () => {
-    logout()
-    navigate('/login')
-  }
 
   // Handle decision updates from other components
   const handleDecisionUpdate = (decision) => {
@@ -39,24 +29,10 @@ const Dashboard = () => {
           <p className="text-muted">Multi-asset trading interface</p>
         </div>
         <div className="dashboard-header-right">
-          <div className="dashboard-user-info">
-            {user && (
-              <span className="dashboard-username">
-                Welcome, <strong>{user.username}</strong>
-              </span>
-            )}
-          </div>
           <div className="dashboard-status">
             <span className="status-indicator"></span>
             <span>Live</span>
           </div>
-          <Button
-            variant="secondary"
-            size="sm"
-            onClick={handleLogout}
-          >
-            Logout
-          </Button>
         </div>
       </div>
 
