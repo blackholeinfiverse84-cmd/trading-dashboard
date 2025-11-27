@@ -1,10 +1,9 @@
 .dashboard {
   min-height: 100vh;
   background-color: var(--bg-primary);
-  padding: var(--spacing-xl);
   width: 100%;
-  max-width: 1600px;
-  margin: 0 auto;
+  padding: clamp(var(--spacing-md), 3vw, var(--spacing-2xl));
+  box-sizing: border-box;
 }
 
 .dashboard-header {
