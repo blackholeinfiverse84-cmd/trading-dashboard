@@ -29,23 +29,23 @@ const mockRows = {
   ],
 }
 
-const MultiAssetBoard = () => {
+const MultiAssetBoard = ({ risk }) => {
   const [activeTab, setActiveTab] = useState('stocks')
   const [searchQuery, setSearchQuery] = useState('')
   
   const allRows = mockRows[activeTab] || []
-  
-  // Filter rows based on search query
+
   const rows = useMemo(() => {
-    if (!searchQuery.trim()) return allRows
+    const adjusted = applyRiskToRows(allRows, risk)
+    if (!searchQuery.trim()) return adjusted
     
     const query = searchQuery.toLowerCase().trim()
-    return allRows.filter(
+    return adjusted.filter(
       (row) =>
         row.symbol.toLowerCase().includes(query) ||
         row.asset.toLowerCase().includes(query)
     )
-  }, [allRows, searchQuery])
+  }, [allRows, searchQuery, risk])
 
   return (
     <Card
@@ -126,6 +126,33 @@ const MultiAssetBoard = () => {
 const formatNumber = (value) => {
   if (typeof value !== 'number') return value
   return value >= 1000 ? value.toLocaleString() : value.toFixed(2)
+}
+
+const applyRiskToRows = (rows, risk = {}) => {
+  if (!risk) return rows
+  const { targetReturn = 10, stopLoss = 5, horizon = 'week' } = risk
+  const bias = targetReturn - stopLoss
+  const horizonMultiplier = horizon === 'day' ? 0.5 : horizon === 'month' ? 1.2 : horizon === 'year' ? 1.6 : 1
+
+  return rows.map((row) => {
+    const change = Number((row.change + bias * 0.1 * horizonMultiplier).toFixed(2))
+    const action = updateAction(row.action, bias)
+    const weight = row.weight === '—' ? row.weight : `${Math.min(95, Math.max(5, parseInt(row.weight) + bias * 0.5))}%`
+
+    return {
+      ...row,
+      change,
+      weight,
+      action,
+    }
+  })
+}
+
+const updateAction = (current, bias) => {
+  if (bias > 5) return 'ACCUMULATE'
+  if (bias > 2) return current === 'SELL' ? 'HOLD' : 'BUY'
+  if (bias < -3) return current === 'BUY' ? 'TRIM' : 'SELL'
+  return current
 }
 
 export default MultiAssetBoard

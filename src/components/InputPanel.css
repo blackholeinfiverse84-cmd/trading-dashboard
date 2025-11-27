@@ -173,6 +173,31 @@
   color: var(--text-secondary);
 }
 
+.horizon-options {
+  display: flex;
+  gap: var(--spacing-sm);
+  flex-wrap: wrap;
+}
+
+.horizon-chip {
+  padding: 0.4rem 0.85rem;
+  border-radius: var(--radius-full);
+  border: 1px solid var(--border-primary);
+  background-color: var(--bg-secondary);
+  color: var(--text-secondary);
+  font-size: 0.85rem;
+  text-transform: capitalize;
+  cursor: pointer;
+  transition: all var(--transition-fast);
+}
+
+.horizon-chip.active {
+  background-color: rgba(0, 122, 255, 0.15);
+  border-color: var(--accent-primary);
+  color: var(--text-primary);
+  box-shadow: 0 0 10px rgba(0, 122, 255, 0.25);
+}
+
 .input-textarea {
   width: 100%;
   padding: var(--spacing-sm);

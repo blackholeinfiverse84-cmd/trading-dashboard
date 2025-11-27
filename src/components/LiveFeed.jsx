@@ -5,7 +5,7 @@ import { useLiveFeed } from '../hooks/useLiveFeed'
 import AssetSearch from './AssetSearch'
 import './LiveFeed.css'
 
-const LiveFeed = () => {
+const LiveFeed = ({ signals }) => {
   const [candles, setCandles] = useState([])
   const [activeSymbol, setActiveSymbol] = useState('AAPL')
   const [selectedSymbol, setSelectedSymbol] = useState('AAPL')
@@ -32,20 +32,21 @@ const LiveFeed = () => {
       const { symbol, candles: normalized } = normalizeCandles(feed)
       if (normalized.length === 0 || !feed) {
         // Generate mock data for the selected symbol
-        const mock = getMockCandles(selectedSymbol || activeSymbol)
+        const mock = getMockCandles(selectedSymbol || activeSymbol, signals?.risk?.horizon)
         setCandles(mock.candles)
         setActiveSymbol(mock.symbol)
         setLastUpdate(new Date())
         setError('No candle data returned. Showing mock feed.')
       } else {
-        setCandles(normalized)
+        const adjusted = adjustCandlesByRisk(normalized, signals?.risk)
+        setCandles(adjusted)
         setActiveSymbol(symbol || selectedSymbol || 'Asset')
         setLastUpdate(new Date())
         setError(null)
       }
     } catch (err) {
       console.error('Feed normalization failed:', err)
-      const mock = getMockCandles(selectedSymbol || activeSymbol)
+      const mock = getMockCandles(selectedSymbol || activeSymbol, signals?.risk?.horizon)
       setCandles(mock.candles)
       setActiveSymbol(mock.symbol)
       setLastUpdate(new Date())
@@ -230,13 +231,14 @@ const getSymbolBasePrice = (symbol) => {
   return priceMap[symbol?.toUpperCase()] || 175
 }
 
-const getMockCandles = (symbol = 'AAPL') => {
+const getMockCandles = (symbol = 'AAPL', horizon = 'week') => {
   const now = Date.now()
   const basePrice = getSymbolBasePrice(symbol)
   const candles = Array.from({ length: 40 }).map((_, index) => {
-    const time = now - (39 - index) * 60 * 1000
-    const drift = Math.sin(index / 5) * (basePrice * 0.01) // 1% variation
-    const volatility = basePrice * 0.005 // 0.5% volatility
+    const factor = getHorizonFactor(horizon)
+    const time = now - (39 - index) * factor.interval
+    const drift = Math.sin(index / 5) * (basePrice * factor.drift)
+    const volatility = basePrice * factor.volatility
     const open = basePrice + drift + (Math.random() - 0.5) * volatility
     const close = open + (Math.random() - 0.5) * volatility * 2
     const high = Math.max(open, close) + Math.random() * volatility
@@ -346,7 +348,36 @@ const createSyntheticCandle = (snapshot, index) => {
   }
 }
 
-const snapshotsWindow = 30
+const getHorizonFactor = (horizon = 'week') => {
+  switch (horizon) {
+    case 'day':
+      return { interval: 5 * 60 * 1000, drift: 0.002, volatility: 0.003 }
+    case 'month':
+      return { interval: 2 * 60 * 60 * 1000, drift: 0.015, volatility: 0.01 }
+    case 'year':
+      return { interval: 24 * 60 * 60 * 1000, drift: 0.025, volatility: 0.02 }
+    case 'week':
+    default:
+      return { interval: 60 * 60 * 1000, drift: 0.01, volatility: 0.005 }
+  }
+}
+
+const adjustCandlesByRisk = (candles = [], risk = {}) => {
+  if (!candles.length) return candles
+  const { stopLoss = 5, targetReturn = 10, investmentAmount = 5000 } = risk
+  const aggressiveness = Math.max(0.5, Math.min(2, targetReturn / (stopLoss || 1)))
+  const scale = 1 + (investmentAmount / 100000) * 0.05
+
+  return candles.map((candle) => {
+    const mid = (candle.open + candle.close) / 2
+    const spread = (candle.high - candle.low) * aggressiveness * scale * 0.1
+    return {
+      ...candle,
+      high: Number((mid + spread).toFixed(2)),
+      low: Number((mid - spread).toFixed(2)),
+    }
+  })
+}
 
 export default LiveFeed
 

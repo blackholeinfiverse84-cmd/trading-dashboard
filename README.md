@@ -110,7 +110,11 @@ npm run build  # ensures TypeScript + Vite bundle cleanly
 ```
 - LiveFeed automatically flips between WebSocket and polling based on env.
 - LiveFeed/ActionPanel/ChatPanel gracefully degrade with mock data if endpoints fail.
-- Responsive tested for desktop + iPad widths.
+- Responsive layout tested at 1440px desktop, 1024px tablet, 768px tablet portrait, and 480px mobile.
+- Layout breakpoints:
+  - ≥1200px: 2-column grid (feed + sidebar)
+  - 1200px–768px: stacked columns, sidebar surfaces first
+  - ≤768px: reduced padding/typography for mobile, cards stretch full width
 
 ---
 
@@ -122,6 +126,10 @@ vercel deploy --prod
 ```
 - Set `VITE_API_BASE_URL` in Vercel project settings.
 - Ensure backend endpoints allow the Vercel domain (CORS).
+- For mobile QA, re-run `npm run dev`, Zoom to 100%, and verify:
+  - No horizontal scrollbars
+  - Chart + input panels stack vertically
+  - Chat panel and multi-asset board remain accessible via native scroll
 
 ---
 

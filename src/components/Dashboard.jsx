@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useState, useMemo } from 'react'
 import LiveFeed from './LiveFeed'
 import ActionPanel from './ActionPanel'
 import InputPanel from './InputPanel'
@@ -11,15 +11,32 @@ import './Dashboard.css'
 
 const Dashboard = () => {
   const [decisionData, setDecisionData] = useState(null)
+  const [riskContext, setRiskContext] = useState({
+    stopLoss: 5,
+    targetReturn: 10,
+    investmentAmount: 5000,
+    riskMode: 'auto',
+    horizon: 'week',
+  })
 
-  // Handle decision updates from other components
   const handleDecisionUpdate = (decision) => {
     setDecisionData(decision)
   }
 
+  const handleRiskUpdate = (riskPayload) => {
+    setRiskContext(riskPayload.parameters)
+  }
+
   const handleInputSubmit = async (inputData) => {
     handleDecisionUpdate(inputData)
+    handleRiskUpdate(inputData)
   }
+
+  const dashboardSignals = useMemo(() => ({
+    latestDecision: decisionData,
+    risk: riskContext,
+    horizonLabel: riskContext.horizon?.charAt(0).toUpperCase() + riskContext.horizon?.slice(1),
+  }), [decisionData, riskContext])
 
   return (
     <div className="dashboard">
@@ -38,9 +55,9 @@ const Dashboard = () => {
 
       <div className="dashboard-grid">
         <div className="dashboard-column dashboard-column-main">
-          <LiveFeed />
-          <InsightsPanel latestTrade={decisionData} />
-          <MultiAssetBoard />
+          <LiveFeed signals={dashboardSignals} />
+          <InsightsPanel latestTrade={decisionData} risk={riskContext} />
+          <MultiAssetBoard risk={riskContext} />
           <MarketEvents />
           <ChatPanel />
         </div>

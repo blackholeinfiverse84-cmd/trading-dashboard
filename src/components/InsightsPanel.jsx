@@ -3,7 +3,7 @@ import Card from './common/Card'
 import { getSentimentSummary } from '../services/api'
 import './InsightsPanel.css'
 
-const InsightsPanel = ({ latestTrade }) => {
+const InsightsPanel = ({ latestTrade, risk }) => {
   const [insights, setInsights] = useState(null)
   const [error, setError] = useState(null)
 
@@ -35,7 +35,7 @@ const InsightsPanel = ({ latestTrade }) => {
     }
   }, [])
 
-  const stats = insights || getMockInsights()
+  const stats = insights ? blendRisk(insights, risk) : blendRisk(getMockInsights(), risk)
   const latest = latestTrade || stats.latestTrade
 
   return (
@@ -142,6 +142,20 @@ const getMockInsights = () => ({
     reason: 'Follow-through on breakout with 1.2% risk.',
   },
 })
+
+const blendRisk = (base, risk = {}) => {
+  if (!risk) return base
+  const modifier = risk.targetReturn - risk.stopLoss
+  const adjustedConfidence = Math.max(40, Math.min(99, base.confidence + modifier * 0.5))
+  const adjustedScore = Math.max(0, Math.min(100, base.sentimentScore + modifier * 0.3))
+
+  return {
+    ...base,
+    sentimentScore: Number(adjustedScore.toFixed(1)),
+    confidence: Number(adjustedConfidence.toFixed(1)),
+    sentimentContext: `${base.sentimentContext} Horizon: ${risk.horizon || 'week'} · Stop ${risk.stopLoss}% · Target ${risk.targetReturn}%.`,
+  }
+}
 
 export default InsightsPanel
 

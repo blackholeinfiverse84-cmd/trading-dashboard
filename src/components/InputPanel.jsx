@@ -18,6 +18,7 @@ const InputPanel = ({ onSubmit }) => {
     targetReturn: 10,
     investmentAmount: 5000,
     riskMode: 'auto',
+    horizon: 'week',
     notes: '',
   })
 
@@ -62,10 +63,12 @@ const InputPanel = ({ onSubmit }) => {
       reason: formData.notes || `Target ${formData.targetReturn}% with ${formData.stopLoss}% stop-loss.`,
       confidence: formData.riskMode === 'auto' ? 85 : 65,
       riskMode: formData.riskMode,
+      horizon: formData.horizon,
       parameters: {
         stopLoss: formData.stopLoss,
         targetReturn: formData.targetReturn,
         investmentAmount: formData.investmentAmount,
+        horizon: formData.horizon,
       },
     })
 
@@ -163,6 +166,22 @@ const InputPanel = ({ onSubmit }) => {
             min={100}
             step={100}
           />
+
+          <div className="input-field">
+            <label className="input-panel-label">Horizon</label>
+            <div className="horizon-options">
+              {['day', 'week', 'month', 'year'].map((option) => (
+                <button
+                  type="button"
+                  key={option}
+                  className={`horizon-chip ${formData.horizon === option ? 'active' : ''}`}
+                  onClick={() => handleChange('horizon', option)}
+                >
+                  {option.charAt(0).toUpperCase() + option.slice(1)}
+                </button>
+              ))}
+            </div>
+          </div>
 
           <div className="input-field">
             <label className="input-panel-label">Risk Mode</label>
