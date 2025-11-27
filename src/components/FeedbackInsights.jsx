@@ -1,5 +1,6 @@
 import React, { useMemo } from 'react'
 import Card from './common/Card'
+import ConfidenceGauge from './common/ConfidenceGauge'
 import { LangGraphClient } from '../services/langGraphClient'
 import './FeedbackInsights.css'
 
@@ -16,17 +17,20 @@ const FeedbackInsights = ({ risk }) => {
     <Card title="Feedback insights" subtitle="What the desk is signaling" className="feedback-card" padding="md">
       <div className="feedback-grid">
         <div className="feedback-stat">
-          <p className="feedback-label">Avg. confidence</p>
-          <p className="feedback-value">{analytics.avgScore}%</p>
-          <div className="sparkline">
-            {analytics.scores.slice(0, 15).map((score, idx) => (
-              <span
-                key={`${score}-${idx}`}
-                style={{ height: `${Math.max(5, score)}%` }}
-              />
-            ))}
+          <ConfidenceGauge value={analytics.avgScore} label="Avg" />
+          <div className="stat-details">
+            <p className="feedback-label">Avg. confidence</p>
+            <p className="feedback-value">{analytics.avgScore}%</p>
+            <div className="sparkline">
+              {analytics.scores.slice(0, 15).map((score, idx) => (
+                <span
+                  key={`${score}-${idx}`}
+                  style={{ height: `${Math.max(5, score)}%` }}
+                />
+              ))}
+            </div>
+            <p className="feedback-note">Last {analytics.scores.length} submissions</p>
           </div>
-          <p className="feedback-note">Last {analytics.scores.length} submissions</p>
         </div>
         <div className="feedback-heat">
           <p className="feedback-label">Horizon mix</p>

@@ -116,7 +116,7 @@
 .decision-confidence {
   display: flex;
   align-items: center;
-  gap: var(--spacing-sm);
+  gap: var(--spacing-md);
   font-size: 0.875rem;
 }
 
@@ -125,6 +125,11 @@
 .confidence-label {
   color: var(--text-secondary);
   min-width: 70px;
+}
+
+.confidence-details {
+  display: flex;
+  flex-direction: column;
 }
 
 .price-value {

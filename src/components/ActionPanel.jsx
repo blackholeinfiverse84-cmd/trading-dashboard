@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
 import Card from './common/Card'
 import Button from './common/Button'
+import ConfidenceGauge from './common/ConfidenceGauge'
 import { confirmDecision } from '../services/api'
 import { LangGraphClient } from '../services/langGraphClient'
 import './ActionPanel.css'
@@ -201,8 +202,11 @@ const ActionPanel = ({ decisionData, onDecisionUpdate, risk }) => {
 
                     {decision.confidence && (
                       <div className="decision-confidence">
-                        <span className="confidence-label">Confidence:</span>
-                        <span className="confidence-value">{decision.confidence}%</span>
+                        <ConfidenceGauge value={decision.confidence} label="desk" size={70} />
+                        <div className="confidence-details">
+                          <span className="confidence-label">Confidence</span>
+                          <span className="confidence-value">{decision.confidence}%</span>
+                        </div>
                       </div>
                     )}
                   </div>

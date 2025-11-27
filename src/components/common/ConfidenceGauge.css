@@ -1,0 +1,53 @@
+.confidence-gauge {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.confidence-gauge svg {
+  transform: rotate(-90deg);
+}
+
+.gauge-track {
+  fill: none;
+  stroke: rgba(255, 255, 255, 0.08);
+}
+
+.gauge-value {
+  fill: none;
+  stroke: var(--accent-primary);
+  transition: stroke-dashoffset 0.35s ease;
+}
+
+.confidence-gauge.positive .gauge-value {
+  stroke: var(--accent-success);
+}
+
+.confidence-gauge.negative .gauge-value {
+  stroke: var(--accent-error);
+}
+
+.gauge-center {
+  position: absolute;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+}
+
+.gauge-number {
+  font-size: 0.95rem;
+  font-weight: 600;
+  color: var(--text-primary);
+  line-height: 1;
+}
+
+.gauge-label {
+  font-size: 0.65rem;
+  color: var(--text-secondary);
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+}
+
