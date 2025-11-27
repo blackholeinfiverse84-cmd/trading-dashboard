@@ -2,10 +2,20 @@ import axios from 'axios'
 
 // API Configuration
 const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || 'http://localhost:3000/api'
+const AUTH_API_BASE_URL = import.meta.env.VITE_AUTH_API_BASE_URL || 'http://localhost:5000/api'
 
-// Create axios instance with default config
+// Create axios instance for trading APIs
 const apiClient = axios.create({
   baseURL: API_BASE_URL,
+  timeout: 10000,
+  headers: {
+    'Content-Type': 'application/json',
+  },
+})
+
+// Create axios instance for auth APIs
+const authApiClient = axios.create({
+  baseURL: AUTH_API_BASE_URL,
   timeout: 10000,
   headers: {
     'Content-Type': 'application/json',
@@ -15,7 +25,23 @@ const apiClient = axios.create({
 // Request interceptor (for adding auth tokens, etc.)
 apiClient.interceptors.request.use(
   (config) => {
-    // Add any auth tokens or headers here if needed
+    const token = localStorage.getItem('token')
+    if (token) {
+      config.headers.Authorization = `Bearer ${token}`
+    }
+    return config
+  },
+  (error) => {
+    return Promise.reject(error)
+  }
+)
+
+authApiClient.interceptors.request.use(
+  (config) => {
+    const token = localStorage.getItem('token')
+    if (token) {
+      config.headers.Authorization = `Bearer ${token}`
+    }
     return config
   },
   (error) => {
@@ -107,6 +133,46 @@ export const getSentimentSummary = async () => {
     console.error('Error fetching sentiment summary:', error)
     throw error
   }
+}
+
+// Authentication API Functions
+export const authAPI = {
+  login: async (username, password) => {
+    try {
+      const response = await authApiClient.post('/auth/login', {
+        username,
+        password,
+      })
+      return response.data
+    } catch (error) {
+      console.error('Error logging in:', error)
+      throw error
+    }
+  },
+
+  register: async (username, email, password) => {
+    try {
+      const response = await authApiClient.post('/auth/register', {
+        username,
+        email,
+        password,
+      })
+      return response.data
+    } catch (error) {
+      console.error('Error registering:', error)
+      throw error
+    }
+  },
+
+  verifyToken: async () => {
+    try {
+      const response = await authApiClient.get('/auth/verify')
+      return response.data
+    } catch (error) {
+      console.error('Error verifying token:', error)
+      throw error
+    }
+  },
 }
 
 // Export the axios instance for custom requests

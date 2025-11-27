@@ -11,6 +11,30 @@
   margin-bottom: var(--spacing-xl);
   padding-bottom: var(--spacing-lg);
   border-bottom: 1px solid var(--border-primary);
+  flex-wrap: wrap;
+  gap: var(--spacing-md);
+}
+
+.dashboard-header-right {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-md);
+  flex-wrap: wrap;
+}
+
+.dashboard-user-info {
+  display: flex;
+  align-items: center;
+}
+
+.dashboard-username {
+  color: var(--text-secondary);
+  font-size: 0.875rem;
+}
+
+.dashboard-username strong {
+  color: var(--text-primary);
+  font-weight: 600;
 }
 
 .dashboard-title h1 {
