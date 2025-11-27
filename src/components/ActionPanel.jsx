@@ -1,9 +1,9 @@
 import React, { useState, useEffect } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
 import Card from './common/Card'
-import Button from './common.Button'
-import { confirmDecision } from '../.services/api'
-import { LangGraphClient } from '../.services/langGraphClient'
+import Button from './common/Button'
+import { confirmDecision } from '../services/api'
+import { LangGraphClient } from '../services/langGraphClient'
 import './ActionPanel.css'
 
 const ActionPanel = ({ decisionData, onDecisionUpdate, risk }) => {

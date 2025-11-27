@@ -9,6 +9,7 @@ import MultiAssetBoard from './MultiAssetBoard'
 import PortfolioOverview from './PortfolioOverview'
 import FeedbackInsights from './FeedbackInsights'
 import MarketEvents from './MarketEvents'
+import LangGraphSyncBar from './LangGraphSyncBar'
 import './Dashboard.css'
 
 const Dashboard = () => {
@@ -77,6 +78,8 @@ const Dashboard = () => {
           </div>
         </div>
       </div>
+
+      <LangGraphSyncBar risk={riskContext} />
 
       <div className="dashboard-grid">
         <div className="dashboard-column dashboard-column-main">

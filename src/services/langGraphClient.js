@@ -1,8 +1,10 @@
 const RISK_LOG_KEY = 'trading:riskLog'
 const FEEDBACK_LOG_KEY = 'trading:feedbackLog'
 
-const mockDelay = (payload) =>
-  new Promise((resolve) => setTimeout(() => resolve({ ok: true, payload }), 300))
+const mockDelay = (payload, label = 'mock') =>
+  new Promise((resolve) =>
+    setTimeout(() => resolve({ ok: true, channel: label, payload }), 350)
+  )
 
 const readLog = (key) => {
   try {
@@ -23,7 +25,7 @@ export const LangGraphClient = {
     const log = readLog(RISK_LOG_KEY)
     log.unshift(entry)
     writeLog(RISK_LOG_KEY, log)
-    return mockDelay({ event: 'risk_snapshot', entry })
+    return mockDelay({ event: 'risk_snapshot', entry }, 'risk')
   },
 
   sendFeedback: async (feedback) => {
@@ -31,7 +33,19 @@ export const LangGraphClient = {
     const log = readLog(FEEDBACK_LOG_KEY)
     log.unshift(entry)
     writeLog(FEEDBACK_LOG_KEY, log)
-    return mockDelay({ event: 'feedback', entry })
+    return mockDelay({ event: 'feedback', entry }, 'feedback')
+  },
+
+  syncAll: async ({ endpoint = '/langgraph/mock-ingest', onPayload } = {}) => {
+    const payload = {
+      risk: readLog(RISK_LOG_KEY),
+      feedback: readLog(FEEDBACK_LOG_KEY),
+    }
+    if (typeof onPayload === 'function') {
+      onPayload(payload)
+    }
+    // In a real build we would POST to endpoint; for now return mock promise.
+    return mockDelay({ event: 'sync_all', endpoint, payload }, 'sync')
   },
 
   replayLog: (key, limit = 20) => readLog(key).slice(0, limit),
