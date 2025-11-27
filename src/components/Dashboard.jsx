@@ -7,6 +7,7 @@ import ChatPanel from './ChatPanel'
 import InsightsPanel from './InsightsPanel'
 import MultiAssetBoard from './MultiAssetBoard'
 import PortfolioOverview from './PortfolioOverview'
+import FeedbackInsights from './FeedbackInsights'
 import MarketEvents from './MarketEvents'
 import './Dashboard.css'
 
@@ -80,7 +81,10 @@ const Dashboard = () => {
       <div className="dashboard-grid">
         <div className="dashboard-column dashboard-column-main">
           <LiveFeed signals={dashboardSignals} />
-          <InsightsPanel latestTrade={decisionData} risk={riskContext} />
+          <div className="dashboard-row">
+            <InsightsPanel latestTrade={decisionData} risk={riskContext} />
+            <FeedbackInsights risk={riskContext} />
+          </div>
           <MultiAssetBoard risk={riskContext} />
           <MarketEvents />
           <ChatPanel />
