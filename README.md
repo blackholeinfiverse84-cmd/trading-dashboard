@@ -13,6 +13,8 @@ Production-ready multi-asset trading UI that streams Krishna’s live feed, exec
 - **Chat Panel** – Uniguru AI assistant with prebuilt prompts and rich responses
 - **Multi-asset Board** – Stocks/Crypto/Commodities tabs with unified schema
 - **Finance Dataset** – ~200 QA pairs across education/jargon
+- **Risk-aware UI** – stop-loss/target/horizon controls persist in `localStorage` and feed every module
+- **Feedback capture** – trade confirmations can be rated; submissions and risk snapshots are stored locally for future RL/MCP training data
 
 ---
 
@@ -115,6 +117,8 @@ npm run build  # ensures TypeScript + Vite bundle cleanly
   - ≥1200px: 2-column grid (feed + sidebar)
   - 1200px–768px: stacked columns, sidebar surfaces first
   - ≤768px: reduced padding/typography for mobile, cards stretch full width
+- Risk preferences persist between sessions via `localStorage` (`trading:riskPrefs`) and every submission is logged to `trading:riskLog`.
+- Trade feedback (confidence + notes) is captured through the execution console modal and stored in `trading:feedbackLog` for later analytics or RL training.
 
 ---
 

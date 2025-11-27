@@ -90,6 +90,7 @@ const Dashboard = () => {
           <ActionPanel
             decisionData={decisionData}
             onDecisionUpdate={handleDecisionUpdate}
+            risk={riskContext}
           />
         </div>
       </div>

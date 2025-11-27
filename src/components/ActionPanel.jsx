@@ -5,29 +5,32 @@ import Button from './common/Button'
 import { confirmDecision } from '../services/api'
 import './ActionPanel.css'
 
-const ActionPanel = ({ decisionData, onDecisionUpdate }) => {
+const ActionPanel = ({ decisionData, onDecisionUpdate, risk }) => {
   const [decisions, setDecisions] = useState([])
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState(null)
+  const [feedback, setFeedback] = useState({
+    open: false,
+    decision: null,
+    score: 75,
+    notes: '',
+  })
 
-  // Update decisions when decisionData prop changes
   useEffect(() => {
     if (decisionData) {
       addDecision(decisionData)
     }
   }, [decisionData])
 
-  // Add new decision to the list
   const addDecision = (decision) => {
     const newDecision = {
       id: Date.now(),
       timestamp: new Date().toISOString(),
       ...decision,
     }
-    setDecisions((prev) => [newDecision, ...prev].slice(0, 10)) // Keep last 10
+    setDecisions((prev) => [newDecision, ...prev].slice(0, 10))
   }
 
-  // Handle decision confirmation
   const handleConfirm = async (decision) => {
     setLoading(true)
     setError(null)
@@ -41,7 +44,6 @@ const ActionPanel = ({ decisionData, onDecisionUpdate }) => {
         reason: decision.reason,
       })
       
-      // Update decision status
       setDecisions((prev) =>
         prev.map((d) =>
           d.id === decision.id
@@ -56,7 +58,6 @@ const ActionPanel = ({ decisionData, onDecisionUpdate }) => {
     } catch (err) {
       console.error('Failed to confirm decision:', err)
       setError('Failed to confirm decision. Using mock confirmation.')
-      // Mock confirmation for development
       setDecisions((prev) =>
         prev.map((d) =>
           d.id === decision.id ? { ...d, confirmed: true, mock: true } : d
@@ -65,6 +66,37 @@ const ActionPanel = ({ decisionData, onDecisionUpdate }) => {
     } finally {
       setLoading(false)
     }
+  }
+
+  const openFeedback = (decision) => {
+    setFeedback({
+      open: true,
+      decision,
+      score: decision?.confidence || 70,
+      notes: '',
+    })
+  }
+
+  const closeFeedback = () => {
+    setFeedback((prev) => ({ ...prev, open: false, decision: null, notes: '' }))
+  }
+
+  const submitFeedback = () => {
+    const entry = {
+      id: Date.now(),
+      decisionId: feedback.decision?.id,
+      symbol: feedback.decision?.symbol,
+      action: feedback.decision?.action,
+      score: feedback.score,
+      notes: feedback.notes,
+      timestamp: new Date().toISOString(),
+      riskSnapshot: risk,
+    }
+
+    const log = JSON.parse(localStorage.getItem('trading:feedbackLog') || '[]')
+    log.unshift(entry)
+    localStorage.setItem('trading:feedbackLog', JSON.stringify(log.slice(0, 100)))
+    closeFeedback()
   }
 
   // Format timestamp
@@ -178,22 +210,30 @@ const ActionPanel = ({ decisionData, onDecisionUpdate }) => {
                   </div>
 
                   <div className="decision-footer">
-                    {!decision.confirmed ? (
+                    <div className="decision-footer-actions">
+                      {!decision.confirmed ? (
+                        <Button
+                          variant="primary"
+                          size="sm"
+                          onClick={() => handleConfirm(decision)}
+                          disabled={loading}
+                        >
+                          {loading ? 'Confirming...' : 'Confirm'}
+                        </Button>
+                      ) : (
+                        <div className="decision-confirmed-badge">
+                          <span>✓ Confirmed</span>
+                          {decision.mock && <span className="mock-indicator">(Mock)</span>}
+                        </div>
+                      )}
                       <Button
-                        variant="primary"
+                        variant="secondary"
                         size="sm"
-                        onClick={() => handleConfirm(decision)}
-                        disabled={loading}
-                        fullWidth
+                        onClick={() => openFeedback(decision)}
                       >
-                        {loading ? 'Confirming...' : 'Confirm Decision'}
+                        Feedback
                       </Button>
-                    ) : (
-                      <div className="decision-confirmed-badge">
-                        <span>✓ Confirmed</span>
-                        {decision.mock && <span className="mock-indicator">(Mock)</span>}
-                      </div>
-                    )}
+                    </div>
                   </div>
                 </motion.div>
               ))}
@@ -201,6 +241,53 @@ const ActionPanel = ({ decisionData, onDecisionUpdate }) => {
           </div>
         )}
       </div>
+      {feedback.open && (
+        <div className="feedback-modal-overlay" onClick={closeFeedback}>
+          <div className="feedback-modal" onClick={(e) => e.stopPropagation()}>
+            <div className="feedback-header">
+              <h3>Trade Feedback</h3>
+              <p className="text-muted">
+                {feedback.decision?.symbol} • {feedback.decision?.action} • {risk?.horizon?.toUpperCase()}
+              </p>
+            </div>
+            <div className="feedback-body">
+              <label className="feedback-label">
+                Confidence score: <strong>{feedback.score}%</strong>
+              </label>
+              <input
+                type="range"
+                min="0"
+                max="100"
+                value={feedback.score}
+                onChange={(e) =>
+                  setFeedback((prev) => ({ ...prev, score: Number(e.target.value) }))
+                }
+              />
+              <div className="feedback-gauge">
+                <span>Bearish</span>
+                <span>Neutral</span>
+                <span>High conviction</span>
+              </div>
+              <label className="feedback-label">Notes / Rationale</label>
+              <textarea
+                value={feedback.notes}
+                onChange={(e) =>
+                  setFeedback((prev) => ({ ...prev, notes: e.target.value }))
+                }
+                placeholder="What stood out? Any risk observations or model adjustments?"
+              />
+            </div>
+            <div className="feedback-footer">
+              <Button variant="ghost" onClick={closeFeedback}>
+                Cancel
+              </Button>
+              <Button variant="primary" onClick={submitFeedback}>
+                Save Feedback
+              </Button>
+            </div>
+          </div>
+        </div>
+      )}
     </Card>
   )
 }
