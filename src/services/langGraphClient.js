@@ -53,14 +53,32 @@ export const LangGraphClient = {
   getAnalytics: () => {
     const feedback = readLog(FEEDBACK_LOG_KEY)
     if (!feedback.length) return null
+    const scores = feedback.map((entry) => entry.feedback?.score || 0)
     const avgScore =
-      feedback.reduce((acc, item) => acc + (item.feedback?.score || 0), 0) / feedback.length
+      scores.reduce((acc, value) => acc + value, 0) / scores.length
     const horizonCounts = feedback.reduce((acc, item) => {
       const h = item.feedback?.riskSnapshot?.horizon || 'unknown'
       acc[h] = (acc[h] || 0) + 1
       return acc
     }, {})
-    return { avgScore: Number(avgScore.toFixed(1)), horizonCounts }
+    const latestComments = feedback
+      .filter((entry) => entry.feedback?.notes)
+      .slice(0, 3)
+      .map((entry) => ({
+        id: entry.id,
+        symbol: entry.feedback?.symbol || entry.feedback?.riskSnapshot?.symbol,
+        action: entry.feedback?.action || entry.feedback?.riskSnapshot?.action,
+        notes: entry.feedback?.notes,
+        score: entry.feedback?.score,
+        timestamp: entry.timestamp,
+      }))
+
+    return {
+      avgScore: Number(avgScore.toFixed(1)),
+      horizonCounts,
+      scores,
+      latestComments,
+    }
   },
 }
 
