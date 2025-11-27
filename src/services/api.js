@@ -48,11 +48,13 @@ apiClient.interceptors.response.use(
 
 /**
  * Get live predictions feed from Krishna's endpoint
+ * @param {string} symbol - Optional symbol to fetch data for
  * @returns {Promise} Live predictions data
  */
-export const getLiveFeed = async () => {
+export const getLiveFeed = async (symbol = null) => {
   try {
-    const response = await apiClient.get('/feed/live')
+    const url = symbol ? `/feed/live?symbol=${encodeURIComponent(symbol)}` : '/feed/live'
+    const response = await apiClient.get(url)
     return response.data
   } catch (error) {
     console.error('Error fetching live feed:', error)

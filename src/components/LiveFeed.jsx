@@ -7,35 +7,45 @@ import './LiveFeed.css'
 
 const LiveFeed = () => {
   const [candles, setCandles] = useState([])
-  const [activeSymbol, setActiveSymbol] = useState('Asset')
-  const [selectedSymbol, setSelectedSymbol] = useState('')
+  const [activeSymbol, setActiveSymbol] = useState('AAPL')
+  const [selectedSymbol, setSelectedSymbol] = useState('AAPL')
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState(null)
   const [lastUpdate, setLastUpdate] = useState(null)
   const chartContainerRef = useRef(null)
   const chartRef = useRef(null)
   const candleSeriesRef = useRef(null)
-  const { feed, error: feedError, source } = useLiveFeed()
+  const { feed, error: feedError, source } = useLiveFeed(selectedSymbol)
+
+  // When symbol changes, reset and fetch new data
+  useEffect(() => {
+    if (selectedSymbol) {
+      setLoading(true)
+      setError(null)
+    }
+  }, [selectedSymbol])
 
   useEffect(() => {
-    if (!feed) return
+    if (!feed && !selectedSymbol) return
+    
     try {
       const { symbol, candles: normalized } = normalizeCandles(feed)
-      if (normalized.length === 0) {
-        const mock = getMockCandles()
+      if (normalized.length === 0 || !feed) {
+        // Generate mock data for the selected symbol
+        const mock = getMockCandles(selectedSymbol || activeSymbol)
         setCandles(mock.candles)
         setActiveSymbol(mock.symbol)
         setLastUpdate(new Date())
         setError('No candle data returned. Showing mock feed.')
       } else {
         setCandles(normalized)
-        setActiveSymbol(symbol || 'Asset')
+        setActiveSymbol(symbol || selectedSymbol || 'Asset')
         setLastUpdate(new Date())
         setError(null)
       }
     } catch (err) {
       console.error('Feed normalization failed:', err)
-      const mock = getMockCandles()
+      const mock = getMockCandles(selectedSymbol || activeSymbol)
       setCandles(mock.candles)
       setActiveSymbol(mock.symbol)
       setLastUpdate(new Date())
@@ -43,7 +53,7 @@ const LiveFeed = () => {
     } finally {
       setLoading(false)
     }
-  }, [feed])
+  }, [feed, selectedSymbol, activeSymbol])
 
   useEffect(() => {
     if (!chartContainerRef.current) return
@@ -122,8 +132,14 @@ const LiveFeed = () => {
                 if (assetData && assetData.symbol) {
                   setSelectedSymbol(assetData.symbol)
                   setActiveSymbol(assetData.symbol)
-                  // In a real app, you would fetch data for the selected symbol
-                  // For now, we'll just update the display
+                  setLoading(true)
+                  // The useLiveFeed hook will automatically fetch new data for this symbol
+                  // For mock data, we'll generate it immediately
+                  const mock = getMockCandles(assetData.symbol)
+                  setCandles(mock.candles)
+                  setActiveSymbol(mock.symbol)
+                  setLastUpdate(new Date())
+                  setLoading(false)
                 }
               }}
               placeholder="Search symbol..."
@@ -182,16 +198,49 @@ const formatTime = (timestamp) => {
   return date.toLocaleTimeString()
 }
 
-const getMockCandles = () => {
+// Mock price ranges for different symbols
+const getSymbolBasePrice = (symbol) => {
+  const priceMap = {
+    'AAPL': 175,
+    'TSLA': 250,
+    'MSFT': 380,
+    'GOOGL': 140,
+    'AMZN': 150,
+    'META': 320,
+    'NVDA': 450,
+    'RELIANCE': 2600,
+    'TCS': 3420,
+    'HDFCBANK': 1575,
+    'INFY': 1520,
+    'ICICIBANK': 950,
+    'BHARTIARTL': 1200,
+    'SBIN': 600,
+    'WIPRO': 450,
+    'NIFTY': 22000,
+    'SENSEX': 72000,
+    'SPX': 4500,
+    'DJI': 35000,
+    'BTCUSD': 43250,
+    'ETHUSD': 2325,
+    'BNBUSD': 315,
+    'GOLD': 2045,
+    'SILVER': 24.8,
+    'CRUDE': 79.5,
+  }
+  return priceMap[symbol?.toUpperCase()] || 175
+}
+
+const getMockCandles = (symbol = 'AAPL') => {
   const now = Date.now()
-  const basePrice = 175
+  const basePrice = getSymbolBasePrice(symbol)
   const candles = Array.from({ length: 40 }).map((_, index) => {
     const time = now - (39 - index) * 60 * 1000
-    const drift = Math.sin(index / 5) * 1.8
-    const open = basePrice + drift + Math.random()
-    const close = open + (Math.random() - 0.5) * 2
-    const high = Math.max(open, close) + Math.random() * 1.2
-    const low = Math.min(open, close) - Math.random() * 1.2
+    const drift = Math.sin(index / 5) * (basePrice * 0.01) // 1% variation
+    const volatility = basePrice * 0.005 // 0.5% volatility
+    const open = basePrice + drift + (Math.random() - 0.5) * volatility
+    const close = open + (Math.random() - 0.5) * volatility * 2
+    const high = Math.max(open, close) + Math.random() * volatility
+    const low = Math.min(open, close) - Math.random() * volatility
 
     return {
       time: Math.floor(time / 1000),
@@ -203,7 +252,7 @@ const getMockCandles = () => {
   })
 
   return {
-    symbol: 'AAPL',
+    symbol: symbol?.toUpperCase() || 'AAPL',
     candles,
   }
 }

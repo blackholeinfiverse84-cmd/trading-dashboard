@@ -3,12 +3,13 @@ import { getLiveFeed } from '../services/api'
 
 const WS_URL = import.meta.env.VITE_FEED_WS_URL
 
-export const useLiveFeed = () => {
+export const useLiveFeed = (symbol = null) => {
   const [data, setData] = useState(null)
   const [error, setError] = useState(null)
   const [source, setSource] = useState('polling')
   const wsRef = useRef(null)
   const reconnectTimeout = useRef(null)
+  const symbolRef = useRef(symbol)
 
   const connectWebSocket = () => {
     if (!WS_URL || wsRef.current) return
@@ -47,9 +48,10 @@ export const useLiveFeed = () => {
     }
   }
 
-  const fetchPolling = async () => {
+  const fetchPolling = async (symbolToFetch = null) => {
     try {
-      const response = await getLiveFeed()
+      const currentSymbol = symbolToFetch || symbolRef.current
+      const response = await getLiveFeed(currentSymbol)
       setData(response)
       setError(null)
     } catch (err) {
@@ -58,10 +60,21 @@ export const useLiveFeed = () => {
     }
   }
 
+  // Update symbol ref when it changes and fetch immediately
+  useEffect(() => {
+    symbolRef.current = symbol
+    // Fetch immediately when symbol changes
+    if (symbol) {
+      fetchPolling(symbol)
+    }
+  }, [symbol])
+
   useEffect(() => {
     connectWebSocket()
 
-    const interval = setInterval(fetchPolling, 10000)
+    const interval = setInterval(() => {
+      fetchPolling()
+    }, 10000)
     fetchPolling()
 
     return () => {
