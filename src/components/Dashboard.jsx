@@ -11,25 +11,47 @@ import './Dashboard.css'
 
 const Dashboard = () => {
   const [decisionData, setDecisionData] = useState(null)
-  const [riskContext, setRiskContext] = useState({
-    stopLoss: 5,
-    targetReturn: 10,
-    investmentAmount: 5000,
-    riskMode: 'auto',
-    horizon: 'week',
+  const [riskContext, setRiskContext] = useState(() => {
+    const saved = JSON.parse(localStorage.getItem('trading:riskPrefs') || '{}')
+    return {
+      stopLoss: saved.stopLoss ?? 5,
+      targetReturn: saved.targetReturn ?? 10,
+      investmentAmount: saved.investmentAmount ?? 5000,
+      riskMode: saved.riskMode || 'auto',
+      horizon: saved.horizon || 'week',
+      symbol: saved.symbol || 'AAPL',
+      assetType: saved.assetType || 'Stock',
+    }
   })
 
   const handleDecisionUpdate = (decision) => {
     setDecisionData(decision)
   }
 
-  const handleRiskUpdate = (riskPayload) => {
-    setRiskContext(riskPayload.parameters)
+  const handleRiskUpdate = (payload) => {
+    const next = {
+      ...riskContext,
+      ...payload.parameters,
+      symbol: payload.symbol,
+      assetType: payload.assetType,
+    }
+    setRiskContext(next)
+    localStorage.setItem('trading:riskPrefs', JSON.stringify(next))
   }
 
   const handleInputSubmit = async (inputData) => {
     handleDecisionUpdate(inputData)
     handleRiskUpdate(inputData)
+
+    const entry = {
+      id: Date.now(),
+      timestamp: new Date().toISOString(),
+      type: 'risk-submission',
+      payload: inputData,
+    }
+    const log = JSON.parse(localStorage.getItem('trading:riskLog') || '[]')
+    log.unshift(entry)
+    localStorage.setItem('trading:riskLog', JSON.stringify(log.slice(0, 100)))
   }
 
   const dashboardSignals = useMemo(() => ({

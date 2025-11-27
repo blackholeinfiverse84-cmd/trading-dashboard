@@ -11,16 +11,34 @@ const riskModes = [
 ]
 
 const InputPanel = ({ onSubmit }) => {
-  const [formData, setFormData] = useState({
-    symbol: '',
-    assetType: '',
-    stopLoss: 5,
-    targetReturn: 10,
-    investmentAmount: 5000,
-    riskMode: 'auto',
-    horizon: 'week',
-    notes: '',
-  })
+  const initialPrefs = () => {
+    try {
+      const stored = JSON.parse(localStorage.getItem('trading:riskPrefs') || '{}')
+      return {
+        symbol: stored.symbol || '',
+        assetType: stored.entity || stored.assetType || '',
+        stopLoss: stored.stopLoss ?? 5,
+        targetReturn: stored.targetReturn ?? 10,
+        investmentAmount: stored.investmentAmount ?? 5000,
+        riskMode: stored.riskMode || 'auto',
+        horizon: stored.horizon || 'week',
+        notes: '',
+      }
+    } catch (err) {
+      return {
+        symbol: '',
+        assetType: '',
+        stopLoss: 5,
+        targetReturn: 10,
+        investmentAmount: 5000,
+        riskMode: 'auto',
+        horizon: 'week',
+        notes: '',
+      }
+    }
+  }
+
+  const [formData, setFormData] = useState(initialPrefs)
 
   const [errors, setErrors] = useState({})
   const [submitting, setSubmitting] = useState(false)
