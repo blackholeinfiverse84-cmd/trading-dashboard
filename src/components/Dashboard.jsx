@@ -1,4 +1,5 @@
 import React, { useState, useMemo } from 'react'
+import { LangGraphClient } from '../services/langGraphClient'
 import LiveFeed from './LiveFeed'
 import ActionPanel from './ActionPanel'
 import InputPanel from './InputPanel'
@@ -37,6 +38,7 @@ const Dashboard = () => {
     }
     setRiskContext(next)
     localStorage.setItem('trading:riskPrefs', JSON.stringify(next))
+    LangGraphClient.sendRiskSnapshot(next)
   }
 
   const handleInputSubmit = async (inputData) => {

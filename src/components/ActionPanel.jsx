@@ -1,8 +1,9 @@
 import React, { useState, useEffect } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
 import Card from './common/Card'
-import Button from './common/Button'
-import { confirmDecision } from '../services/api'
+import Button from './common.Button'
+import { confirmDecision } from '../.services/api'
+import { LangGraphClient } from '../.services/langGraphClient'
 import './ActionPanel.css'
 
 const ActionPanel = ({ decisionData, onDecisionUpdate, risk }) => {
@@ -92,10 +93,7 @@ const ActionPanel = ({ decisionData, onDecisionUpdate, risk }) => {
       timestamp: new Date().toISOString(),
       riskSnapshot: risk,
     }
-
-    const log = JSON.parse(localStorage.getItem('trading:feedbackLog') || '[]')
-    log.unshift(entry)
-    localStorage.setItem('trading:feedbackLog', JSON.stringify(log.slice(0, 100)))
+    LangGraphClient.sendFeedback(entry)
     closeFeedback()
   }
 
