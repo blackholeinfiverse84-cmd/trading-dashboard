@@ -32,7 +32,7 @@ const FeedbackInsights = ({ risk }) => {
             <p className="feedback-note">Last {analytics.scores.length} submissions</p>
           </div>
         </div>
-        <div className="feedback-heat">
+        <div className="feedback-heat" data-tooltip="Distribution of feedback by selected horizon">
           <p className="feedback-label">Horizon mix</p>
           <div className="heat-legend">
             {Object.keys(analytics.horizonCounts).map((horizon) => (

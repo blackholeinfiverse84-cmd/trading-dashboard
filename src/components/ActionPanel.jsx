@@ -180,7 +180,7 @@ const ActionPanel = ({ decisionData, onDecisionUpdate, risk }) => {
 
                   <div className="decision-body">
                     {decision.price && (
-                      <div className="decision-price">
+                      <div className="decision-price" data-tooltip="Implied fill price">
                         <span className="price-label">Price:</span>
                         <span className="price-value">${decision.price.toFixed(2)}</span>
                       </div>

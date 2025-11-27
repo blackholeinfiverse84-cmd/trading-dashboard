@@ -1,4 +1,5 @@
 .card {
+  position: relative;
   background: linear-gradient(180deg, rgba(255, 255, 255, 0.015), rgba(0, 0, 0, 0.15)),
     var(--bg-tertiary);
   border: 1px solid rgba(255, 255, 255, 0.05);
@@ -8,10 +9,24 @@
   box-shadow: 0 20px 45px rgba(0, 0, 0, 0.25);
 }
 
+.card::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background: linear-gradient(120deg, rgba(0, 122, 255, 0.08), rgba(88, 86, 214, 0.08));
+  opacity: 0;
+  transition: opacity var(--transition-normal);
+}
+
 .card:hover {
   border-color: rgba(255, 255, 255, 0.12);
   transform: translateY(-2px);
   box-shadow: 0 30px 60px rgba(0, 0, 0, 0.35);
+}
+
+.card:hover::after {
+  opacity: 1;
 }
 
 .card-clickable {
