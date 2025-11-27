@@ -15,3 +15,9 @@
   flex-wrap: wrap;
 }
 
+.langgraph-status {
+  margin-top: var(--spacing-sm);
+  font-size: 0.85rem;
+  color: var(--accent-primary);
+}
+

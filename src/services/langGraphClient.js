@@ -48,6 +48,22 @@ export const LangGraphClient = {
     return mockDelay({ event: 'sync_all', endpoint, payload }, 'sync')
   },
 
+  exportJson: () => {
+    const payload = {
+      generatedAt: new Date().toISOString(),
+      risk: readLog(RISK_LOG_KEY),
+      feedback: readLog(FEEDBACK_LOG_KEY),
+    }
+    const blob = new Blob([JSON.stringify(payload, null, 2)], { type: 'application/json' })
+    const url = URL.createObjectURL(blob)
+    const link = document.createElement('a')
+    link.href = url
+    link.download = `langgraph-export-${Date.now()}.json`
+    link.click()
+    URL.revokeObjectURL(url)
+    return payload
+  },
+
   replayLog: (key, limit = 20) => readLog(key).slice(0, limit),
 
   getAnalytics: () => {
