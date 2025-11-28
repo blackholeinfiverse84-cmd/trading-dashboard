@@ -1,4 +1,4 @@
-import React, { useState, useMemo } from 'react'
+import React, { useState, useMemo, memo, useCallback } from 'react'
 import Card from './common/Card'
 import Input from './common/Input'
 import './MultiAssetBoard.css'
@@ -29,11 +29,11 @@ const mockRows = {
   ],
 }
 
-const MultiAssetBoard = ({ risk }) => {
+const MultiAssetBoard = memo(({ risk }) => {
   const [activeTab, setActiveTab] = useState('stocks')
   const [searchQuery, setSearchQuery] = useState('')
   
-  const allRows = mockRows[activeTab] || []
+  const allRows = useMemo(() => mockRows[activeTab] || [], [activeTab])
 
   const rows = useMemo(() => {
     const adjusted = applyRiskToRows(allRows, risk)
@@ -46,6 +46,15 @@ const MultiAssetBoard = ({ risk }) => {
         row.asset.toLowerCase().includes(query)
     )
   }, [allRows, searchQuery, risk])
+
+  const handleTabChange = useCallback((tabValue) => {
+    setActiveTab(tabValue)
+    setSearchQuery('') // Clear search when switching tabs
+  }, [])
+
+  const handleSearchChange = useCallback((e) => {
+    setSearchQuery(e.target.value)
+  }, [])
 
   return (
     <Card
@@ -60,10 +69,7 @@ const MultiAssetBoard = ({ risk }) => {
             <button
               key={tab.value}
               className={`asset-tab ${activeTab === tab.value ? 'asset-tab-active' : ''}`}
-              onClick={() => {
-                setActiveTab(tab.value)
-                setSearchQuery('') // Clear search when switching tabs
-              }}
+              onClick={() => handleTabChange(tab.value)}
             >
               {tab.label}
             </button>
@@ -75,7 +81,7 @@ const MultiAssetBoard = ({ risk }) => {
             type="text"
             placeholder="Search assets..."
             value={searchQuery}
-            onChange={(e) => setSearchQuery(e.target.value)}
+            onChange={handleSearchChange}
             icon="🔍"
             fullWidth
           />
@@ -99,7 +105,7 @@ const MultiAssetBoard = ({ risk }) => {
             </thead>
             <tbody>
               {rows.map((row) => (
-                <tr key={row.symbol}>
+                <tr key={row.symbol} className="asset-table-row">
                   <td>{row.symbol}</td>
                   <td>{row.asset}</td>
                   <td>{formatNumber(row.price)}</td>
@@ -121,7 +127,9 @@ const MultiAssetBoard = ({ risk }) => {
       </div>
     </Card>
   )
-}
+})
+
+MultiAssetBoard.displayName = 'MultiAssetBoard'
 
 const formatNumber = (value) => {
   if (typeof value !== 'number') return value

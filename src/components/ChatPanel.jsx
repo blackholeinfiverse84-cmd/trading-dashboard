@@ -2,6 +2,7 @@ import React, { useState, useRef, useEffect } from 'react'
 import Card from './common/Card'
 import Button from './common/Button'
 import { sendChatQuery } from '../services/api'
+import { useToast } from '../contexts/ToastContext'
 import './ChatPanel.css'
 
 const QUICK_ACTIONS = [
@@ -18,7 +19,7 @@ const ChatPanel = () => {
       id: 1,
       role: 'assistant',
       content:
-        'Hi, I’m Uniguru. Ask me anything about today’s trades, risk posture, or market education.',
+        "Hello! I'm Uniguru, your AI trading assistant. I can help you analyze trends, compare assets, assess risks, and explain market concepts. What would you like to know?",
       timestamp: new Date().toISOString(),
     },
     {
@@ -39,6 +40,7 @@ const ChatPanel = () => {
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState(null)
   const messagesEndRef = useRef(null)
+  const { addToast } = useToast()
 
   useEffect(() => {
     messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' })
@@ -66,10 +68,20 @@ const ChatPanel = () => {
       })
 
       setMessages((prev) => [...prev, buildAssistantMessage(response)])
+      addToast({
+        title: 'Answer ready',
+        message: 'Uniguru responded to your prompt.',
+        variant: 'success',
+      })
     } catch (err) {
       console.error('Chat error:', err)
       setError('Unable to reach Uniguru, showing mock response.')
       setMessages((prev) => [...prev, buildAssistantMessage(null, userMessage.content)])
+      addToast({
+        title: 'Chat fallback',
+        message: 'Using a mock assistant reply until the service recovers.',
+        variant: 'warning',
+      })
     } finally {
       setLoading(false)
     }
@@ -91,8 +103,8 @@ const ChatPanel = () => {
 
   return (
     <Card
-      title="Uniguru Chat"
-      subtitle="Explain trades, justify risk, educate users"
+      title="Uniguru AI Assistant"
+      subtitle="Your intelligent trading companion"
       className="chat-panel-card"
       padding="none"
     >
@@ -118,7 +130,7 @@ const ChatPanel = () => {
             >
               <div className="chat-message-meta">
                 <span className="chat-role">
-                  {message.role === 'assistant' ? 'Uniguru' : 'You'}
+                  {message.role === 'assistant' ? '🤖 Uniguru AI' : 'You'}
                 </span>
                 <span className="chat-time">
                   {new Date(message.timestamp).toLocaleTimeString([], {

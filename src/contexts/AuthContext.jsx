@@ -11,16 +11,32 @@ export const useAuth = () => {
 }
 
 const DEFAULT_USER = { username: 'Guest Trader' }
+const STORAGE_KEY = 'trading:user'
+
+const loadStoredUser = () => {
+  if (typeof window === 'undefined') return null
+  try {
+    const raw = localStorage.getItem(STORAGE_KEY)
+    return raw ? JSON.parse(raw) : null
+  } catch (error) {
+    console.warn('Failed to parse stored user', error)
+    return null
+  }
+}
 
 export const AuthProvider = ({ children }) => {
-  const [user, setUser] = useState(DEFAULT_USER)
+  const [user, setUser] = useState(() => loadStoredUser() || DEFAULT_USER)
   const [loading, setLoading] = useState(false)
-  const [isAuthenticated, setIsAuthenticated] = useState(true)
+  const [isAuthenticated, setIsAuthenticated] = useState(() => Boolean(loadStoredUser()))
 
   const simulateAuth = (username) => {
     const displayName = username?.trim() || DEFAULT_USER.username
-    setUser({ username: displayName })
+    const nextUser = { username: displayName }
+    setUser(nextUser)
     setIsAuthenticated(true)
+    if (typeof window !== 'undefined') {
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(nextUser))
+    }
     return { success: true }
   }
 
@@ -30,12 +46,16 @@ export const AuthProvider = ({ children }) => {
 
   const logout = () => {
     setUser(DEFAULT_USER)
-    setIsAuthenticated(true)
+    setIsAuthenticated(false)
+    if (typeof window !== 'undefined') {
+      localStorage.removeItem(STORAGE_KEY)
+    }
   }
 
   const checkAuth = () => {
-    setIsAuthenticated(true)
-    setUser(DEFAULT_USER)
+    const storedUser = loadStoredUser()
+    setIsAuthenticated(Boolean(storedUser))
+    setUser(storedUser || DEFAULT_USER)
   }
 
   const value = {

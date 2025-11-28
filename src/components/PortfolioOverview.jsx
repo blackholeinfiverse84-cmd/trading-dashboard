@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { memo } from 'react'
 import Card from './common/Card'
 import './PortfolioOverview.css'
 
@@ -12,7 +12,7 @@ const mockPortfolio = {
   losers: 5,
 }
 
-const PortfolioOverview = ({ data = mockPortfolio }) => {
+const PortfolioOverview = memo(({ data = mockPortfolio }) => {
   const {
     totalEquity,
     dailyPnL,
@@ -75,7 +75,9 @@ const PortfolioOverview = ({ data = mockPortfolio }) => {
       </div>
     </Card>
   )
-}
+})
+
+PortfolioOverview.displayName = 'PortfolioOverview'
 
 const formatNumber = (value = 0) => {
   if (value >= 100000) {

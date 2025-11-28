@@ -1,6 +1,7 @@
 import React, { useState } from 'react'
 import { useNavigate, Link } from 'react-router-dom'
 import { useAuth } from '../../contexts/AuthContext'
+import { useToast } from '../../contexts/ToastContext'
 import Card from '../common/Card'
 import Button from '../common/Button'
 import Input from '../common/Input'
@@ -12,6 +13,7 @@ const Login = () => {
   const [error, setError] = useState('')
   const [loading, setLoading] = useState(false)
   const { login } = useAuth()
+  const { addToast } = useToast()
   const navigate = useNavigate()
 
   const handleSubmit = async (e) => {
@@ -29,20 +31,69 @@ const Login = () => {
     setLoading(false)
 
     if (result.success) {
+      addToast({
+        title: 'Signed in',
+        message: `Welcome back, ${username || 'trader'}!`,
+        variant: 'success'
+      })
       navigate('/dashboard')
     } else {
-      setError(result.message || 'Login failed. Please try again.')
+      const message = result.message || 'Login failed. Please try again.'
+      setError(message)
+      addToast({
+        title: 'Login failed',
+        message,
+        variant: 'error'
+      })
     }
   }
 
+  const highlights = [
+    { icon: '⚡', text: 'Instant AI-assisted risk insights' },
+    { icon: '🛡️', text: 'Personalized guardrails for every trade' },
+    { icon: '📈', text: 'Portfolio-level market awareness' }
+  ]
+
+  const metrics = [
+    { label: 'Signals/day', value: '120+' },
+    { label: 'Latency', value: '<200ms' }
+  ]
+
   return (
     <div className="auth-container">
-      <Card 
-        title="Welcome Back" 
-        subtitle="Sign in to your trading dashboard"
-        variant="elevated"
-        className="auth-card"
-      >
+      <div className="auth-grid">
+        <div className="auth-highlight-card">
+          <span className="auth-highlight-eyebrow">TRADING CO-PILOT</span>
+          <h2 className="auth-highlight-title">
+            Reconnect to your<br />real-time alpha stream
+          </h2>
+          <p className="auth-highlight-copy">
+            Centralize your market context, alerts, and LangGraph-guided execution all from one control surface.
+          </p>
+          <ul className="auth-highlight-list">
+            {highlights.map((item) => (
+              <li key={item.text} className="auth-highlight-item">
+                <span className="auth-highlight-icon">{item.icon}</span>
+                <span>{item.text}</span>
+              </li>
+            ))}
+          </ul>
+          <div className="auth-metrics">
+            {metrics.map((metric) => (
+              <div key={metric.label} className="auth-metric-card">
+                <p className="auth-metric-label">{metric.label}</p>
+                <p className="auth-metric-value">{metric.value}</p>
+              </div>
+            ))}
+          </div>
+        </div>
+
+        <Card 
+          title="Welcome Back" 
+          subtitle="Sign in to your trading dashboard"
+          variant="elevated"
+          className="auth-card auth-form-card"
+        >
         <form onSubmit={handleSubmit} className="auth-form">
           {error && (
             <div className="auth-error">
@@ -91,7 +142,8 @@ const Login = () => {
             </p>
           </div>
         </form>
-      </Card>
+        </Card>
+      </div>
     </div>
   )
 }

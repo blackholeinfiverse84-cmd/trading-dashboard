@@ -1,9 +1,9 @@
-import React, { useState, useEffect } from 'react'
+import React, { useState, useEffect, memo, useMemo } from 'react'
 import Card from './common/Card'
 import { getSentimentSummary } from '../services/api'
 import './InsightsPanel.css'
 
-const InsightsPanel = ({ latestTrade, risk }) => {
+const InsightsPanel = memo(({ latestTrade, risk }) => {
   const [insights, setInsights] = useState(null)
   const [error, setError] = useState(null)
 
@@ -35,8 +35,12 @@ const InsightsPanel = ({ latestTrade, risk }) => {
     }
   }, [])
 
-  const stats = insights ? blendRisk(insights, risk) : blendRisk(getMockInsights(), risk)
-  const latest = latestTrade || stats.latestTrade
+  const stats = useMemo(() => {
+    const baseInsights = insights || getMockInsights()
+    return blendRisk(baseInsights, risk)
+  }, [insights, risk])
+
+  const latest = useMemo(() => latestTrade || stats.latestTrade, [latestTrade, stats.latestTrade])
 
   return (
     <div className="insights-grid">
@@ -101,7 +105,9 @@ const InsightsPanel = ({ latestTrade, risk }) => {
       </Card>
     </div>
   )
-}
+})
+
+InsightsPanel.displayName = 'InsightsPanel'
 
 const normalizeInsights = (payload) => {
   if (!payload) return getMockInsights()

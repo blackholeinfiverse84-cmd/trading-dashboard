@@ -1,0 +1,137 @@
+.chart-toolbar {
+  position: absolute;
+  top: 340px; /* Moved further down to clear the dollar sign area */
+  left: 12px;
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-xs);
+  padding: var(--spacing-xs);
+  background: rgba(9, 11, 19, 0.85);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  border-radius: var(--radius-md);
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4), 0 0 0 1px rgba(255, 255, 255, 0.05) inset;
+  backdrop-filter: blur(16px);
+  z-index: 100;
+  transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1), opacity 0.3s ease, box-shadow 0.2s ease;
+}
+
+.chart-toolbar-collapsed {
+  transform: translateX(calc(-100% + 28px)); /* Hide but keep toggle button visible */
+  opacity: 0.8; /* Visible when collapsed */
+}
+
+.chart-toolbar-collapsed .toolbar-tools {
+  display: none !important; /* Force hide tools when collapsed */
+  pointer-events: none;
+  opacity: 0;
+  visibility: hidden;
+}
+
+.chart-toolbar-collapsed .toolbar-toggle {
+  opacity: 0.9; /* Visible toggle when collapsed */
+  background: rgba(255, 255, 255, 0.08);
+  width: 28px; /* Normal size */
+  height: 28px;
+  font-size: 0.9rem;
+}
+
+.chart-toolbar-collapsed .toolbar-toggle:hover {
+  opacity: 1; /* Fully visible on hover */
+  background: rgba(255, 255, 255, 0.15);
+}
+
+.toolbar-toggle {
+  border: none;
+  background: rgba(255, 255, 255, 0.08);
+  color: var(--text-secondary);
+  border-radius: var(--radius-md);
+  width: 28px; /* Reduced from 36px */
+  height: 28px; /* Reduced from 36px */
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  font-size: 0.9rem; /* Reduced from 1.1rem */
+  font-weight: 600;
+  transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+  margin-bottom: var(--spacing-xs);
+}
+
+.toolbar-toggle:hover {
+  background: rgba(255, 255, 255, 0.15);
+  color: var(--text-primary);
+  transform: scale(1.1);
+}
+
+.toolbar-tools {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-xs);
+}
+
+.toolbar-tool {
+  width: 32px; /* Reduced from 44px */
+  height: 32px; /* Reduced from 44px */
+  border: none;
+  border-radius: var(--radius-sm); /* Reduced from md */
+  background: transparent;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+  color: var(--text-secondary);
+  position: relative;
+}
+
+.toolbar-tool svg {
+  width: 16px; /* Reduced from 20px */
+  height: 16px; /* Reduced from 20px */
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 2;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  transition: stroke-width 0.2s ease;
+}
+
+.toolbar-tool:hover {
+  background: rgba(255, 255, 255, 0.1);
+  color: var(--text-primary);
+  transform: translateY(-1px);
+}
+
+.toolbar-tool:hover svg {
+  stroke-width: 2.2;
+}
+
+.toolbar-tool.active {
+  background: linear-gradient(135deg, var(--accent-primary), #0051d5);
+  color: #ffffff;
+  box-shadow: 0 4px 12px rgba(0, 122, 255, 0.4), 0 0 0 1px rgba(255, 255, 255, 0.1) inset;
+  transform: scale(1.05);
+}
+
+.toolbar-tool.active svg {
+  stroke-width: 2.4;
+  filter: drop-shadow(0 1px 2px rgba(0, 0, 0, 0.3));
+}
+
+/* Removed duplicate - already handled above */
+
+@media (max-width: 1024px) {
+  .chart-toolbar {
+    position: fixed;
+    top: auto;
+    bottom: 24px;
+    left: 24px;
+  }
+}
+
+@media (max-width: 640px) {
+  .chart-toolbar {
+    display: none;
+  }
+}
+
+

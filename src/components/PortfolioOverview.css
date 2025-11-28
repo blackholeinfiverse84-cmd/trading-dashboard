@@ -6,27 +6,27 @@
 
 .portfolio-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
-  gap: var(--spacing-md);
+  grid-template-columns: repeat(auto-fit, minmax(120px, 1fr)); /* Further reduced */
+  gap: var(--spacing-xs); /* Further reduced */
 }
 
 .portfolio-block {
   border: 1px solid var(--border-primary);
-  border-radius: var(--radius-lg);
-  padding: var(--spacing-sm);
+  border-radius: var(--radius-sm); /* Further reduced */
+  padding: var(--spacing-xs); /* Further reduced */
   background-color: var(--bg-secondary);
 }
 
 .portfolio-label {
-  font-size: 0.8rem;
+  font-size: 0.7rem; /* Reduced from 0.8rem */
   text-transform: uppercase;
   letter-spacing: 0.08em;
   color: var(--text-tertiary);
-  margin-bottom: 0.35rem;
+  margin-bottom: 0.25rem; /* Reduced from 0.35rem */
 }
 
 .portfolio-value {
-  font-size: 1.4rem;
+  font-size: 0.95rem; /* Further reduced */
   font-weight: 600;
   color: var(--text-primary);
   margin: 0;
@@ -42,7 +42,7 @@
 
 .portfolio-pnl {
   margin: 0;
-  font-size: 0.95rem;
+  font-size: 0.8rem; /* Reduced from 0.95rem */
 }
 
 .portfolio-progress {
@@ -67,7 +67,7 @@
 
 .portfolio-note {
   margin: 0;
-  font-size: 0.85rem;
+  font-size: 0.75rem; /* Reduced from 0.85rem */
   color: var(--text-secondary);
 }
 

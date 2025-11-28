@@ -9,10 +9,10 @@
 }
 
 .input-label {
-  font-size: 0.875rem;
+  font-size: 0.75rem; /* Reduced from 0.875rem */
   font-weight: 500;
   color: var(--text-secondary);
-  margin-bottom: var(--spacing-xs);
+  margin-bottom: 2px; /* Reduced from xs */
 }
 
 .input-required {
@@ -24,6 +24,62 @@
   position: relative;
   display: flex;
   align-items: center;
+}
+
+/* Custom spinner controls for number inputs */
+.input-spinner-controls {
+  position: absolute;
+  right: 4px;
+  top: 50%;
+  transform: translateY(-50%);
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  z-index: 2;
+}
+
+.input-spinner-btn {
+  width: 20px;
+  height: 16px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: var(--bg-tertiary);
+  border: 1px solid var(--border-primary);
+  border-radius: var(--radius-sm);
+  color: var(--text-secondary);
+  cursor: pointer;
+  transition: all var(--transition-fast);
+  padding: 0;
+  line-height: 1;
+}
+
+.input-spinner-btn:hover {
+  background-color: var(--bg-hover);
+  color: var(--text-primary);
+  border-color: var(--accent-primary);
+}
+
+.input-spinner-btn:active {
+  background-color: var(--accent-primary);
+  color: #ffffff;
+  transform: scale(0.95);
+}
+
+.input-spinner-btn svg {
+  width: 10px;
+  height: 10px;
+  stroke-width: 2.5;
+}
+
+.input-spinner-up {
+  border-bottom-left-radius: 0;
+  border-bottom-right-radius: 0;
+}
+
+.input-spinner-down {
+  border-top-left-radius: 0;
+  border-top-right-radius: 0;
 }
 
 .input-icon {
@@ -38,15 +94,27 @@
 
 .input {
   width: 100%;
-  padding: var(--spacing-sm) var(--spacing-md);
+  padding: var(--spacing-xs) var(--spacing-sm); /* Reduced padding */
   font-family: inherit;
-  font-size: 1rem;
+  font-size: 0.875rem; /* Reduced from 1rem */
   color: var(--text-primary);
   background-color: var(--bg-secondary);
   border: 1px solid var(--border-primary);
   border-radius: var(--radius-md);
   transition: all var(--transition-normal);
   outline: none;
+}
+
+/* Hide default browser spinners and make room for custom ones */
+.input[type="number"] {
+  padding-right: 2rem; /* Make room for custom spinner buttons */
+  -moz-appearance: textfield; /* Firefox */
+}
+
+.input[type="number"]::-webkit-inner-spin-button,
+.input[type="number"]::-webkit-outer-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
 }
 
 .input:focus {

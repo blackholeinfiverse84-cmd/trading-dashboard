@@ -22,11 +22,18 @@
 .card:hover {
   border-color: rgba(255, 255, 255, 0.12);
   transform: translateY(-2px);
-  box-shadow: 0 30px 60px rgba(0, 0, 0, 0.35);
+  box-shadow: 0 30px 60px rgba(0, 0, 0, 0.35),
+              0 0 0 1px rgba(0, 122, 255, 0.1);
 }
 
 .card:hover::after {
   opacity: 1;
+}
+
+.card-hover:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 40px 80px rgba(0, 0, 0, 0.4),
+              0 0 0 1px rgba(0, 122, 255, 0.15);
 }
 
 .card-clickable {
@@ -58,38 +65,38 @@
 }
 
 .card-padding-sm {
-  padding: var(--spacing-sm);
+  padding: var(--spacing-xs);
 }
 
 .card-padding-md {
-  padding: var(--spacing-md);
+  padding: var(--spacing-xs) var(--spacing-sm); /* Further reduced */
 }
 
 .card-padding-lg {
-  padding: var(--spacing-lg);
+  padding: var(--spacing-md) var(--spacing-lg);
 }
 
 .card-padding-xl {
-  padding: var(--spacing-xl);
+  padding: var(--spacing-lg) var(--spacing-xl);
 }
 
 /* Header */
 .card-header {
-  padding: var(--spacing-md);
+  padding: var(--spacing-xs) var(--spacing-sm); /* Further reduced */
   border-bottom: 1px solid var(--border-primary);
   background-color: var(--bg-secondary);
 }
 
 .card-title {
-  font-size: 1.125rem;
+  font-size: 0.85rem; /* Further reduced */
   font-weight: 600;
   color: var(--text-primary);
   margin: 0;
-  margin-bottom: var(--spacing-xs);
+  margin-bottom: 1px;
 }
 
 .card-subtitle {
-  font-size: 0.875rem;
+  font-size: 0.7rem; /* Further reduced */
   color: var(--text-secondary);
   margin: 0;
 }

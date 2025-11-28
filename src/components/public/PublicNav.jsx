@@ -38,6 +38,18 @@ const PublicNav = () => {
         </div>
 
         <div className="public-nav-actions">
+          <div className="public-nav-auth">
+            <Link to="/login">
+              <Button variant="ghost" size="sm">
+                Login
+              </Button>
+            </Link>
+            <Link to="/register">
+              <Button variant="outline" size="sm">
+                Register
+              </Button>
+            </Link>
+          </div>
           <Link to="/langgraph">
             <Button variant="secondary" size="sm">
               LangGraph Report

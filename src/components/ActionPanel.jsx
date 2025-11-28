@@ -5,6 +5,7 @@ import Button from './common/Button'
 import ConfidenceGauge from './common/ConfidenceGauge'
 import { confirmDecision } from '../services/api'
 import { LangGraphClient } from '../services/langGraphClient'
+import { useToast } from '../contexts/ToastContext'
 import './ActionPanel.css'
 
 const ActionPanel = ({ decisionData, onDecisionUpdate, risk }) => {
@@ -17,6 +18,7 @@ const ActionPanel = ({ decisionData, onDecisionUpdate, risk }) => {
     score: 75,
     notes: '',
   })
+  const { addToast } = useToast()
 
   useEffect(() => {
     if (decisionData) {
@@ -57,6 +59,11 @@ const ActionPanel = ({ decisionData, onDecisionUpdate, risk }) => {
       if (onDecisionUpdate) {
         onDecisionUpdate({ ...decision, confirmed: true, response })
       }
+      addToast({
+        title: 'Order confirmed',
+        message: `${decision.symbol} ${decision.action} locked in.`,
+        variant: 'success',
+      })
     } catch (err) {
       console.error('Failed to confirm decision:', err)
       setError('Failed to confirm decision. Using mock confirmation.')
@@ -65,6 +72,11 @@ const ActionPanel = ({ decisionData, onDecisionUpdate, risk }) => {
           d.id === decision.id ? { ...d, confirmed: true, mock: true } : d
         )
       )
+      addToast({
+        title: 'Confirmation failed',
+        message: 'Using mock confirmation while service recovers.',
+        variant: 'warning',
+      })
     } finally {
       setLoading(false)
     }
@@ -96,6 +108,11 @@ const ActionPanel = ({ decisionData, onDecisionUpdate, risk }) => {
     }
     LangGraphClient.sendFeedback(entry)
     closeFeedback()
+    addToast({
+      title: 'Feedback saved',
+      message: `Desk context updated for ${feedback.decision?.symbol || 'trade'}.`,
+      variant: 'success',
+    })
   }
 
   // Format timestamp

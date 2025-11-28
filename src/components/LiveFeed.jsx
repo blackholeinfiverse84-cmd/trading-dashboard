@@ -1,11 +1,13 @@
-import React, { useState, useEffect, useRef } from 'react'
+import React, { useState, useEffect, useRef, useMemo, useCallback } from 'react'
 import Card from './common/Card'
 import { createChart, ColorType } from 'lightweight-charts'
 import { useLiveFeed } from '../hooks/useLiveFeed'
+import { useChartDrawing } from '../hooks/useChartDrawing'
 import AssetSearch from './AssetSearch'
+import { useToast } from '../contexts/ToastContext'
 import './LiveFeed.css'
 
-const LiveFeed = ({ signals }) => {
+const LiveFeed = ({ signals, activeTool = 'cursor' }) => {
   const [candles, setCandles] = useState([])
   const [activeSymbol, setActiveSymbol] = useState('AAPL')
   const [selectedSymbol, setSelectedSymbol] = useState('AAPL')
@@ -15,13 +17,50 @@ const LiveFeed = ({ signals }) => {
   const chartContainerRef = useRef(null)
   const chartRef = useRef(null)
   const candleSeriesRef = useRef(null)
+  const drawingOverlayRef = useRef(null)
   const { feed, error: feedError, source } = useLiveFeed(selectedSymbol)
+  const { addToast } = useToast()
+  const lastErrorRef = useRef('')
+  const mockFeedToastShownRef = useRef(false)
+  const parsingErrorToastShownRef = useRef(false)
+  
+  // Chart drawing hook
+  const {
+    drawings,
+    currentDrawing,
+    isDrawing,
+    handleMouseDown,
+    handleMouseMove,
+    handleMouseUp,
+    deleteDrawing: deleteDrawingOriginal,
+    clearDrawings,
+  } = useChartDrawing(chartRef, activeTool)
+  
+  // Wrapper for delete with feedback
+  const deleteDrawing = (id) => {
+    deleteDrawingOriginal(id)
+    addToast({
+      title: 'Drawing removed',
+      message: 'Annotation deleted successfully.',
+      variant: 'info',
+      duration: 2000,
+    })
+  }
+  
+  // Store handlers in refs to avoid recreating event listeners
+  const handlersRef = useRef({ handleMouseDown, handleMouseMove, handleMouseUp })
+  useEffect(() => {
+    handlersRef.current = { handleMouseDown, handleMouseMove, handleMouseUp }
+  }, [handleMouseDown, handleMouseMove, handleMouseUp])
 
   // When symbol changes, reset and fetch new data
   useEffect(() => {
     if (selectedSymbol) {
       setLoading(true)
       setError(null)
+      // Reset toast flags when symbol changes
+      mockFeedToastShownRef.current = false
+      parsingErrorToastShownRef.current = false
     }
   }, [selectedSymbol])
 
@@ -31,18 +70,28 @@ const LiveFeed = ({ signals }) => {
     try {
       const { symbol, candles: normalized } = normalizeCandles(feed)
       if (normalized.length === 0 || !feed) {
-        // Generate mock data for the selected symbol
         const mock = getMockCandles(selectedSymbol || activeSymbol, signals?.risk?.horizon)
         setCandles(mock.candles)
         setActiveSymbol(mock.symbol)
         setLastUpdate(new Date())
         setError('No candle data returned. Showing mock feed.')
+        // Only show toast once per symbol
+        if (!mockFeedToastShownRef.current) {
+          mockFeedToastShownRef.current = true
+          addToast({
+            title: 'Mock feed engaged',
+            message: 'No live candles for this symbol. Displaying simulated stream.',
+            variant: 'warning',
+            duration: 4000, // Shorter duration
+          })
+        }
       } else {
         const adjusted = adjustCandlesByRisk(normalized, signals?.risk)
         setCandles(adjusted)
         setActiveSymbol(symbol || selectedSymbol || 'Asset')
         setLastUpdate(new Date())
         setError(null)
+        lastErrorRef.current = ''
       }
     } catch (err) {
       console.error('Feed normalization failed:', err)
@@ -51,14 +100,37 @@ const LiveFeed = ({ signals }) => {
       setActiveSymbol(mock.symbol)
       setLastUpdate(new Date())
       setError('Using mock data.')
+      // Only show toast once per symbol
+      if (!parsingErrorToastShownRef.current) {
+        parsingErrorToastShownRef.current = true
+        addToast({
+          title: 'Feed parsing failed',
+          message: 'Falling back to mock data while normalizing candles.',
+          variant: 'warning',
+          duration: 4000, // Shorter duration
+        })
+      }
     } finally {
       setLoading(false)
     }
-  }, [feed, selectedSymbol, activeSymbol])
+  }, [feed, selectedSymbol, activeSymbol, signals?.risk, addToast])
+
+  useEffect(() => {
+    if (!feedError) return
+    if (lastErrorRef.current === feedError) return
+    lastErrorRef.current = feedError
+    addToast({
+      title: 'Live feed interruption',
+      message: feedError,
+      variant: 'error',
+      duration: 4000, // Shorter duration
+    })
+  }, [feedError, addToast])
 
   useEffect(() => {
     if (!chartContainerRef.current) return
 
+    const containerHeight = chartContainerRef.current?.clientHeight || 320
     chartRef.current = createChart(chartContainerRef.current, {
       layout: {
         background: { type: ColorType.Solid, color: 'transparent' },
@@ -71,9 +143,37 @@ const LiveFeed = ({ signals }) => {
         horzLines: { color: 'rgba(255,255,255,0.05)' },
       },
       crosshair: { mode: 0 },
-      timeScale: { borderVisible: false },
+      timeScale: { 
+        borderVisible: false,
+        timeVisible: true,
+        secondsVisible: false,
+      },
       rightPriceScale: { borderVisible: false },
+      width: chartContainerRef.current?.clientWidth ?? 0,
+      height: containerHeight,
       autoSize: true,
+      handleScroll: {
+        mouseWheel: true,
+        pressedMouseMove: true,
+        horzTouchDrag: true,
+        vertTouchDrag: true,
+      },
+      handleScale: {
+        axisPressedMouseMove: {
+          time: true,
+          price: true,
+        },
+        axisDoubleClickReset: {
+          time: true,
+          price: true,
+        },
+        axisTouchDrag: {
+          time: true,
+          price: true,
+        },
+        mouseWheel: true,
+        pinch: true,
+      },
     })
 
     candleSeriesRef.current = chartRef.current.addCandlestickSeries({
@@ -86,33 +186,276 @@ const LiveFeed = ({ signals }) => {
     })
 
     const handleResize = () => {
-      chartRef.current?.applyOptions({
-        width: chartContainerRef.current?.clientWidth ?? 0,
+      const container = chartContainerRef.current
+      if (!container || !chartRef.current) return
+      const maxHeight = 320 // Further reduced
+      chartRef.current.applyOptions({
+        width: container.clientWidth ?? 0,
+        height: Math.min(container.clientHeight ?? maxHeight, maxHeight),
       })
     }
 
+    // Prevent browser zoom on touchpad gestures - let chart handle it
+    const container = chartContainerRef.current
+    
+    const handleWheel = (e) => {
+      // On touchpads, Ctrl+wheel is used for zoom gestures
+      // Prevent browser zoom but let chart handle it
+      if (e.ctrlKey || e.metaKey) {
+        // Prevent browser zoom
+        e.preventDefault()
+        e.stopPropagation()
+        
+        // Manually trigger chart zoom since preventing default might block chart's handler
+        // Convert wheel delta to zoom factor
+        const zoomFactor = e.deltaY > 0 ? 0.9 : 1.1
+        if (chartRef.current) {
+          const timeScale = chartRef.current.timeScale()
+          const visibleRange = timeScale.getVisibleRange()
+          if (visibleRange) {
+            const range = visibleRange.to - visibleRange.from
+            const center = (visibleRange.from + visibleRange.to) / 2
+            const newRange = range * zoomFactor
+            timeScale.setVisibleRange({
+              from: center - newRange / 2,
+              to: center + newRange / 2,
+            })
+          }
+        }
+        return false
+      }
+    }
+
+    const preventBrowserZoom = (e) => {
+      // Prevent browser zoom on touchpad pinch gestures
+      if (e.touches && e.touches.length === 2) {
+        e.preventDefault()
+        e.stopPropagation()
+      }
+    }
+
     window.addEventListener('resize', handleResize)
+    // Prevent browser zoom on Ctrl+wheel when over chart container
+    container.addEventListener('wheel', handleWheel, { passive: false })
+    container.addEventListener('touchstart', preventBrowserZoom, { passive: false })
+    container.addEventListener('touchmove', preventBrowserZoom, { passive: false })
+    
     handleResize()
 
     return () => {
       window.removeEventListener('resize', handleResize)
+      container.removeEventListener('wheel', handleWheel)
+      container.removeEventListener('touchstart', preventBrowserZoom)
+      container.removeEventListener('touchmove', preventBrowserZoom)
       chartRef.current?.remove()
     }
   }, [])
 
+  // Set up drawing event listeners
+  // Use refs to avoid recreating listeners on every callback change
+  const activeToolRef = useRef(activeTool)
   useEffect(() => {
-    if (candles.length && candleSeriesRef.current) {
-      candleSeriesRef.current.setData(candles)
-      chartRef.current?.timeScale().fitContent()
-    }
-  }, [candles])
+    activeToolRef.current = activeTool
+  }, [activeTool])
 
-  const latestCandle = candles[candles.length - 1]
-  const prevCandle = candles[candles.length - 2]
-  const latestPrice = latestCandle?.close ?? 0
-  const prevPrice = prevCandle?.close ?? latestPrice
-  const priceDelta = latestPrice - prevPrice
-  const priceDeltaPct = prevPrice ? (priceDelta / prevPrice) * 100 : 0
+  useEffect(() => {
+    const container = chartContainerRef.current
+    if (!container) return
+
+    // Wrapper functions that use refs to avoid dependency issues
+    // These should ONLY be called when actually drawing, not in cursor mode
+    const handleMouseDownWrapper = (e) => {
+      const tool = activeToolRef.current
+      // Only handle if we're in a drawing mode (not cursor, not delete)
+      if (tool !== 'cursor' && tool !== 'delete' && handlersRef.current.handleMouseDown) {
+        handlersRef.current.handleMouseDown(e, container)
+      }
+      // In cursor mode, let the event pass through to chart
+    }
+    
+    const handleMouseMoveWrapper = (e) => {
+      const tool = activeToolRef.current
+      // Only handle if we're actively drawing
+      if (tool !== 'cursor' && tool !== 'delete' && handlersRef.current.handleMouseMove) {
+        handlersRef.current.handleMouseMove(e, container)
+      }
+      // In cursor mode, let the event pass through to chart
+    }
+    
+    const handleMouseUpWrapper = (e) => {
+      const tool = activeToolRef.current
+      // Only handle if we're actively drawing
+      if (tool !== 'cursor' && tool !== 'delete' && handlersRef.current.handleMouseUp) {
+        handlersRef.current.handleMouseUp()
+      }
+      // In cursor mode, let the event pass through to chart
+    }
+
+    // Only add listeners if not cursor mode and not delete mode (delete uses SVG overlay)
+    if (activeTool !== 'cursor' && activeTool !== 'delete') {
+      // Drawing mode - add listeners for drawing
+      container.addEventListener('mousedown', handleMouseDownWrapper, { passive: false })
+      container.addEventListener('mousemove', handleMouseMoveWrapper, { passive: true })
+      container.addEventListener('mouseup', handleMouseUpWrapper, { passive: false })
+      container.style.cursor = activeTool === 'trend-line' || activeTool === 'horizontal-line' ? 'crosshair' : 
+                               activeTool === 'text' ? 'text' : 'default'
+      container.style.pointerEvents = 'auto'
+      // Disable chart interactions when drawing
+      if (chartRef.current) {
+        chartRef.current.applyOptions({
+          handleScroll: {
+            mouseWheel: false,
+            pressedMouseMove: false,
+          },
+          handleScale: {
+            axisPressedMouseMove: false,
+            mouseWheel: false,
+          },
+        })
+      }
+    } else if (activeTool === 'delete') {
+      // Delete mode - only SVG overlay handles clicks
+      container.style.cursor = 'pointer'
+      container.style.pointerEvents = 'auto'
+      // Disable chart interactions in delete mode
+      if (chartRef.current) {
+        chartRef.current.applyOptions({
+          handleScroll: {
+            mouseWheel: false,
+            pressedMouseMove: false,
+          },
+          handleScale: {
+            axisPressedMouseMove: false,
+            mouseWheel: false,
+          },
+        })
+      }
+    } else {
+      // Cursor mode - FULLY ENABLE chart interactions
+      container.style.cursor = 'default'
+      container.style.pointerEvents = 'auto'
+      // Re-enable all chart interactions
+      if (chartRef.current) {
+        chartRef.current.applyOptions({
+          handleScroll: {
+            mouseWheel: true,
+            pressedMouseMove: true,
+            horzTouchDrag: true,
+            vertTouchDrag: true,
+          },
+          handleScale: {
+            axisPressedMouseMove: {
+              time: true,
+              price: true,
+            },
+            axisDoubleClickReset: {
+              time: true,
+              price: true,
+            },
+            axisTouchDrag: {
+              time: true,
+              price: true,
+            },
+            mouseWheel: true,
+            pinch: true,
+          },
+        })
+      }
+    }
+
+    return () => {
+      container.removeEventListener('mousedown', handleMouseDownWrapper)
+      container.removeEventListener('mousemove', handleMouseMoveWrapper)
+      container.removeEventListener('mouseup', handleMouseUpWrapper)
+      container.style.cursor = 'default'
+    }
+  }, [activeTool]) // Only depend on activeTool, not the callbacks
+
+  // Track if this is the first data load to auto-fit only once
+  const isInitialLoadRef = useRef(true)
+  const updateTimeoutRef = useRef(null)
+  
+  // Memoize candle data to prevent unnecessary updates
+  const memoizedCandles = useMemo(() => candles, [candles.length, candles[0]?.time, candles[candles.length - 1]?.time])
+  
+  // Debounced chart update function
+  const updateChartData = useCallback((data) => {
+    if (updateTimeoutRef.current) {
+      clearTimeout(updateTimeoutRef.current)
+    }
+    
+    updateTimeoutRef.current = setTimeout(() => {
+      if (candleSeriesRef.current && data.length > 0) {
+        candleSeriesRef.current.setData(data)
+        // Only auto-fit on very first load
+        if (isInitialLoadRef.current && chartRef.current) {
+          chartRef.current.timeScale().fitContent()
+          isInitialLoadRef.current = false
+        }
+      }
+    }, 16) // ~60fps update rate
+  }, [])
+  
+  useEffect(() => {
+    if (memoizedCandles.length) {
+      updateChartData(memoizedCandles)
+    }
+    
+    return () => {
+      if (updateTimeoutRef.current) {
+        clearTimeout(updateTimeoutRef.current)
+      }
+    }
+  }, [memoizedCandles, updateChartData])
+
+  // Re-enable chart interactions when switching to cursor mode
+  useEffect(() => {
+    if (activeTool === 'cursor' && chartRef.current) {
+      // Ensure chart is fully interactive
+      const container = chartContainerRef.current
+      if (container) {
+        container.style.pointerEvents = 'auto'
+        // Force chart to re-enable interactions with full options
+        chartRef.current.applyOptions({
+          handleScroll: {
+            mouseWheel: true,
+            pressedMouseMove: true,
+            horzTouchDrag: true,
+            vertTouchDrag: true,
+          },
+          handleScale: {
+            axisPressedMouseMove: {
+              time: true,
+              price: true,
+            },
+            axisDoubleClickReset: {
+              time: true,
+              price: true,
+            },
+            axisTouchDrag: {
+              time: true,
+              price: true,
+            },
+            mouseWheel: true,
+            pinch: true,
+          },
+        })
+      }
+    }
+  }, [activeTool])
+
+  // Memoize price calculations
+  const priceInfo = useMemo(() => {
+    const latestCandle = candles[candles.length - 1]
+    const prevCandle = candles[candles.length - 2]
+    const latestPrice = latestCandle?.close ?? 0
+    const prevPrice = prevCandle?.close ?? latestPrice
+    const priceDelta = latestPrice - prevPrice
+    const priceDeltaPct = prevPrice ? (priceDelta / prevPrice) * 100 : 0
+    return { latestPrice, priceDelta, priceDeltaPct }
+  }, [candles.length, candles[candles.length - 1]?.close, candles[candles.length - 2]?.close])
+  
+  const { latestPrice, priceDelta, priceDeltaPct } = priceInfo
   const isUp = priceDelta >= 0
 
   return (
@@ -134,13 +477,16 @@ const LiveFeed = ({ signals }) => {
                   setSelectedSymbol(assetData.symbol)
                   setActiveSymbol(assetData.symbol)
                   setLoading(true)
-                  // The useLiveFeed hook will automatically fetch new data for this symbol
-                  // For mock data, we'll generate it immediately
                   const mock = getMockCandles(assetData.symbol)
                   setCandles(mock.candles)
                   setActiveSymbol(mock.symbol)
                   setLastUpdate(new Date())
                   setLoading(false)
+                  addToast({
+                    title: 'Symbol updated',
+                    message: `Streaming ${assetData.symbol.toUpperCase()} context.`,
+                    variant: 'info',
+                  })
                 }
               }}
               placeholder="Search symbol..."
@@ -176,13 +522,206 @@ const LiveFeed = ({ signals }) => {
         </div>
       </div>
 
-      <div className="live-feed-chart" ref={chartContainerRef}>
-        {loading && (
-          <div className="live-feed-loading compact">
-            <div className="spinner"></div>
-            <p>Loading chart...</p>
-          </div>
-        )}
+      <div className="live-feed-chart-wrapper">
+        <div className="live-feed-chart" ref={chartContainerRef}>
+          {loading && (
+            <div className="live-feed-loading compact">
+              <div className="spinner"></div>
+              <p>Loading chart...</p>
+            </div>
+          )}
+        </div>
+        <svg
+          ref={drawingOverlayRef}
+          className="live-feed-drawing-overlay"
+          style={{
+            pointerEvents: activeTool === 'delete' ? 'auto' : 'none',
+          }}
+          onClick={(e) => {
+            // If clicking empty area in delete mode, don't block chart
+            if (activeTool === 'delete' && e.target === e.currentTarget) {
+              e.stopPropagation()
+            }
+          }}
+        >
+          {/* Render completed drawings */}
+          {drawings.map((drawing) => {
+            const handleDelete = (e) => {
+              if (activeTool === 'delete') {
+                e.stopPropagation()
+                e.preventDefault()
+                deleteDrawing(drawing.id)
+                return false
+              }
+            }
+
+            if (drawing.type === 'line') {
+              return (
+                <g 
+                  key={drawing.id} 
+                  onClick={handleDelete}
+                  onMouseDown={(e) => activeTool === 'delete' && e.stopPropagation()}
+                  style={{ cursor: activeTool === 'delete' ? 'pointer' : 'default' }}
+                >
+                  {/* Invisible wider line for easier clicking in delete mode */}
+                  {activeTool === 'delete' && (
+                    <line
+                      x1={drawing.start.x}
+                      y1={drawing.start.y}
+                      x2={drawing.end.x}
+                      y2={drawing.end.y}
+                      stroke="transparent"
+                      strokeWidth="15"
+                      pointerEvents="all"
+                      onClick={handleDelete}
+                    />
+                  )}
+                  <line
+                    x1={drawing.start.x}
+                    y1={drawing.start.y}
+                    x2={drawing.end.x}
+                    y2={drawing.end.y}
+                    stroke={drawing.color}
+                    strokeWidth={activeTool === 'delete' ? drawing.width + 1 : drawing.width}
+                    opacity={activeTool === 'delete' ? 0.8 : 1}
+                    pointerEvents={activeTool === 'delete' ? 'all' : 'none'}
+                    onClick={handleDelete}
+                  />
+                  {activeTool === 'delete' && (
+                    <>
+                      <circle
+                        cx={drawing.start.x}
+                        cy={drawing.start.y}
+                        r="6"
+                        fill={drawing.color}
+                        opacity="0.9"
+                        pointerEvents="all"
+                        onClick={handleDelete}
+                      />
+                      <circle
+                        cx={drawing.end.x}
+                        cy={drawing.end.y}
+                        r="6"
+                        fill={drawing.color}
+                        opacity="0.9"
+                        pointerEvents="all"
+                        onClick={handleDelete}
+                      />
+                    </>
+                  )}
+                </g>
+              )
+            } else if (drawing.type === 'horizontal-line') {
+              const containerWidth = chartContainerRef.current?.clientWidth || 0
+              return (
+                <g 
+                  key={drawing.id} 
+                  onClick={handleDelete}
+                  onMouseDown={(e) => activeTool === 'delete' && e.stopPropagation()}
+                  style={{ cursor: activeTool === 'delete' ? 'pointer' : 'default' }}
+                >
+                  {/* Invisible wider line for easier clicking in delete mode */}
+                  {activeTool === 'delete' && (
+                    <line
+                      x1="0"
+                      y1={drawing.y}
+                      x2={containerWidth}
+                      y2={drawing.y}
+                      stroke="transparent"
+                      strokeWidth="15"
+                      pointerEvents="all"
+                      onClick={handleDelete}
+                    />
+                  )}
+                  <line
+                    x1="0"
+                    y1={drawing.y}
+                    x2={containerWidth}
+                    y2={drawing.y}
+                    stroke={drawing.color}
+                    strokeWidth={activeTool === 'delete' ? drawing.width + 1 : drawing.width}
+                    strokeDasharray={drawing.dashArray}
+                    opacity={activeTool === 'delete' ? 0.8 : 1}
+                    pointerEvents={activeTool === 'delete' ? 'all' : 'none'}
+                    onClick={handleDelete}
+                  />
+                </g>
+              )
+            } else if (drawing.type === 'text') {
+              return (
+                <g 
+                  key={drawing.id} 
+                  onClick={handleDelete}
+                  onMouseDown={(e) => activeTool === 'delete' && e.stopPropagation()}
+                  style={{ cursor: activeTool === 'delete' ? 'pointer' : 'default' }}
+                >
+                  <rect
+                    x={drawing.position.x - 4}
+                    y={drawing.position.y - drawing.fontSize - 4}
+                    width={drawing.text.length * 8 + 8}
+                    height={drawing.fontSize + 8}
+                    fill={activeTool === 'delete' ? 'rgba(255, 59, 48, 0.3)' : 'rgba(0, 0, 0, 0.6)'}
+                    rx="4"
+                    pointerEvents={activeTool === 'delete' ? 'all' : 'none'}
+                    onClick={handleDelete}
+                  />
+                  <text
+                    x={drawing.position.x}
+                    y={drawing.position.y}
+                    fill={drawing.color}
+                    fontSize={drawing.fontSize}
+                    fontWeight="500"
+                    pointerEvents="none"
+                  >
+                    {drawing.text}
+                  </text>
+                  {activeTool === 'delete' && (
+                    <circle
+                      cx={drawing.position.x + (drawing.text.length * 8) / 2}
+                      cy={drawing.position.y - drawing.fontSize / 2}
+                      r="8"
+                      fill="#FF3B30"
+                      opacity="0.9"
+                      pointerEvents="all"
+                      onClick={handleDelete}
+                    />
+                  )}
+                </g>
+              )
+            }
+            return null
+          })}
+          
+          {/* Render current drawing in progress */}
+          {currentDrawing && (
+            <>
+              {currentDrawing.type === 'line' && (
+                <line
+                  x1={currentDrawing.start.x}
+                  y1={currentDrawing.start.y}
+                  x2={currentDrawing.end.x}
+                  y2={currentDrawing.end.y}
+                  stroke={currentDrawing.color}
+                  strokeWidth={currentDrawing.width}
+                  strokeDasharray="5,5"
+                  opacity="0.7"
+                />
+              )}
+              {currentDrawing.type === 'horizontal-line' && (
+                <line
+                  x1="0"
+                  y1={currentDrawing.y}
+                  x2={chartContainerRef.current?.clientWidth || 0}
+                  y2={currentDrawing.y}
+                  stroke={currentDrawing.color}
+                  strokeWidth={currentDrawing.width}
+                  strokeDasharray={currentDrawing.dashArray}
+                  opacity="0.7"
+                />
+              )}
+            </>
+          )}
+        </svg>
       </div>
     </Card>
   )

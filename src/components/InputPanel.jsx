@@ -3,6 +3,7 @@ import Card from './common/Card'
 import Button from './common/Button'
 import Input from './common/Input'
 import AssetSearch from './AssetSearch'
+import { useToast } from '../contexts/ToastContext'
 import './InputPanel.css'
 
 const riskModes = [
@@ -45,6 +46,7 @@ const InputPanel = ({ onSubmit }) => {
   const [previewing, setPreviewing] = useState(false)
   const [preview, setPreview] = useState(null)
   const [previewError, setPreviewError] = useState(null)
+  const { addToast } = useToast()
 
   const handleChange = (field, value) => {
     setFormData((prev) => ({ ...prev, [field]: value }))
@@ -92,7 +94,14 @@ const InputPanel = ({ onSubmit }) => {
 
   const handleSubmit = async (e) => {
     e.preventDefault()
-    if (!validateForm()) return
+    if (!validateForm()) {
+      addToast({
+        title: 'Missing inputs',
+        message: 'Please complete all required fields before submitting.',
+        variant: 'warning',
+      })
+      return
+    }
 
     setSubmitting(true)
 
@@ -103,13 +112,32 @@ const InputPanel = ({ onSubmit }) => {
         await onSubmit(decision)
       }
       setFormData((prev) => ({ ...prev, notes: '' }))
+      addToast({
+        title: 'Risk snapshot sent',
+        message: `${decision.symbol || 'Asset'} parameters captured.`,
+        variant: 'success',
+      })
+    } catch (err) {
+      console.error('Submit error:', err)
+      addToast({
+        title: 'Submission failed',
+        message: 'Unable to record trade inputs. Please retry.',
+        variant: 'error',
+      })
     } finally {
       setSubmitting(false)
     }
   }
 
   const handlePreview = async () => {
-    if (!validateForm()) return
+    if (!validateForm()) {
+      addToast({
+        title: 'Missing inputs',
+        message: 'Complete required fields to generate a preview.',
+        variant: 'warning',
+      })
+      return
+    }
 
     setPreviewing(true)
     setPreviewError(null)
@@ -129,9 +157,19 @@ const InputPanel = ({ onSubmit }) => {
         )}% confidence. Expect ${decision.parameters.targetReturn}% upside vs ${decision.parameters.stopLoss}% downside.`,
         timestamp: new Date().toISOString(),
       })
+      addToast({
+        title: 'Preview ready',
+        message: `${decision.symbol || 'Asset'} scenario simulated.`,
+        variant: 'info',
+      })
     } catch (err) {
       console.error('Preview error:', err)
       setPreviewError('Unable to generate preview right now.')
+      addToast({
+        title: 'Preview failed',
+        message: 'Unable to build an action preview. Try again shortly.',
+        variant: 'error',
+      })
     } finally {
       setPreviewing(false)
     }
@@ -161,6 +199,7 @@ const InputPanel = ({ onSubmit }) => {
             fullWidth
             min={0}
             step={0.1}
+            max={100}
           />
 
           <Input
@@ -172,6 +211,7 @@ const InputPanel = ({ onSubmit }) => {
             fullWidth
             min={0}
             step={0.1}
+            max={1000}
           />
 
           <Input
@@ -183,6 +223,7 @@ const InputPanel = ({ onSubmit }) => {
             fullWidth
             min={100}
             step={100}
+            max={10000000}
           />
 
           <div className="input-field">
