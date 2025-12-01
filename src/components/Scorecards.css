@@ -1,0 +1,305 @@
+.scorecards-card {
+  width: 100%;
+}
+
+.scorecards-error {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-xs);
+  padding: var(--spacing-sm);
+  background-color: rgba(255, 193, 7, 0.1);
+  border: 1px solid rgba(255, 193, 7, 0.3);
+  border-radius: var(--radius-md);
+  color: var(--accent-warning);
+  font-size: 0.9rem;
+  margin-bottom: var(--spacing-md);
+}
+
+.scorecards-controls {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: var(--spacing-md);
+  gap: var(--spacing-md);
+  flex-wrap: wrap;
+}
+
+.scorecards-sort {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-sm);
+}
+
+.scorecards-sort label {
+  font-size: 0.9rem;
+  color: var(--text-secondary);
+  font-weight: 500;
+}
+
+.scorecards-sort select {
+  padding: var(--spacing-xs) var(--spacing-sm);
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-md);
+  background-color: var(--bg-secondary);
+  color: var(--text-primary);
+  font-size: 0.9rem;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.scorecards-sort select:hover {
+  border-color: var(--accent-primary);
+}
+
+.scorecards-sort select:focus {
+  outline: none;
+  border-color: var(--accent-primary);
+  box-shadow: 0 0 0 2px rgba(var(--accent-primary-rgb), 0.1);
+}
+
+.sort-order-btn {
+  padding: var(--spacing-xs) var(--spacing-sm);
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-md);
+  background-color: var(--bg-secondary);
+  color: var(--text-primary);
+  font-size: 1rem;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  min-width: 36px;
+}
+
+.sort-order-btn:hover {
+  background-color: var(--bg-tertiary);
+  border-color: var(--accent-primary);
+}
+
+.refresh-btn {
+  padding: var(--spacing-xs) var(--spacing-sm);
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-md);
+  background-color: var(--bg-secondary);
+  color: var(--text-primary);
+  font-size: 0.9rem;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.refresh-btn:hover:not(:disabled) {
+  background-color: var(--bg-tertiary);
+  border-color: var(--accent-primary);
+}
+
+.refresh-btn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.scorecards-loading,
+.scorecards-empty {
+  text-align: center;
+  padding: var(--spacing-xl);
+  color: var(--text-secondary);
+}
+
+.scorecards-table-wrapper {
+  overflow-x: auto;
+  width: 100%;
+}
+
+.scorecards-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.9rem;
+}
+
+.scorecards-table thead {
+  background-color: var(--bg-secondary);
+  border-bottom: 2px solid var(--border-color);
+}
+
+.scorecards-table th {
+  padding: var(--spacing-sm) var(--spacing-md);
+  text-align: left;
+  font-weight: 600;
+  color: var(--text-secondary);
+  font-size: 0.85rem;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.scorecards-table th.sortable {
+  cursor: pointer;
+  user-select: none;
+  transition: color 0.2s ease;
+}
+
+.scorecards-table th.sortable:hover {
+  color: var(--accent-primary);
+}
+
+.scorecards-table tbody tr {
+  border-bottom: 1px solid var(--border-color);
+  transition: background-color 0.2s ease;
+}
+
+.scorecards-table tbody tr:hover {
+  background-color: var(--bg-secondary);
+}
+
+.scorecards-table td {
+  padding: var(--spacing-md);
+  vertical-align: middle;
+}
+
+.rank-cell {
+  text-align: center;
+  width: 60px;
+}
+
+.rank-badge {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 32px;
+  border-radius: var(--radius-full);
+  background-color: var(--bg-tertiary);
+  color: var(--text-primary);
+  font-weight: 600;
+  font-size: 0.85rem;
+}
+
+.symbol-cell {
+  min-width: 120px;
+}
+
+.symbol-cell strong {
+  display: block;
+  margin-bottom: var(--spacing-xs);
+  color: var(--text-primary);
+}
+
+.asset-type-badge {
+  display: inline-block;
+  padding: 2px var(--spacing-xs);
+  background-color: var(--bg-tertiary);
+  color: var(--text-tertiary);
+  border-radius: var(--radius-sm);
+  font-size: 0.75rem;
+  text-transform: uppercase;
+}
+
+.price-cell {
+  font-weight: 600;
+  color: var(--text-primary);
+  min-width: 120px;
+}
+
+.score-cell {
+  min-width: 100px;
+}
+
+.score-display {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-xs);
+}
+
+.score-value {
+  font-weight: 600;
+  color: var(--text-primary);
+  font-size: 0.95rem;
+}
+
+.score-bar {
+  width: 100%;
+  height: 6px;
+  background-color: var(--bg-tertiary);
+  border-radius: var(--radius-full);
+  overflow: hidden;
+}
+
+.score-bar-fill {
+  height: 100%;
+  background: linear-gradient(90deg, var(--accent-primary), var(--accent-success));
+  transition: width 0.3s ease;
+}
+
+.action-cell {
+  min-width: 100px;
+}
+
+.action-pill {
+  display: inline-block;
+  padding: var(--spacing-xs) var(--spacing-sm);
+  border-radius: var(--radius-full);
+  font-size: 0.85rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.action-pill.action-success {
+  background-color: rgba(52, 199, 89, 0.15);
+  color: var(--accent-success);
+}
+
+.action-pill.action-error {
+  background-color: rgba(255, 59, 48, 0.15);
+  color: var(--accent-error);
+}
+
+.action-pill.action-neutral {
+  background-color: rgba(142, 142, 147, 0.15);
+  color: var(--text-secondary);
+}
+
+.confidence-cell {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-sm);
+  min-width: 120px;
+}
+
+.confidence-value {
+  font-weight: 600;
+  color: var(--text-primary);
+  font-size: 0.9rem;
+}
+
+.risk-cell {
+  min-width: 150px;
+  font-size: 0.85rem;
+}
+
+.risk-badge {
+  display: inline-block;
+  padding: var(--spacing-xs) var(--spacing-sm);
+  background-color: var(--bg-tertiary);
+  color: var(--text-secondary);
+  border-radius: var(--radius-sm);
+  font-size: 0.8rem;
+}
+
+@media (max-width: 768px) {
+  .scorecards-table {
+    font-size: 0.8rem;
+  }
+
+  .scorecards-table th,
+  .scorecards-table td {
+    padding: var(--spacing-xs) var(--spacing-sm);
+  }
+
+  .scorecards-controls {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .scorecards-sort {
+    width: 100%;
+    justify-content: space-between;
+  }
+}
+

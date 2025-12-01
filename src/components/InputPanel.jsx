@@ -11,6 +11,11 @@ const riskModes = [
   { label: 'Manual', value: 'manual', description: 'Trader-defined controls' },
 ]
 
+const executionModes = [
+  { label: 'Autonomous', value: 'autonomous', description: 'Auto-execute trades without confirmation' },
+  { label: 'Approval', value: 'approval', description: 'Require manual confirmation before execution' },
+]
+
 const InputPanel = ({ onSubmit }) => {
   const initialPrefs = () => {
     try {
@@ -21,7 +26,9 @@ const InputPanel = ({ onSubmit }) => {
         stopLoss: stored.stopLoss ?? 5,
         targetReturn: stored.targetReturn ?? 10,
         investmentAmount: stored.investmentAmount ?? 5000,
+        capitalAtRisk: stored.capitalAtRisk ?? 2,
         riskMode: stored.riskMode || 'auto',
+        executionMode: stored.executionMode || 'approval',
         horizon: stored.horizon || 'week',
         notes: '',
       }
@@ -32,7 +39,9 @@ const InputPanel = ({ onSubmit }) => {
         stopLoss: 5,
         targetReturn: 10,
         investmentAmount: 5000,
+        capitalAtRisk: 2,
         riskMode: 'auto',
+        executionMode: 'approval',
         horizon: 'week',
         notes: '',
       }
@@ -69,6 +78,12 @@ const InputPanel = ({ onSubmit }) => {
     if (!formData.investmentAmount || formData.investmentAmount <= 0) {
       newErrors.investmentAmount = 'Enter a valid investment amount'
     }
+    if (!formData.capitalAtRisk && formData.capitalAtRisk !== 0) {
+      newErrors.capitalAtRisk = 'Required'
+    }
+    if (formData.capitalAtRisk < 0 || formData.capitalAtRisk > 100) {
+      newErrors.capitalAtRisk = 'Must be between 0 and 100%'
+    }
 
     setErrors(newErrors)
     return Object.keys(newErrors).length === 0
@@ -83,11 +98,13 @@ const InputPanel = ({ onSubmit }) => {
       reason: formData.notes || `Target ${formData.targetReturn}% with ${formData.stopLoss}% stop-loss.`,
       confidence: formData.riskMode === 'auto' ? 85 : 65,
       riskMode: formData.riskMode,
+      executionMode: formData.executionMode,
       horizon: formData.horizon,
       parameters: {
         stopLoss: formData.stopLoss,
         targetReturn: formData.targetReturn,
         investmentAmount: formData.investmentAmount,
+        capitalAtRisk: formData.capitalAtRisk,
         horizon: formData.horizon,
       },
     })
@@ -226,6 +243,18 @@ const InputPanel = ({ onSubmit }) => {
             max={10000000}
           />
 
+          <Input
+            type="number"
+            label="Capital at risk (%)"
+            value={formData.capitalAtRisk}
+            onChange={(e) => handleChange('capitalAtRisk', Number(e.target.value))}
+            error={errors.capitalAtRisk}
+            fullWidth
+            min={0}
+            step={0.1}
+            max={100}
+          />
+
           <div className="input-field">
             <label className="input-panel-label">Horizon</label>
             <div className="horizon-options">
@@ -251,6 +280,23 @@ const InputPanel = ({ onSubmit }) => {
                   key={mode.value}
                   className={`risk-mode-option ${formData.riskMode === mode.value ? 'risk-mode-active' : ''}`}
                   onClick={() => handleChange('riskMode', mode.value)}
+                >
+                  <div className="risk-mode-title">{mode.label}</div>
+                  <div className="risk-mode-description">{mode.description}</div>
+                </button>
+              ))}
+            </div>
+          </div>
+
+          <div className="input-field">
+            <label className="input-panel-label">Execution Mode</label>
+            <div className="risk-mode-options">
+              {executionModes.map((mode) => (
+                <button
+                  type="button"
+                  key={mode.value}
+                  className={`risk-mode-option ${formData.executionMode === mode.value ? 'risk-mode-active' : ''}`}
+                  onClick={() => handleChange('executionMode', mode.value)}
                 >
                   <div className="risk-mode-title">{mode.label}</div>
                   <div className="risk-mode-description">{mode.description}</div>

@@ -4,6 +4,7 @@ import { createChart, ColorType } from 'lightweight-charts'
 import { useLiveFeed } from '../hooks/useLiveFeed'
 import { useChartDrawing } from '../hooks/useChartDrawing'
 import AssetSearch from './AssetSearch'
+import TimeIntervalSelector from './common/TimeIntervalSelector'
 import { useToast } from '../contexts/ToastContext'
 import './LiveFeed.css'
 
@@ -11,6 +12,7 @@ const LiveFeed = ({ signals, activeTool = 'cursor' }) => {
   const [candles, setCandles] = useState([])
   const [activeSymbol, setActiveSymbol] = useState('AAPL')
   const [selectedSymbol, setSelectedSymbol] = useState('AAPL')
+  const [selectedInterval, setSelectedInterval] = useState(5) // Default 5 minutes
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState(null)
   const [lastUpdate, setLastUpdate] = useState(null)
@@ -70,7 +72,7 @@ const LiveFeed = ({ signals, activeTool = 'cursor' }) => {
     try {
       const { symbol, candles: normalized } = normalizeCandles(feed)
       if (normalized.length === 0 || !feed) {
-        const mock = getMockCandles(selectedSymbol || activeSymbol, signals?.risk?.horizon)
+        const mock = getMockCandles(selectedSymbol || activeSymbol, signals?.risk?.horizon, selectedInterval)
         setCandles(mock.candles)
         setActiveSymbol(mock.symbol)
         setLastUpdate(new Date())
@@ -95,7 +97,7 @@ const LiveFeed = ({ signals, activeTool = 'cursor' }) => {
       }
     } catch (err) {
       console.error('Feed normalization failed:', err)
-      const mock = getMockCandles(selectedSymbol || activeSymbol, signals?.risk?.horizon)
+      const mock = getMockCandles(selectedSymbol || activeSymbol, signals?.risk?.horizon, selectedInterval)
       setCandles(mock.candles)
       setActiveSymbol(mock.symbol)
       setLastUpdate(new Date())
@@ -408,6 +410,16 @@ const LiveFeed = ({ signals, activeTool = 'cursor' }) => {
     }
   }, [memoizedCandles, updateChartData])
 
+  // Regenerate candles when interval changes
+  useEffect(() => {
+    if (selectedSymbol) {
+      const mock = getMockCandles(selectedSymbol, signals?.risk?.horizon || 'week', selectedInterval)
+      setCandles(mock.candles)
+      setActiveSymbol(mock.symbol)
+      setLastUpdate(new Date())
+    }
+  }, [selectedInterval, selectedSymbol, signals?.risk?.horizon])
+
   // Re-enable chart interactions when switching to cursor mode
   useEffect(() => {
     if (activeTool === 'cursor' && chartRef.current) {
@@ -477,7 +489,7 @@ const LiveFeed = ({ signals, activeTool = 'cursor' }) => {
                   setSelectedSymbol(assetData.symbol)
                   setActiveSymbol(assetData.symbol)
                   setLoading(true)
-                  const mock = getMockCandles(assetData.symbol)
+                  const mock = getMockCandles(assetData.symbol, signals?.risk?.horizon || 'week', selectedInterval)
                   setCandles(mock.candles)
                   setActiveSymbol(mock.symbol)
                   setLastUpdate(new Date())
@@ -507,6 +519,11 @@ const LiveFeed = ({ signals, activeTool = 'cursor' }) => {
           </div>
         </div>
         <div className="live-feed-badges">
+          <TimeIntervalSelector
+            value={selectedInterval}
+            onChange={setSelectedInterval}
+            className="live-feed-interval-selector"
+          />
           {source === 'websocket' ? (
             <span className="live-feed-source live-feed-source-online">Live</span>
           ) : (
@@ -770,12 +787,13 @@ const getSymbolBasePrice = (symbol) => {
   return priceMap[symbol?.toUpperCase()] || 175
 }
 
-const getMockCandles = (symbol = 'AAPL', horizon = 'week') => {
+const getMockCandles = (symbol = 'AAPL', horizon = 'week', intervalMinutes = 5) => {
   const now = Date.now()
   const basePrice = getSymbolBasePrice(symbol)
+  const intervalMs = intervalMinutes * 60 * 1000 // Convert minutes to milliseconds
+  const factor = getHorizonFactor(horizon)
   const candles = Array.from({ length: 40 }).map((_, index) => {
-    const factor = getHorizonFactor(horizon)
-    const time = now - (39 - index) * factor.interval
+    const time = now - (39 - index) * intervalMs
     const drift = Math.sin(index / 5) * (basePrice * factor.drift)
     const volatility = basePrice * factor.volatility
     const open = basePrice + drift + (Math.random() - 0.5) * volatility

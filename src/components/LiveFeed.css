@@ -40,6 +40,11 @@
   display: flex;
   align-items: center;
   gap: var(--spacing-sm);
+  flex-wrap: wrap;
+}
+
+.live-feed-interval-selector {
+  margin-right: auto;
 }
 
 .live-feed-source {

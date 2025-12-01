@@ -104,6 +104,36 @@ export const confirmDecision = async (decisionData) => {
 }
 
 /**
+ * Get predictions for assets via MCP-style endpoint
+ * @param {Object} params - Prediction parameters (symbol, risk params, etc.)
+ * @returns {Promise} Prediction array with symbol, predicted_price, score, action, confidence, risk
+ */
+export const predict = async (params = {}) => {
+  try {
+    const response = await apiClient.post('/tools/predict', params)
+    return response.data
+  } catch (error) {
+    console.error('Error getting predictions:', error)
+    throw error
+  }
+}
+
+/**
+ * Scan all assets and return shortlist via MCP-style endpoint
+ * @param {Object} params - Scan parameters (filters, criteria, etc.)
+ * @returns {Promise} Shortlist JSON with ranked assets
+ */
+export const scanAll = async (params = {}) => {
+  try {
+    const response = await apiClient.post('/tools/scan_all', params)
+    return response.data
+  } catch (error) {
+    console.error('Error scanning assets:', error)
+    throw error
+  }
+}
+
+/**
  * Send chat query to Uniguru chatbot
  * @param {string} query - User's chat query
  * @param {Object} context - Optional context data

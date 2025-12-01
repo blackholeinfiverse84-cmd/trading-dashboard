@@ -23,6 +23,7 @@ const MultiAssetBoard = lazy(() => import('./MultiAssetBoard'))
 const FeedbackInsights = lazy(() => import('./FeedbackInsights'))
 const MarketEvents = lazy(() => import('./MarketEvents'))
 const LangGraphReport = lazy(() => import('./LangGraphReport'))
+const Scorecards = lazy(() => import('./Scorecards'))
 
 // Loading fallback component with skeleton
 import { SkeletonCard } from './common/Skeleton'
@@ -186,6 +187,9 @@ const Dashboard = () => {
               <FeedbackInsights risk={riskContext} />
             </Suspense>
           </div>
+          <Suspense fallback={<ComponentLoader />}>
+            <Scorecards risk={riskContext} />
+          </Suspense>
           <Suspense fallback={<ComponentLoader />}>
             <MultiAssetBoard risk={riskContext} />
           </Suspense>
