@@ -525,3 +525,245 @@
   }
 }
 
+/* 4K Display Support (2560px and above) */
+@media (min-width: 2560px) {
+  .public-nav-container,
+  .landing-container,
+  .public-container,
+  .public-footer-container {
+    max-width: 2400px;
+  }
+
+  .public-nav {
+    padding: var(--spacing-lg) 0;
+  }
+
+  .public-nav-logo {
+    font-size: 1.5rem;
+  }
+
+  .logo-icon {
+    font-size: 1.75rem;
+  }
+
+  .landing-hero {
+    padding: var(--spacing-3xl) 0;
+  }
+
+  .landing-title {
+    font-size: 4.5rem;
+    margin-bottom: var(--spacing-lg);
+  }
+
+  .landing-subtitle {
+    font-size: 1.5rem;
+    margin-bottom: var(--spacing-2xl);
+  }
+
+  .landing-section-title {
+    font-size: 3.5rem;
+    margin-bottom: var(--spacing-2xl);
+  }
+
+  .landing-features,
+  .landing-how-it-works,
+  .landing-cta-section {
+    padding: var(--spacing-3xl) 0;
+  }
+
+  .features-grid {
+    grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
+    gap: var(--spacing-xl);
+  }
+
+  .feature-card {
+    padding: var(--spacing-2xl);
+  }
+
+  .feature-icon {
+    font-size: 4rem;
+    margin-bottom: var(--spacing-lg);
+  }
+
+  .feature-card h3 {
+    font-size: 2rem;
+    margin-bottom: var(--spacing-md);
+  }
+
+  .steps-grid {
+    grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+    gap: var(--spacing-2xl);
+  }
+
+  .step-number {
+    width: 80px;
+    height: 80px;
+    font-size: 2rem;
+    margin-bottom: var(--spacing-lg);
+  }
+
+  .step-item h3 {
+    font-size: 1.75rem;
+    margin-bottom: var(--spacing-md);
+  }
+
+  .cta-card {
+    max-width: 900px;
+    padding: var(--spacing-3xl);
+  }
+
+  .cta-card h2 {
+    font-size: 2.75rem;
+    margin-bottom: var(--spacing-lg);
+  }
+
+  .cta-card p {
+    font-size: 1.375rem;
+    margin-bottom: var(--spacing-2xl);
+  }
+
+  .public-card {
+    padding: var(--spacing-3xl);
+  }
+
+  .public-card h1 {
+    font-size: 3.5rem;
+    margin-bottom: var(--spacing-xl);
+  }
+
+  .about-section h2 {
+    font-size: 2.5rem;
+    margin-bottom: var(--spacing-lg);
+  }
+
+  .about-feature-item h3 {
+    font-size: 1.75rem;
+    margin-bottom: var(--spacing-md);
+  }
+
+  .contact-info h3 {
+    font-size: 1.75rem;
+  }
+}
+
+/* Ultra 4K Display Support (3840px and above) */
+@media (min-width: 3840px) {
+  .public-nav-container,
+  .landing-container,
+  .public-container,
+  .public-footer-container {
+    max-width: 3600px;
+  }
+
+  .public-nav {
+    padding: var(--spacing-xl) 0;
+  }
+
+  .public-nav-logo {
+    font-size: 1.75rem;
+  }
+
+  .logo-icon {
+    font-size: 2rem;
+  }
+
+  .landing-hero {
+    padding: calc(var(--spacing-3xl) * 1.5) 0;
+  }
+
+  .landing-title {
+    font-size: 5.5rem;
+    margin-bottom: var(--spacing-xl);
+  }
+
+  .landing-subtitle {
+    font-size: 1.75rem;
+    margin-bottom: calc(var(--spacing-2xl) * 1.5);
+  }
+
+  .landing-section-title {
+    font-size: 4.5rem;
+    margin-bottom: calc(var(--spacing-2xl) * 1.5);
+  }
+
+  .landing-features,
+  .landing-how-it-works,
+  .landing-cta-section {
+    padding: calc(var(--spacing-3xl) * 1.5) 0;
+  }
+
+  .features-grid {
+    grid-template-columns: repeat(auto-fit, minmax(500px, 1fr));
+    gap: var(--spacing-2xl);
+  }
+
+  .feature-card {
+    padding: var(--spacing-3xl);
+  }
+
+  .feature-icon {
+    font-size: 5rem;
+    margin-bottom: var(--spacing-xl);
+  }
+
+  .feature-card h3 {
+    font-size: 2.5rem;
+    margin-bottom: var(--spacing-lg);
+  }
+
+  .steps-grid {
+    grid-template-columns: repeat(auto-fit, minmax(450px, 1fr));
+    gap: var(--spacing-3xl);
+  }
+
+  .step-number {
+    width: 100px;
+    height: 100px;
+    font-size: 2.5rem;
+    margin-bottom: var(--spacing-xl);
+  }
+
+  .step-item h3 {
+    font-size: 2rem;
+    margin-bottom: var(--spacing-lg);
+  }
+
+  .cta-card {
+    max-width: 1100px;
+    padding: calc(var(--spacing-3xl) * 1.5);
+  }
+
+  .cta-card h2 {
+    font-size: 3.5rem;
+    margin-bottom: var(--spacing-xl);
+  }
+
+  .cta-card p {
+    font-size: 1.625rem;
+    margin-bottom: calc(var(--spacing-2xl) * 1.5);
+  }
+
+  .public-card {
+    padding: calc(var(--spacing-3xl) * 1.5);
+  }
+
+  .public-card h1 {
+    font-size: 4.5rem;
+    margin-bottom: var(--spacing-2xl);
+  }
+
+  .about-section h2 {
+    font-size: 3rem;
+    margin-bottom: var(--spacing-xl);
+  }
+
+  .about-feature-item h3 {
+    font-size: 2rem;
+    margin-bottom: var(--spacing-lg);
+  }
+
+  .contact-info h3 {
+    font-size: 2rem;
+  }
+}
+

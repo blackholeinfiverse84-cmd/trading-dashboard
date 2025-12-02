@@ -251,3 +251,107 @@ a:hover {
   }
 }
 
+/* 4K Display Support (2560px and above) */
+@media (min-width: 2560px) {
+  :root {
+    /* Enhanced spacing for 4K displays */
+    --spacing-xs: 0.375rem;   /* 6px */
+    --spacing-sm: 0.75rem;    /* 12px */
+    --spacing-md: 1.5rem;     /* 24px */
+    --spacing-lg: 2.25rem;    /* 36px */
+    --spacing-xl: 3rem;       /* 48px */
+    --spacing-2xl: 4.5rem;    /* 72px */
+    --spacing-3xl: 6rem;      /* 96px */
+    
+    /* Enhanced border radius */
+    --radius-sm: 0.375rem;
+    --radius-md: 0.75rem;
+    --radius-lg: 1.125rem;
+    --radius-xl: 1.5rem;
+  }
+
+  html {
+    font-size: 16px; /* Base font size for 4K */
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    text-rendering: optimizeLegibility;
+  }
+
+  body {
+    font-size: 1rem;
+    line-height: 1.6;
+  }
+
+  /* Enhanced typography for 4K */
+  h1 { font-size: 3rem; }      /* 48px */
+  h2 { font-size: 2.5rem; }    /* 40px */
+  h3 { font-size: 2rem; }      /* 32px */
+  h4 { font-size: 1.75rem; }   /* 28px */
+  h5 { font-size: 1.5rem; }    /* 24px */
+  h6 { font-size: 1.25rem; }   /* 20px */
+
+  /* Enhanced container for 4K */
+  .container {
+    max-width: 2400px;
+    padding: 0 var(--spacing-xl);
+  }
+
+  /* Enhanced scrollbar for 4K */
+  ::-webkit-scrollbar {
+    width: 12px;
+    height: 12px;
+  }
+
+  ::-webkit-scrollbar-thumb {
+    border-radius: 6px;
+  }
+}
+
+/* Ultra 4K Display Support (3840px and above) */
+@media (min-width: 3840px) {
+  :root {
+    /* Ultra spacing for true 4K displays */
+    --spacing-xs: 0.5rem;      /* 8px */
+    --spacing-sm: 1rem;        /* 16px */
+    --spacing-md: 2rem;        /* 32px */
+    --spacing-lg: 3rem;        /* 48px */
+    --spacing-xl: 4rem;        /* 64px */
+    --spacing-2xl: 6rem;       /* 96px */
+    --spacing-3xl: 8rem;       /* 128px */
+    
+    /* Ultra border radius */
+    --radius-sm: 0.5rem;
+    --radius-md: 1rem;
+    --radius-lg: 1.5rem;
+    --radius-xl: 2rem;
+  }
+
+  html {
+    font-size: 18px; /* Larger base font for ultra 4K */
+  }
+
+  /* Ultra typography for true 4K */
+  h1 { font-size: 3.5rem; }    /* 56px */
+  h2 { font-size: 3rem; }      /* 48px */
+  h3 { font-size: 2.5rem; }    /* 40px */
+  h4 { font-size: 2rem; }      /* 32px */
+  h5 { font-size: 1.75rem; }   /* 28px */
+  h6 { font-size: 1.5rem; }    /* 24px */
+
+  /* Ultra container for true 4K */
+  .container {
+    max-width: 3600px;
+    padding: 0 var(--spacing-2xl);
+  }
+
+  /* Ultra scrollbar for true 4K */
+  ::-webkit-scrollbar {
+    width: 16px;
+    height: 16px;
+  }
+
+  ::-webkit-scrollbar-thumb {
+    border-radius: 8px;
+  }
+}
+
