@@ -77,6 +77,12 @@
   margin-left: 0.35rem;
 }
 
+.dashboard-title {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
 .dashboard-title h1 {
   font-size: 1.25rem; /* Further reduced */
   font-weight: 700;
@@ -173,6 +179,8 @@
     align-items: flex-start;
     gap: var(--spacing-md);
   }
+
+
   
   .dashboard-title h1 {
     font-size: 1.5rem;
@@ -183,6 +191,7 @@
   .dashboard {
     padding: var(--spacing-sm);
   }
+
 
   .dashboard-title h1 {
     font-size: 1.35rem;
@@ -211,6 +220,7 @@
     padding-bottom: var(--spacing-md);
     gap: var(--spacing-md);
   }
+
 
   .dashboard-title h1 {
     font-size: 2.5rem;
@@ -282,6 +292,7 @@
     padding-bottom: var(--spacing-lg);
     gap: var(--spacing-lg);
   }
+
 
   .dashboard-title h1 {
     font-size: 3rem;

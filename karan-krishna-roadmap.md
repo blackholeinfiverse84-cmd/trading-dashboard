@@ -6,6 +6,241 @@ This guide provides **complete connectivity details** for integrating Krishna's 
 
 ---
 
+## 🚀 QUICK START SETUP (For Karan & Krishna)
+
+### Prerequisites
+
+Before connecting your backends, ensure you have:
+
+- **Node.js** 18+ installed ([Download](https://nodejs.org/))
+- **npm** or **yarn** package manager
+- **Git** installed
+- Your backend APIs ready (Krishna's prediction engine & Karan's execution engine)
+
+### Step 1: Clone & Install
+
+```bash
+# Navigate to project directory
+cd trading-dashboard
+
+# Install dependencies
+npm install
+```
+
+**Expected Output:**
+```
+✓ Dependencies installed successfully
+✓ No errors
+```
+
+### Step 2: Environment Configuration
+
+Create a `.env` file in the `trading-dashboard/` folder:
+
+```bash
+# Windows (PowerShell)
+New-Item -Path .env -ItemType File
+
+# Mac/Linux
+touch .env
+```
+
+Add the following content to `.env`:
+
+```env
+# Main API Base URL (Krishna & Karan)
+# Replace with your actual backend URL
+VITE_API_BASE_URL=http://localhost:3000/api
+
+# Authentication API Base URL
+# Replace with your auth server URL
+VITE_AUTH_API_BASE_URL=http://localhost:5000/api
+
+# WebSocket URL (Optional - for real-time feed)
+# Leave empty if using REST polling only
+VITE_FEED_WS_URL=wss://feed.yourdomain.com/socket
+```
+
+**Important Notes:**
+- Replace `localhost:3000` with your actual backend server URL
+- Replace `localhost:5000` with your actual auth server URL
+- If using different ports, update accordingly
+- For production, use HTTPS URLs (e.g., `https://api.yourdomain.com`)
+
+### Step 3: Verify Installation
+
+```bash
+# Check if dependencies are installed
+npm list --depth=0
+
+# Verify build works
+npm run build
+```
+
+**Expected Output:**
+```
+✓ Build completed successfully
+✓ No TypeScript errors
+✓ No linting errors
+```
+
+### Step 4: Start Development Server
+
+```bash
+npm run dev
+```
+
+**Expected Output:**
+```
+  VITE v7.2.4  ready in 500 ms
+
+  ➜  Local:   http://localhost:5173/
+  ➜  Network: use --host to expose
+```
+
+**Open your browser:** `http://localhost:5173`
+
+### Step 5: Verify Frontend is Running
+
+1. **Open Browser Console** (F12)
+2. **Check for Errors:**
+   - Should see: "No errors" or minimal warnings
+   - API calls will fail initially (expected - backends not connected yet)
+
+3. **Test Mock Data:**
+   - Dashboard should load with mock data
+   - Scorecards should show sample predictions
+   - Live Feed should display sample chart
+   - All components should render without errors
+
+### Step 6: Connect Your Backends
+
+#### For Krishna (Prediction Engine):
+
+1. **Start your backend server** on the port specified in `VITE_API_BASE_URL`
+2. **Verify endpoints are accessible:**
+   ```bash
+   # Test from terminal
+   curl http://localhost:3000/api/feed/live?symbol=AAPL
+   curl -X POST http://localhost:3000/api/tools/predict -H "Content-Type: application/json" -d '{"symbols":["AAPL"]}'
+   curl -X POST http://localhost:3000/api/tools/scan_all -H "Content-Type: application/json" -d '{"filters":{"minScore":50}}'
+   ```
+
+3. **Enable CORS** in your backend:
+   ```python
+   # Python/Flask example
+   from flask_cors import CORS
+   CORS(app, origins=["http://localhost:5173"])
+   ```
+
+#### For Karan (Execution Engine):
+
+1. **Start your backend server** on the port specified in `VITE_API_BASE_URL`
+2. **Verify endpoint is accessible:**
+   ```bash
+   curl -X POST http://localhost:3000/api/tools/confirm \
+     -H "Content-Type: application/json" \
+     -H "Authorization: Bearer <token>" \
+     -d '{"symbol":"AAPL","action":"BUY","price":175.42,"quantity":10}'
+   ```
+
+3. **Enable CORS** in your backend (same as above)
+
+### Step 7: Test Integration
+
+1. **Refresh the frontend** (`http://localhost:5173`)
+2. **Open Browser Console** (F12) → Network tab
+3. **Test each feature:**
+   - **Live Feed:** Search for a symbol (e.g., "AAPL")
+   - **Scorecards:** Should fetch from `/tools/scan_all`
+   - **Input Panel:** Fill form and click "Predict + Action Preview"
+   - **Action Panel:** Click "Confirm" on a decision
+   - **Chat Panel:** Send a message
+
+4. **Verify API Calls:**
+   - Check Network tab for successful API calls
+   - Verify responses match expected format (see endpoint docs below)
+   - Check for CORS errors (should be none)
+
+### Step 8: Troubleshooting
+
+#### Problem: "Cannot connect to backend"
+
+**Solutions:**
+- Verify backend server is running
+- Check `VITE_API_BASE_URL` in `.env` matches your backend URL
+- Verify CORS is enabled on backend
+- Check firewall/network settings
+
+#### Problem: "CORS Error"
+
+**Solutions:**
+```python
+# Backend CORS setup (Python/Flask)
+from flask_cors import CORS
+CORS(app, origins=["http://localhost:5173", "http://localhost:3000"])
+
+# Backend CORS setup (Node.js/Express)
+const cors = require('cors')
+app.use(cors({
+  origin: ['http://localhost:5173', 'http://localhost:3000'],
+  credentials: true
+}))
+```
+
+#### Problem: "401 Unauthorized"
+
+**Solutions:**
+- Check if token is stored: `localStorage.getItem('token')`
+- Verify token is valid and not expired
+- Check Authorization header is being sent (see Network tab)
+
+#### Problem: "404 Not Found"
+
+**Solutions:**
+- Verify endpoint URL is correct
+- Check base URL in `.env` file
+- Verify backend routes match expected paths
+
+#### Problem: "Build Errors"
+
+**Solutions:**
+```bash
+# Clear cache and reinstall
+rm -rf node_modules package-lock.json
+npm install
+
+# Rebuild
+npm run build
+```
+
+### Current Project Status ✅
+
+**Frontend Status:** 100% Complete
+- ✅ All components implemented
+- ✅ All API functions ready
+- ✅ Mock data fallback working
+- ✅ Error handling in place
+- ✅ Responsive design (mobile/tablet/desktop/4K)
+- ✅ Authentication system ready
+- ✅ Build passes without errors
+
+**Ready for Integration:**
+- ✅ Krishna's endpoints: `/feed/live`, `/tools/predict`, `/tools/scan_all`
+- ✅ Karan's endpoint: `/tools/confirm`
+- ✅ Uniguru endpoint: `/chat/query`
+- ✅ Analytics endpoint: `/analytics/sentiment`
+- ✅ Auth endpoints: `/auth/login`, `/auth/register`, `/auth/verify`
+
+**What You Need to Do:**
+1. ✅ Set up `.env` file (Step 2)
+2. ✅ Start your backend servers
+3. ✅ Enable CORS on your backends
+4. ✅ Test endpoints match expected format
+5. ✅ Verify integration works
+
+---
+
 ## 🎯 Quick Overview
 
 The dashboard connects to **7 main API endpoints**:
@@ -1348,5 +1583,149 @@ app.use(cors({
 
 ---
 
+## ✅ Integration Verification Checklist
+
+Use this checklist to verify everything is working correctly after connecting your backends:
+
+### Pre-Integration Setup
+- [ ] Node.js 18+ installed
+- [ ] Dependencies installed (`npm install`)
+- [ ] `.env` file created with correct URLs
+- [ ] Build passes (`npm run build`)
+- [ ] Dev server starts (`npm run dev`)
+- [ ] Frontend loads without errors (mock data should display)
+
+### Backend Setup
+- [ ] Krishna's backend server running
+- [ ] Karan's backend server running (or same server)
+- [ ] Auth server running (if separate)
+- [ ] CORS enabled on all backends
+- [ ] Endpoints accessible (test with curl/Postman)
+
+### API Endpoint Verification
+
+#### Krishna's Endpoints
+- [ ] `GET /feed/live?symbol=AAPL` returns valid response
+- [ ] `POST /tools/predict` accepts request and returns predictions
+- [ ] `POST /tools/scan_all` accepts request and returns ranked list
+- [ ] Response formats match specifications above
+
+#### Karan's Endpoint
+- [ ] `POST /tools/confirm` accepts trade confirmation
+- [ ] Returns order ID and execution details
+- [ ] Authentication works (Bearer token)
+
+#### Other Endpoints
+- [ ] `POST /chat/query` returns chat responses
+- [ ] `GET /analytics/sentiment` returns sentiment data
+- [ ] Auth endpoints (`/auth/login`, `/auth/register`) work
+
+### Frontend Integration Testing
+
+#### Live Feed
+- [ ] Search for symbol (e.g., "AAPL") loads chart
+- [ ] Chart displays candlestick data
+- [ ] Real-time updates work (if WebSocket enabled)
+- [ ] No console errors
+
+#### Scorecards
+- [ ] Table displays ranked predictions
+- [ ] Sorting works (click column headers)
+- [ ] Refresh button updates data
+- [ ] Data comes from `/tools/scan_all`
+
+#### Input Panel
+- [ ] All fields work (stop-loss, target, amount, etc.)
+- [ ] "Predict + Action Preview" button works
+- [ ] Preview card displays prediction
+- [ ] Submit button sends data correctly
+
+#### Action Panel
+- [ ] Decisions display correctly
+- [ ] "Confirm" button sends to `/tools/confirm`
+- [ ] Success/error messages display
+- [ ] Order ID displays after confirmation
+
+#### Chat Panel
+- [ ] Messages send to `/chat/query`
+- [ ] Responses display correctly
+- [ ] Rich format responses render properly
+- [ ] Conversation history works
+
+#### Authentication
+- [ ] Login page works
+- [ ] Register page works
+- [ ] Token stored in localStorage
+- [ ] Protected routes redirect if not logged in
+- [ ] Logout works
+
+### Error Handling
+- [ ] API errors display user-friendly messages
+- [ ] Network errors handled gracefully
+- [ ] Mock data shows if API unavailable
+- [ ] No console errors in production build
+
+### Performance
+- [ ] Page loads quickly (< 3 seconds)
+- [ ] API calls complete in reasonable time
+- [ ] No memory leaks (check browser DevTools)
+- [ ] Responsive on mobile/tablet/desktop
+
+### Final Verification
+- [ ] All features work end-to-end
+- [ ] No console errors
+- [ ] No network errors (except expected 404s for optional features)
+- [ ] Build for production succeeds (`npm run build`)
+- [ ] Production preview works (`npm run preview`)
+
+---
+
+## 🎯 Quick Reference: Common Commands
+
+```bash
+# Install dependencies
+npm install
+
+# Start development server
+npm run dev
+
+# Build for production
+npm run build
+
+# Preview production build
+npm run preview
+
+# Check for errors
+npm run build
+
+# Test API endpoints (from terminal)
+curl http://localhost:3000/api/feed/live?symbol=AAPL
+curl -X POST http://localhost:3000/api/tools/predict \
+  -H "Content-Type: application/json" \
+  -d '{"symbols":["AAPL"]}'
+```
+
+---
+
+## 📞 Support & Questions
+
+If you encounter issues:
+
+1. **Check Browser Console** (F12) for errors
+2. **Check Network Tab** for failed API calls
+3. **Verify `.env` file** has correct URLs
+4. **Test endpoints directly** with curl/Postman
+5. **Check CORS settings** on backend
+6. **Verify backend servers are running**
+
+**Common Issues:**
+- CORS errors → Enable CORS on backend
+- 401 errors → Check token in localStorage
+- 404 errors → Verify endpoint URLs
+- Network errors → Check backend is running
+
+---
+
 **Last Updated:** 2024  
-**Status:** All endpoints documented and ready for integration
+**Status:** All endpoints documented and ready for integration  
+**Frontend Status:** ✅ 100% Complete - Ready for Backend Connection
