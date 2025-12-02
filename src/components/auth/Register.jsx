@@ -24,8 +24,8 @@ const Register = () => {
     setLoading(true)
 
     // Validation
-    if (!username || !password) {
-      setError('Username and password are required')
+    if (!username || !email || !password) {
+      setError('Username, email and password are required')
       setLoading(false)
       return
     }
@@ -42,7 +42,7 @@ const Register = () => {
       return
     }
 
-    const result = await register(username, email || undefined, password)
+    const result = await register(username, email, password)
     setLoading(false)
 
     if (result.success) {

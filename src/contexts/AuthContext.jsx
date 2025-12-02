@@ -1,5 +1,5 @@
 import React, { createContext, useState, useContext, useEffect } from 'react'
-import { authAPI } from '../services/api'
+import { supabase } from '../services/supabaseClient'
 
 const AuthContext = createContext(null)
 
@@ -11,9 +11,8 @@ export const useAuth = () => {
   return context
 }
 
-const DEFAULT_USER = { username: 'Guest Trader' }
+const DEFAULT_USER = { username: 'Guest Trader', email: null }
 const STORAGE_KEY = 'trading:user'
-const TOKEN_KEY = 'token'
 
 const loadStoredUser = () => {
   if (typeof window === 'undefined') return null
@@ -29,76 +28,87 @@ const loadStoredUser = () => {
 export const AuthProvider = ({ children }) => {
   const [user, setUser] = useState(() => loadStoredUser() || DEFAULT_USER)
   const [loading, setLoading] = useState(true)
-  const [isAuthenticated, setIsAuthenticated] = useState(() => {
-    const token = typeof window !== 'undefined' ? localStorage.getItem(TOKEN_KEY) : null
-    return Boolean(token && loadStoredUser())
-  })
+  const [isAuthenticated, setIsAuthenticated] = useState(false)
 
-  // Verify token on mount
+  // Initialize Supabase session on mount and subscribe to auth changes
   useEffect(() => {
-    const verifyAuth = async () => {
-      const token = localStorage.getItem(TOKEN_KEY)
-      if (!token) {
-        setLoading(false)
-        return
-      }
-
+    const initAuth = async () => {
+      setLoading(true)
       try {
-        const response = await authAPI.verifyToken()
-        if (response.success && response.user) {
+        const { data, error } = await supabase.auth.getSession()
+        if (error) {
+          setUser(DEFAULT_USER)
+          setIsAuthenticated(false)
+        } else if (data?.session?.user) {
+          const supaUser = data.session.user
+          const username = supaUser.user_metadata?.username || supaUser.email?.split('@')[0] || 'Trader'
           const userData = {
-            id: response.user.id,
-            username: response.user.username,
-            email: response.user.email,
+            id: supaUser.id,
+            username,
+            email: supaUser.email,
           }
           setUser(userData)
           setIsAuthenticated(true)
           localStorage.setItem(STORAGE_KEY, JSON.stringify(userData))
         } else {
-          // Token invalid, clear storage
-          localStorage.removeItem(TOKEN_KEY)
-          localStorage.removeItem(STORAGE_KEY)
           setUser(DEFAULT_USER)
           setIsAuthenticated(false)
         }
-      } catch (error) {
-        // Token verification failed, clear storage
-        localStorage.removeItem(TOKEN_KEY)
-        localStorage.removeItem(STORAGE_KEY)
-        setUser(DEFAULT_USER)
-        setIsAuthenticated(false)
       } finally {
         setLoading(false)
       }
+
+      const { data: listener } = supabase.auth.onAuthStateChange((_event, session) => {
+        if (session?.user) {
+          const supaUser = session.user
+          const username = supaUser.user_metadata?.username || supaUser.email?.split('@')[0] || 'Trader'
+          const userData = {
+            id: supaUser.id,
+            username,
+            email: supaUser.email,
+          }
+          setUser(userData)
+          setIsAuthenticated(true)
+          localStorage.setItem(STORAGE_KEY, JSON.stringify(userData))
+        } else {
+          setUser(DEFAULT_USER)
+          setIsAuthenticated(false)
+          localStorage.removeItem(STORAGE_KEY)
+        }
+      })
+
+      return () => {
+        listener?.subscription?.unsubscribe()
+      }
     }
 
-    verifyAuth()
+    initAuth()
   }, [])
 
-  const login = async (username, password) => {
+  const login = async (email, password) => {
     setLoading(true)
     try {
-      const response = await authAPI.login(username, password)
-      if (response.success && response.token && response.user) {
-        // Store token and user data
-        localStorage.setItem(TOKEN_KEY, response.token)
-        const userData = {
-          id: response.user.id,
-          username: response.user.username,
-          email: response.user.email,
-        }
-        localStorage.setItem(STORAGE_KEY, JSON.stringify(userData))
-        setUser(userData)
-        setIsAuthenticated(true)
+      const { data, error } = await supabase.auth.signInWithPassword({ email, password })
+      if (error) {
         setLoading(false)
-        return { success: true, message: response.message }
-      } else {
-        setLoading(false)
-        return { success: false, message: response.message || 'Login failed' }
+        return { success: false, message: error.message || 'Login failed' }
       }
+
+      const supaUser = data.user
+      const username = supaUser.user_metadata?.username || supaUser.email?.split('@')[0] || 'Trader'
+      const userData = {
+        id: supaUser.id,
+        username,
+        email: supaUser.email,
+      }
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(userData))
+      setUser(userData)
+      setIsAuthenticated(true)
+      setLoading(false)
+      return { success: true, message: 'Login successful' }
     } catch (error) {
       setLoading(false)
-      const message = error.response?.data?.message || error.message || 'Login failed. Please try again.'
+      const message = error.message || 'Login failed. Please try again.'
       return { success: false, message }
     }
   }
@@ -106,62 +116,69 @@ export const AuthProvider = ({ children }) => {
   const register = async (username, email, password) => {
     setLoading(true)
     try {
-      const response = await authAPI.register(username, email, password)
-      if (response.success && response.token && response.user) {
-        // Store token and user data
-        localStorage.setItem(TOKEN_KEY, response.token)
-        const userData = {
-          id: response.user.id,
-          username: response.user.username,
-          email: response.user.email,
-        }
-        localStorage.setItem(STORAGE_KEY, JSON.stringify(userData))
-        setUser(userData)
-        setIsAuthenticated(true)
+      const { data, error } = await supabase.auth.signUp({
+        email,
+        password,
+        options: {
+          data: {
+            username,
+          },
+        },
+      })
+
+      if (error) {
         setLoading(false)
-        return { success: true, message: response.message }
-      } else {
-        setLoading(false)
-        return { success: false, message: response.message || 'Registration failed' }
+        return { success: false, message: error.message || 'Registration failed' }
+      }
+
+      const supaUser = data.user
+      const derivedUsername = username || supaUser?.email?.split('@')[0] || 'Trader'
+      const userData = {
+        id: supaUser?.id,
+        username: derivedUsername,
+        email: supaUser?.email || email,
+      }
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(userData))
+      setUser(userData)
+      setIsAuthenticated(Boolean(data.session))
+      setLoading(false)
+      return {
+        success: true,
+        message: data.session ? 'Registration successful.' : 'Check your email to confirm your account.',
       }
     } catch (error) {
       setLoading(false)
-      const message = error.response?.data?.message || error.message || 'Registration failed. Please try again.'
+      const message = error.message || 'Registration failed. Please try again.'
       return { success: false, message }
     }
   }
 
-  const logout = () => {
-    localStorage.removeItem(TOKEN_KEY)
+  const logout = async () => {
+    await supabase.auth.signOut()
     localStorage.removeItem(STORAGE_KEY)
     setUser(DEFAULT_USER)
     setIsAuthenticated(false)
   }
 
   const checkAuth = async () => {
-    const token = localStorage.getItem(TOKEN_KEY)
-    if (!token) {
-      setIsAuthenticated(false)
-      setUser(DEFAULT_USER)
-      return
-    }
-
     try {
-      const response = await authAPI.verifyToken()
-      if (response.success && response.user) {
+      const { data } = await supabase.auth.getSession()
+      if (data?.session?.user) {
+        const supaUser = data.session.user
+        const username = supaUser.user_metadata?.username || supaUser.email?.split('@')[0] || 'Trader'
         const userData = {
-          id: response.user.id,
-          username: response.user.username,
-          email: response.user.email,
+          id: supaUser.id,
+          username,
+          email: supaUser.email,
         }
         setUser(userData)
         setIsAuthenticated(true)
         localStorage.setItem(STORAGE_KEY, JSON.stringify(userData))
       } else {
-        logout()
+        await logout()
       }
     } catch (error) {
-      logout()
+      await logout()
     }
   }
 

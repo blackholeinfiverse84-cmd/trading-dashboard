@@ -338,3 +338,4 @@ const getMockPredictions = () => [
 
 export default Scorecards
 
+
