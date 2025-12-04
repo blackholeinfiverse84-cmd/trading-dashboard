@@ -8,6 +8,41 @@ import TimeIntervalSelector from './common/TimeIntervalSelector'
 import { useToast } from '../contexts/ToastContext'
 import './LiveFeed.css'
 
+// Infer a clean asset-type label from the symbol for the header strip
+const getAssetTypeLabel = (symbol) => {
+  if (!symbol) return 'ASSET'
+  const upper = symbol.toUpperCase()
+
+  // Very lightweight classification – extendable later
+  if (upper.endsWith('USD') || upper === 'BTC' || upper === 'ETH' || upper === 'BNB') {
+    return 'CRYPTO'
+  }
+  if (['GOLD', 'SILVER', 'CRUDE'].includes(upper)) {
+    return 'COMMODITY'
+  }
+  if (upper === 'NIFTY' || upper === 'SENSEX' || upper === 'SPX' || upper === 'DJI') {
+    return 'INDEX'
+  }
+  return 'EQUITY'
+}
+
+// Timeframe presets for a quick-access strip (in minutes)
+const TIMEFRAME_PRESETS = [
+  { label: '1m', value: 1 },
+  { label: '5m', value: 5 },
+  { label: '15m', value: 15 },
+  { label: '1H', value: 60 },
+  { label: '1D', value: 1440 },
+]
+
+// Chart type presets for the scroller control
+const CHART_TYPES = [
+  { id: 'candles', label: 'Candle' },
+  { id: 'line', label: 'Line' },
+  { id: 'area', label: 'Area' },
+  { id: 'all', label: 'All' },
+]
+
 const LiveFeed = ({ signals, activeTool = 'cursor' }) => {
   const [candles, setCandles] = useState([])
   const [activeSymbol, setActiveSymbol] = useState('AAPL')
@@ -18,12 +53,19 @@ const LiveFeed = ({ signals, activeTool = 'cursor' }) => {
   const [lastUpdate, setLastUpdate] = useState(null)
   const [candleCountdown, setCandleCountdown] = useState(0)
   const [showVolume, setShowVolume] = useState(false)
+  const [chartType, setChartType] = useState('candles') // candles | line | area | all
+  const [showEma, setShowEma] = useState(true)
   const [emaValue, setEmaValue] = useState(0)
   const chartContainerRef = useRef(null)
   const chartRef = useRef(null)
   const candleSeriesRef = useRef(null)
+  const lineSeriesRef = useRef(null)
+  const areaSeriesRef = useRef(null)
   const emaSeriesRef = useRef(null)
   const volumeSeriesRef = useRef(null)
+  const lastPriceLineRef = useRef(null)
+  const stopLossLineRef = useRef(null)
+  const targetLineRef = useRef(null)
   const drawingOverlayRef = useRef(null)
   const crosshairObserverRef = useRef(null)
   const { feed, error: feedError, source } = useLiveFeed(selectedSymbol)
@@ -240,6 +282,26 @@ const LiveFeed = ({ signals, activeTool = 'cursor' }) => {
       priceScaleId: 'right',
       borderVisible: true,
       wickVisible: true,
+    })
+
+    // Line series (close price)
+    lineSeriesRef.current = chartRef.current.addLineSeries({
+      color: '#26a69a',
+      lineWidth: 2,
+      priceScaleId: 'right',
+      priceLineVisible: false,
+      lastValueVisible: false,
+    })
+
+    // Area series (close price with fill)
+    areaSeriesRef.current = chartRef.current.addAreaSeries({
+      topColor: 'rgba(41, 98, 255, 0.4)',
+      bottomColor: 'rgba(41, 98, 255, 0.05)',
+      lineColor: '#2962ff',
+      lineWidth: 2,
+      priceScaleId: 'right',
+      priceLineVisible: false,
+      lastValueVisible: false,
     })
 
     // Add EMA indicator (9-period for TradingView style)
@@ -545,13 +607,31 @@ const LiveFeed = ({ signals, activeTool = 'cursor' }) => {
     }
     
     updateTimeoutRef.current = setTimeout(() => {
-      if (candleSeriesRef.current && data.length > 0) {
+      if (!data.length) return
+
+      // Candles
+      if (candleSeriesRef.current) {
         candleSeriesRef.current.setData(data)
-        // Only auto-fit on very first load
-        if (isInitialLoadRef.current && chartRef.current) {
-          chartRef.current.timeScale().fitContent()
-          isInitialLoadRef.current = false
-        }
+      }
+
+      // Line & area series use close price only
+      const lineData = data.map((candle) => ({
+        time: candle.time,
+        value: candle.close,
+      }))
+
+      if (lineSeriesRef.current) {
+        lineSeriesRef.current.setData(lineData)
+      }
+
+      if (areaSeriesRef.current) {
+        areaSeriesRef.current.setData(lineData)
+      }
+
+      // Only auto-fit on very first load
+      if (isInitialLoadRef.current && chartRef.current) {
+        chartRef.current.timeScale().fitContent()
+        isInitialLoadRef.current = false
       }
     }, 16) // ~60fps update rate
   }, [])
@@ -567,6 +647,27 @@ const LiveFeed = ({ signals, activeTool = 'cursor' }) => {
       }
     }
   }, [memoizedCandles, updateChartData])
+
+  // Switch visible series based on chartType
+  useEffect(() => {
+    if (!chartRef.current) return
+
+    if (candleSeriesRef.current) {
+      candleSeriesRef.current.applyOptions({
+        visible: chartType === 'candles' || chartType === 'all',
+      })
+    }
+    if (lineSeriesRef.current) {
+      lineSeriesRef.current.applyOptions({
+        visible: chartType === 'line' || chartType === 'all',
+      })
+    }
+    if (areaSeriesRef.current) {
+      areaSeriesRef.current.applyOptions({
+        visible: chartType === 'area' || chartType === 'all',
+      })
+    }
+  }, [chartType])
 
   // Regenerate candles when interval changes
   useEffect(() => {
@@ -637,13 +738,19 @@ const LiveFeed = ({ signals, activeTool = 'cursor' }) => {
 
   // Update EMA when candles change (9-period for TradingView style)
   useEffect(() => {
-    if (emaSeriesRef.current && candles.length > 0) {
+    if (!emaSeriesRef.current) return
+
+    if (showEma && candles.length > 0) {
       const emaData = calculateEMA(candles, 9) // Use 9-period EMA like TradingView
       if (emaData.length > 0) {
         emaSeriesRef.current.setData(emaData)
       }
+      emaSeriesRef.current.applyOptions({ visible: true })
+    } else {
+      emaSeriesRef.current.setData([])
+      emaSeriesRef.current.applyOptions({ visible: false })
     }
-  }, [candles, calculateEMA])
+  }, [candles, calculateEMA, showEma])
 
   // Update volume when candles change
   useEffect(() => {
@@ -933,10 +1040,11 @@ const LiveFeed = ({ signals, activeTool = 'cursor' }) => {
   
   const { latestPrice, priceDelta, priceDeltaPct, high, low, open, close } = priceInfo
   const isUp = priceDelta >= 0
+  const assetTypeLabel = getAssetTypeLabel(activeSymbol)
 
   // Calculate EMA value from latest candles
   useEffect(() => {
-    if (candles.length > 0 && emaSeriesRef.current) {
+    if (showEma && candles.length > 0 && emaSeriesRef.current) {
       const emaData = calculateEMA(candles)
       if (emaData.length > 0) {
         const latestEma = emaData[emaData.length - 1]?.value
@@ -946,6 +1054,111 @@ const LiveFeed = ({ signals, activeTool = 'cursor' }) => {
       }
     }
   }, [candles, calculateEMA])
+
+  // Live last-price line on the chart (TradingView-style)
+  useEffect(() => {
+    if (!candleSeriesRef.current || !chartRef.current || !latestPrice) return
+
+    // Remove previous price line to avoid stacking
+    if (lastPriceLineRef.current) {
+      try {
+        candleSeriesRef.current.removePriceLine(lastPriceLineRef.current)
+      } catch {
+        // ignore if already removed
+      }
+      lastPriceLineRef.current = null
+    }
+
+    lastPriceLineRef.current = candleSeriesRef.current.createPriceLine({
+      price: latestPrice,
+      color: isUp ? '#26a69a' : '#ef5350',
+      lineWidth: 2,
+      lineStyle: 0,
+      axisLabelVisible: true,
+      title: 'Last',
+    })
+
+    return () => {
+      if (candleSeriesRef.current && lastPriceLineRef.current) {
+        try {
+          candleSeriesRef.current.removePriceLine(lastPriceLineRef.current)
+        } catch {
+          // ignore
+        }
+        lastPriceLineRef.current = null
+      }
+    }
+  }, [latestPrice, isUp])
+
+  // Trade preview lines: Stop-loss and Target based on risk settings
+  useEffect(() => {
+    if (!candleSeriesRef.current || !latestPrice || !signals?.risk) return
+
+    const { stopLoss, targetReturn } = signals.risk
+    const hasStop = typeof stopLoss === 'number' && stopLoss > 0
+    const hasTarget = typeof targetReturn === 'number' && targetReturn > 0
+
+    // Clear existing lines first
+    if (stopLossLineRef.current) {
+      try {
+        candleSeriesRef.current.removePriceLine(stopLossLineRef.current)
+      } catch {
+        // ignore
+      }
+      stopLossLineRef.current = null
+    }
+    if (targetLineRef.current) {
+      try {
+        candleSeriesRef.current.removePriceLine(targetLineRef.current)
+      } catch {
+        // ignore
+      }
+      targetLineRef.current = null
+    }
+
+    if (hasStop) {
+      const slPrice = latestPrice * (1 - stopLoss / 100)
+      stopLossLineRef.current = candleSeriesRef.current.createPriceLine({
+        price: Number(slPrice.toFixed(2)),
+        color: '#ef5350',
+        lineWidth: 1,
+        lineStyle: 2,
+        axisLabelVisible: true,
+        title: 'SL',
+      })
+    }
+
+    if (hasTarget) {
+      const tpPrice = latestPrice * (1 + targetReturn / 100)
+      targetLineRef.current = candleSeriesRef.current.createPriceLine({
+        price: Number(tpPrice.toFixed(2)),
+        color: '#26a69a',
+        lineWidth: 1,
+        lineStyle: 2,
+        axisLabelVisible: true,
+        title: 'TP',
+      })
+    }
+
+    return () => {
+      if (candleSeriesRef.current && stopLossLineRef.current) {
+        try {
+          candleSeriesRef.current.removePriceLine(stopLossLineRef.current)
+        } catch {
+          // ignore
+        }
+        stopLossLineRef.current = null
+      }
+      if (candleSeriesRef.current && targetLineRef.current) {
+        try {
+          candleSeriesRef.current.removePriceLine(targetLineRef.current)
+        } catch {
+          // ignore
+        }
+        targetLineRef.current = null
+      }
+    }
+  }, [latestPrice, signals?.risk?.stopLoss, signals?.risk?.targetReturn])
 
   // Candle countdown timer
   useEffect(() => {
@@ -991,9 +1204,10 @@ const LiveFeed = ({ signals, activeTool = 'cursor' }) => {
         <div className="chart-top-left">
           <div className="symbol-timeframe">
             <span className="symbol-name">{activeSymbol}</span>
-            <span className="timeframe-separator">·</span>
+            <span className="timeframe-separator">–</span>
             <span className="timeframe-value">{selectedInterval}m</span>
-            <span className="asset-type">· CRYPTO</span>
+            <span className="timeframe-separator">–</span>
+            <span className="asset-type">{assetTypeLabel}</span>
           </div>
           <div className="price-data-compact">
             <span className="price-indicator">H{high.toFixed(2)}</span>
@@ -1024,6 +1238,41 @@ const LiveFeed = ({ signals, activeTool = 'cursor' }) => {
         </div>
         
         <div className="chart-top-right">
+          <div className="chart-type-scroller" aria-label="Chart type">
+            <button
+              type="button"
+              className="chart-type-scroller-btn"
+              onClick={() => {
+                const idx = CHART_TYPES.findIndex((t) => t.id === chartType)
+                const nextIdx = (idx - 1 + CHART_TYPES.length) % CHART_TYPES.length
+                setChartType(CHART_TYPES[nextIdx].id)
+              }}
+            >
+              ‹
+            </button>
+            <span className="chart-type-scroller-label">
+              {CHART_TYPES.find((t) => t.id === chartType)?.label || 'Candle'}
+            </span>
+            <button
+              type="button"
+              className="chart-type-scroller-btn"
+              onClick={() => {
+                const idx = CHART_TYPES.findIndex((t) => t.id === chartType)
+                const nextIdx = (idx + 1) % CHART_TYPES.length
+                setChartType(CHART_TYPES[nextIdx].id)
+              }}
+            >
+              ›
+            </button>
+          </div>
+          <button
+            type="button"
+            className={`overlay-toggle ${showEma ? 'overlay-toggle-active' : ''}`}
+            onClick={() => setShowEma((prev) => !prev)}
+            title="Toggle EMA overlay"
+          >
+            EMA
+          </button>
           <button 
             className={`volume-toggle ${showVolume ? 'active' : ''}`}
             onClick={() => setShowVolume(!showVolume)}
@@ -1032,10 +1281,12 @@ const LiveFeed = ({ signals, activeTool = 'cursor' }) => {
             <span>Vol</span>
             {!showVolume && <span className="volume-eye">👁</span>}
           </button>
-          <div className="ema-display">
-            <span className="ema-label">EMA 9</span>
-            <span className="ema-value">close {emaValue > 0 ? emaValue.toFixed(2) : '0.00'}</span>
-          </div>
+          {showEma && (
+            <div className="ema-display">
+              <span className="ema-label">EMA 9</span>
+              <span className="ema-value">close {emaValue > 0 ? emaValue.toFixed(2) : '0.00'}</span>
+            </div>
+          )}
           <select className="currency-selector" defaultValue="USD">
             <option value="USD">USD</option>
             <option value="EUR">EUR</option>
@@ -1077,6 +1328,18 @@ const LiveFeed = ({ signals, activeTool = 'cursor' }) => {
             onChange={setSelectedInterval}
             className="live-feed-interval-selector"
           />
+          <div className="timeframe-quick-strip" aria-label="Quick timeframe presets">
+            {TIMEFRAME_PRESETS.map((tf) => (
+              <button
+                key={tf.value}
+                type="button"
+                className={`timeframe-chip ${selectedInterval === tf.value ? 'timeframe-chip-active' : ''}`}
+                onClick={() => setSelectedInterval(tf.value)}
+              >
+                {tf.label}
+              </button>
+            ))}
+          </div>
           {source === 'websocket' ? (
             <span className="live-feed-source live-feed-source-online">Live</span>
           ) : (
@@ -1114,7 +1377,10 @@ const LiveFeed = ({ signals, activeTool = 'cursor' }) => {
           <div className={`price-label price-label-current ${isUp ? 'positive' : 'negative'}`}>
             <div className="price-label-symbol">{activeSymbol}</div>
             <div className="price-label-value">{latestPrice.toFixed(2)}</div>
-            <div className="price-label-timer">{formatCountdown(candleCountdown)}</div>
+            <div className="price-label-timer">
+              <span className="price-label-timer-label">Next candle</span>
+              <span className="price-label-timer-value">{formatCountdown(candleCountdown)}</span>
+            </div>
           </div>
         </div>
         
