@@ -24,6 +24,7 @@
   border: 1px solid var(--border-primary);
   border-radius: var(--radius-md);
   transition: border-color var(--transition-fast);
+  min-height: 40px;
 }
 
 .asset-search-input-wrapper:focus-within {
@@ -37,6 +38,10 @@
   color: var(--text-tertiary);
   font-size: 1rem;
   pointer-events: none;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
 }
 
 .asset-search-input {
@@ -48,6 +53,7 @@
   font-size: 0.9375rem;
   padding: var(--spacing-md) 0;
   font-family: inherit;
+  min-width: 0;
 }
 
 .asset-search-input::placeholder {
@@ -57,17 +63,28 @@
 .asset-search-clear {
   background: none;
   border: none;
-  color: var(--text-tertiary);
+  color: #758696;
   font-size: 1.5rem;
   line-height: 1;
-  padding: 0 var(--spacing-md);
+  padding: 0;
   cursor: pointer;
-  transition: color var(--transition-fast);
-  display: flex;
+  transition: all var(--transition-fast);
+  display: inline-flex;
   align-items: center;
   justify-content: center;
-  width: 32px;
-  height: 32px;
+  width: 24px;
+  height: 24px;
+  margin-right: var(--spacing-sm);
+  flex-shrink: 0;
+  position: relative;
+  font-weight: 300;
+  vertical-align: middle;
+}
+
+.asset-search-clear:hover {
+  color: #ffffff;
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: 50%;
 }
 
 .asset-search-clear:hover {

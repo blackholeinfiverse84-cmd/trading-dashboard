@@ -12,6 +12,7 @@ import InsightsPanel from './InsightsPanel'
 import PortfolioOverview from './PortfolioOverview'
 import AssetAllocation from './AssetAllocation'
 import LangGraphSyncBar from './LangGraphSyncBar'
+import RecentDecisions from './RecentDecisions'
 import Button from './common/Button'
 import ChartToolbar from './common/ChartToolbar'
 import ScrollToTop from './common/ScrollToTop'
@@ -214,6 +215,7 @@ const Dashboard = () => {
             onDecisionUpdate={handleDecisionUpdate}
             risk={riskContext}
           />
+          <RecentDecisions refreshKey={decisionData?.id || decisionData?.timestamp} />
         </div>
       </div>
       <ScrollToTop />

@@ -2,7 +2,14 @@
   height: 100%;
   display: flex;
   flex-direction: column;
-  gap: var(--spacing-md);
+  gap: 0;
+  background: var(--bg-primary);
+  border: 1px solid var(--border-primary);
+}
+
+.live-feed-card.tradingview-style {
+  background: #1e222d;
+  border: none;
 }
 
 .live-feed-chart-header {
@@ -106,10 +113,10 @@
 .live-feed-chart-wrapper {
   position: relative;
   width: 100%;
-  height: 320px; /* Further reduced from 380px */
-  max-height: 320px;
+  height: 500px;
+  max-height: 500px;
   overflow: hidden;
-  /* Prevent browser zoom on touchpad gestures */
+  background: #131722;
   touch-action: pan-x pan-y;
 }
 
@@ -117,28 +124,93 @@
   position: relative;
   width: 100%;
   height: 100%;
-  max-height: 320px; /* Further reduced from 380px */
-  border: 1px solid var(--border-primary);
-  border-radius: var(--radius-md); /* Reduced from lg */
-  background-color: var(--bg-secondary);
-  padding: var(--spacing-xs);
+  max-height: 500px;
+  border: none;
+  border-radius: 0;
+  background-color: #131722;
+  padding: 0;
   overflow: hidden;
   pointer-events: auto;
-  /* Allow panning but let chart handle zoom, not browser */
   touch-action: pan-x pan-y;
-  /* Prevent text selection during drag */
   user-select: none;
   -webkit-user-select: none;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  text-rendering: optimizeLegibility;
+}
+
+/* TradingView-style watermark */
+.chart-watermark {
+  position: absolute;
+  left: 12px;
+  bottom: 10px;
+  display: inline-flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 2px;
+  padding: 4px 8px;
+  border-radius: 4px;
+  background: radial-gradient(circle at top left, rgba(0, 0, 0, 0.55), transparent 65%);
+  color: #6b7da2;
+  font-family: 'Inter', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  font-size: 0.625rem;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  pointer-events: none;
+  z-index: 6;
+}
+
+.chart-watermark-main {
+  font-weight: 600;
+  color: #8fa2d6;
+}
+
+.chart-watermark-sub {
+  font-weight: 400;
+  opacity: 0.85;
 }
 
 .live-feed-chart canvas {
   border-radius: var(--radius-md);
   pointer-events: auto;
   touch-action: pan-x pan-y pinch-zoom;
+  image-rendering: -webkit-optimize-contrast;
+  image-rendering: crisp-edges;
+  image-rendering: pixelated;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
 }
 
 .live-feed-chart > * {
   pointer-events: auto;
+}
+
+/* Crosshair Label Styling - Make tooltips more visible and clean */
+.live-feed-chart [class*="pane-legend"],
+.live-feed-chart [class*="crosshair-label"],
+.live-feed-chart [class*="tv-lightweight-charts"] [class*="pane-legend"] {
+  background: rgba(30, 34, 45, 0.95) !important;
+  border: 1px solid rgba(38, 166, 154, 0.4) !important;
+  border-radius: 4px !important;
+  padding: 6px 10px !important;
+  backdrop-filter: blur(8px) !important;
+  -webkit-backdrop-filter: blur(8px) !important;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4), 0 0 0 1px rgba(38, 166, 154, 0.2) inset !important;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif !important;
+  color: #d1d4dc !important;
+  font-weight: 500 !important;
+  -webkit-font-smoothing: antialiased !important;
+  -moz-osx-font-smoothing: grayscale !important;
+  text-rendering: optimizeLegibility !important;
+  z-index: 100 !important;
+}
+
+/* Style all text elements in crosshair labels */
+.live-feed-chart [class*="pane-legend"] *,
+.live-feed-chart [class*="crosshair-label"] * {
+  -webkit-font-smoothing: antialiased !important;
+  -moz-osx-font-smoothing: grayscale !important;
+  text-rendering: optimizeLegibility !important;
 }
 
 .live-feed-drawing-overlay {
@@ -147,7 +219,7 @@
   left: 0;
   width: 100%;
   height: 100%;
-  max-height: 320px; /* Further reduced */
+  max-height: 500px;
   pointer-events: none;
   z-index: 10;
   overflow: visible;
@@ -192,6 +264,329 @@
   to {
     transform: rotate(360deg);
   }
+}
+
+/* Context Menu */
+.chart-context-menu {
+  background: #1e222d;
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  border-radius: 4px;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.4);
+  min-width: 280px;
+  padding: 4px 0;
+  font-size: 0.875rem;
+  z-index: 1000;
+  backdrop-filter: blur(8px);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+.context-menu-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 10px 16px;
+  cursor: pointer;
+  color: #d1d4dc;
+  transition: background-color 0.15s ease;
+  font-weight: 500;
+}
+
+.context-menu-item:hover {
+  background-color: rgba(41, 98, 255, 0.15);
+  color: #ffffff;
+}
+
+.context-menu-item span:first-child {
+  flex: 1;
+}
+
+.context-menu-shortcut {
+  color: #758696;
+  font-size: 0.75rem;
+  margin-left: 16px;
+  font-family: 'Courier New', monospace;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+.context-menu-divider {
+  height: 1px;
+  background: var(--border-primary);
+  margin: 4px 0;
+}
+
+/* TradingView Style Top Bar */
+.chart-top-bar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 6px 12px;
+  background: #1e222d;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+  gap: 16px;
+  flex-wrap: wrap;
+  min-height: 48px;
+}
+
+.chart-top-left {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  flex: 1;
+  min-width: 200px;
+}
+
+.symbol-timeframe {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 0.8125rem;
+  color: #d1d4dc;
+  font-weight: 500;
+}
+
+.symbol-name {
+  font-weight: 600;
+  color: #ffffff;
+  text-transform: uppercase;
+}
+
+.timeframe-separator {
+  color: var(--text-tertiary);
+}
+
+.timeframe-value {
+  color: var(--text-secondary);
+}
+
+.asset-type {
+  color: var(--text-tertiary);
+  font-size: 0.75rem;
+}
+
+.price-data-compact {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 0.6875rem;
+  color: #758696;
+  font-family: 'Courier New', monospace;
+}
+
+.price-indicator,
+.price-separator {
+  color: var(--text-tertiary);
+}
+
+.price-change {
+  font-weight: 500;
+}
+
+.price-change.positive {
+  color: #26a69a;
+}
+
+.price-change.negative {
+  color: #ef5350;
+}
+
+.chart-top-center {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.order-buttons {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.order-btn {
+  padding: 5px 14px;
+  border: none;
+  border-radius: 3px;
+  font-size: 0.8125rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.15s ease;
+  min-width: 110px;
+  letter-spacing: 0.3px;
+}
+
+.order-btn-buy {
+  background: #2962ff;
+  color: #ffffff;
+}
+
+.order-btn-buy:hover {
+  background: #1e53e5;
+  transform: translateY(-1px);
+}
+
+.order-btn-sell {
+  background: #f23645;
+  color: #ffffff;
+}
+
+.order-btn-sell:hover {
+  background: #d32f2f;
+  transform: translateY(-1px);
+}
+
+.order-separator {
+  color: var(--text-tertiary);
+  font-size: 0.75rem;
+  padding: 0 4px;
+}
+
+.chart-top-right {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.volume-toggle {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  padding: 4px 8px;
+  background: transparent;
+  border: 1px solid var(--border-primary);
+  border-radius: 4px;
+  color: var(--text-secondary);
+  font-size: 0.75rem;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.volume-toggle:hover {
+  background: var(--bg-secondary);
+  color: var(--text-primary);
+}
+
+.volume-toggle.active {
+  background: var(--accent-primary);
+  color: #ffffff;
+  border-color: var(--accent-primary);
+}
+
+.volume-eye {
+  opacity: 0.5;
+  font-size: 0.875rem;
+}
+
+.ema-display {
+  display: flex;
+  flex-direction: column;
+  gap: 1px;
+  font-size: 0.6875rem;
+  min-width: 100px;
+}
+
+.ema-label {
+  color: #758696;
+  font-size: 0.625rem;
+}
+
+.ema-value {
+  color: #2962ff;
+  font-weight: 500;
+  font-family: 'Courier New', monospace;
+}
+
+.currency-selector {
+  padding: 4px 8px;
+  background: var(--bg-secondary);
+  border: 1px solid var(--border-primary);
+  border-radius: 4px;
+  color: var(--text-primary);
+  font-size: 0.75rem;
+  cursor: pointer;
+}
+
+.live-feed-chart-header-minimal {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 8px 12px;
+  background: #1e222d;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+  gap: 12px;
+}
+
+.live-feed-chart-header-minimal .live-feed-search-wrapper {
+  max-width: 200px;
+}
+
+/* Right Side Price Labels */
+.chart-price-labels {
+  position: absolute;
+  right: 4px;
+  top: 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  z-index: 20;
+  pointer-events: none;
+  align-items: flex-end;
+}
+
+.price-label {
+  background: rgba(19, 23, 34, 0.95);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 3px;
+  padding: 4px 8px;
+  min-width: 110px;
+  backdrop-filter: blur(8px);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+}
+
+.price-label-ema {
+  border-left: 2px solid #2962ff;
+}
+
+.price-label-current {
+  border-left: 2px solid;
+}
+
+.price-label-current.positive {
+  border-left-color: #26a69a;
+  background: rgba(38, 166, 154, 0.1);
+}
+
+.price-label-current.negative {
+  border-left-color: #ef5350;
+  background: rgba(239, 83, 80, 0.1);
+}
+
+.price-label-symbol {
+  font-size: 0.7rem;
+  color: var(--text-tertiary);
+  text-transform: uppercase;
+  margin-bottom: 2px;
+}
+
+.price-label-value {
+  font-size: 0.8rem;
+  font-weight: 600;
+  color: #d1d4dc;
+  margin: 2px 0;
+  font-family: 'Courier New', monospace;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  text-rendering: optimizeLegibility;
+}
+
+.price-label-timer {
+  font-size: 0.65rem;
+  color: #758696;
+  font-family: 'Courier New', monospace;
+  margin-top: 2px;
+  letter-spacing: 0.5px;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
 }
 
 @media (max-width: 768px) {

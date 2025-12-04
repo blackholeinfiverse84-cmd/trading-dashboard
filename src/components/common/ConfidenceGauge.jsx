@@ -7,8 +7,9 @@ const ConfidenceGauge = ({ value = 0, label = 'Confidence', size = 88 }) => {
   const circumference = 2 * Math.PI * radius
   const offset = circumference - (safeValue / 100) * circumference
 
+  // Use green for 70%+, blue for 30-70%, red for below 30%
   const tone =
-    safeValue >= 70 ? 'positive' : safeValue <= 30 ? 'negative' : 'neutral'
+    safeValue >= 70 ? 'positive' : safeValue >= 30 ? 'neutral' : 'negative'
 
   return (
     <div className={`confidence-gauge ${tone}`} style={{ width: size, height: size }}>

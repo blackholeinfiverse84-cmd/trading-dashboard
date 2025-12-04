@@ -7,25 +7,33 @@
 
 .confidence-gauge svg {
   transform: rotate(-90deg);
+  filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.2));
 }
 
 .gauge-track {
   fill: none;
-  stroke: rgba(255, 255, 255, 0.08);
+  stroke: rgba(255, 255, 255, 0.1);
+  stroke-width: 6;
 }
 
 .gauge-value {
   fill: none;
-  stroke: var(--accent-primary);
-  transition: stroke-dashoffset 0.35s ease;
+  stroke: #2962ff;
+  stroke-width: 6;
+  transition: stroke-dashoffset 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+  stroke-linecap: round;
 }
 
 .confidence-gauge.positive .gauge-value {
-  stroke: var(--accent-success);
+  stroke: #26a69a;
 }
 
 .confidence-gauge.negative .gauge-value {
-  stroke: var(--accent-error);
+  stroke: #ef5350;
+}
+
+.confidence-gauge.neutral .gauge-value {
+  stroke: #2962ff;
 }
 
 .gauge-center {
@@ -35,19 +43,25 @@
   align-items: center;
   justify-content: center;
   text-align: center;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
 }
 
 .gauge-number {
-  font-size: 0.95rem;
-  font-weight: 600;
-  color: var(--text-primary);
-  line-height: 1;
+  font-size: 0.875rem;
+  font-weight: 700;
+  color: #ffffff;
+  line-height: 1.2;
+  font-family: 'Courier New', monospace;
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.3);
 }
 
 .gauge-label {
-  font-size: 0.65rem;
-  color: var(--text-secondary);
+  font-size: 0.6rem;
+  color: rgba(255, 255, 255, 0.6);
   text-transform: uppercase;
-  letter-spacing: 0.08em;
+  letter-spacing: 0.05em;
+  margin-top: 2px;
 }
 

@@ -225,8 +225,7 @@ const Scorecards = ({ risk }) => {
                     </span>
                   </td>
                   <td className="confidence-cell">
-                    <ConfidenceGauge value={pred.confidence || 0} label="" size={50} />
-                    <span className="confidence-value">{pred.confidence || 0}%</span>
+                    <ConfidenceGauge value={pred.confidence || 0} label="" size={56} />
                   </td>
                   <td className="risk-cell">
                     {pred.risk_applied ? (

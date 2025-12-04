@@ -205,6 +205,7 @@ const AssetSearch = ({
                   onChange({ symbol: '', assetType: '', name: '', exchange: '' })
                 }
               }}
+              aria-label="Clear search"
             >
               ×
             </button>

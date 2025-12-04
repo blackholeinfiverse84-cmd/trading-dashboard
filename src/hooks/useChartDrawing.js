@@ -146,6 +146,11 @@ export const useChartDrawing = (chartRef, activeTool) => {
     setDrawings([])
   }, [])
 
+  // Add a drawing programmatically
+  const addDrawing = useCallback((drawing) => {
+    setDrawings(prev => [...prev, { ...drawing, id: drawing.id || Date.now() }])
+  }, [])
+
   return {
     drawings,
     currentDrawing,
@@ -155,6 +160,7 @@ export const useChartDrawing = (chartRef, activeTool) => {
     handleMouseUp,
     deleteDrawing,
     clearDrawings,
+    addDrawing,
   }
 }
 

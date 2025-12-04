@@ -12,7 +12,7 @@
   justify-content: space-between;
   align-items: center;
   margin-bottom: var(--spacing-sm); /* Reduced from md */
-  padding-bottom: var(--spacing-xs); /* Reduced from sm */
+  padding-bottom: calc(var(--spacing-xs) + 1px);
   border-bottom: 1px solid var(--border-primary);
   flex-wrap: wrap;
   gap: var(--spacing-xs); /* Reduced from sm */
@@ -30,9 +30,10 @@
   align-items: center;
   gap: var(--spacing-sm);
   padding: var(--spacing-xs) var(--spacing-sm);
-  border: 1px solid var(--border-primary);
+  border: 1px solid var(--border-secondary);
   border-radius: var(--radius-lg);
-  background: var(--bg-secondary);
+  background: radial-gradient(circle at top left, rgba(0, 122, 255, 0.18), transparent 55%), var(--bg-secondary);
+  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.45);
 }
 
 .dashboard-user-pill {
@@ -68,7 +69,7 @@
 
 .dashboard-username {
   color: var(--text-secondary);
-  font-size: 0.75rem; /* Reduced from 0.875rem */
+  font-size: 0.78rem; /* Slightly increased for readability */
 }
 
 .dashboard-username strong {
@@ -87,7 +88,7 @@
   font-size: 1.25rem; /* Further reduced */
   font-weight: 700;
   margin-bottom: 1px;
-  background: linear-gradient(135deg, var(--text-primary) 0%, var(--text-secondary) 100%);
+  background: radial-gradient(circle at 0% 0%, #ffffff, #d0d4ff 40%, #9ea0ff 75%);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   background-clip: text;
@@ -104,6 +105,10 @@
   gap: var(--spacing-xs);
   font-size: 0.75rem; /* Reduced from 0.875rem */
   color: var(--text-secondary);
+  padding: 2px 8px;
+  border-radius: 999px;
+  background: radial-gradient(circle at left, rgba(52, 199, 89, 0.3), transparent 60%);
+  border: 1px solid rgba(52, 199, 89, 0.45);
 }
 
 .status-indicator {
@@ -111,7 +116,8 @@
   height: 8px;
   background-color: var(--accent-success);
   border-radius: 50%;
-  animation: pulse 2s ease-in-out infinite;
+  box-shadow: 0 0 8px rgba(52, 199, 89, 0.8);
+  animation: pulse 1.6s ease-in-out infinite;
 }
 
 @keyframes pulse {

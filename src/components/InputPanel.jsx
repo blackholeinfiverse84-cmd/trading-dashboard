@@ -207,53 +207,55 @@ const InputPanel = ({ onSubmit }) => {
             {errors.symbol && <span className="input-error-text">{errors.symbol}</span>}
           </div>
 
-          <Input
-            type="number"
-            label="Stop-loss (%)"
-            value={formData.stopLoss}
-            onChange={(e) => handleChange('stopLoss', Number(e.target.value))}
-            error={errors.stopLoss}
-            fullWidth
-            min={0}
-            step={0.1}
-            max={100}
-          />
+          <div className="numeric-grid">
+            <Input
+              type="number"
+              label="Stop-loss (%)"
+              value={formData.stopLoss}
+              onChange={(e) => handleChange('stopLoss', Number(e.target.value))}
+              error={errors.stopLoss}
+              fullWidth
+              min={0}
+              step={0.1}
+              max={100}
+            />
 
-          <Input
-            type="number"
-            label="Target return (%)"
-            value={formData.targetReturn}
-            onChange={(e) => handleChange('targetReturn', Number(e.target.value))}
-            error={errors.targetReturn}
-            fullWidth
-            min={0}
-            step={0.1}
-            max={1000}
-          />
+            <Input
+              type="number"
+              label="Target return (%)"
+              value={formData.targetReturn}
+              onChange={(e) => handleChange('targetReturn', Number(e.target.value))}
+              error={errors.targetReturn}
+              fullWidth
+              min={0}
+              step={0.1}
+              max={1000}
+            />
 
-          <Input
-            type="number"
-            label="Investment amount (₹)"
-            value={formData.investmentAmount}
-            onChange={(e) => handleChange('investmentAmount', Number(e.target.value))}
-            error={errors.investmentAmount}
-            fullWidth
-            min={100}
-            step={100}
-            max={10000000}
-          />
+            <Input
+              type="number"
+              label="Investment amount (₹)"
+              value={formData.investmentAmount}
+              onChange={(e) => handleChange('investmentAmount', Number(e.target.value))}
+              error={errors.investmentAmount}
+              fullWidth
+              min={100}
+              step={100}
+              max={10000000}
+            />
 
-          <Input
-            type="number"
-            label="Capital at risk (%)"
-            value={formData.capitalAtRisk}
-            onChange={(e) => handleChange('capitalAtRisk', Number(e.target.value))}
-            error={errors.capitalAtRisk}
-            fullWidth
-            min={0}
-            step={0.1}
-            max={100}
-          />
+            <Input
+              type="number"
+              label="Capital at risk (%)"
+              value={formData.capitalAtRisk}
+              onChange={(e) => handleChange('capitalAtRisk', Number(e.target.value))}
+              error={errors.capitalAtRisk}
+              fullWidth
+              min={0}
+              step={0.1}
+              max={100}
+            />
+          </div>
 
           <div className="input-field">
             <label className="input-panel-label">Horizon</label>

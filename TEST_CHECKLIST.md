@@ -61,6 +61,19 @@
 
 ---
 
+### 3.1 Recent AI Decisions Panel ✅
+- [x] Component exists and renders in dashboard sidebar
+- [x] Reads latest entries from `localStorage` key `trading:riskLog`
+- [x] Displays symbol + action pill
+- [x] Shows confidence %, capital at risk %, and horizon (when available)
+- [x] Shows timestamp of each submission
+- [x] Handles empty state when there are no submissions
+
+**File:**
+- `src/components/RecentDecisions.jsx`
+
+---
+
 ### 4. API Endpoints ✅
 - [x] `predict()` function - `/tools/predict` ✅
 - [x] `scanAll()` function - `/tools/scan_all` ✅
@@ -212,7 +225,27 @@ npm run dev
 4. Test refresh button
 5. Verify enhanced styling (gradients, animations)
 
-### 5. Test API Functions
+### 5. Test Recent AI Decisions Panel
+1. Navigate to the dashboard after logging in.
+2. In the right sidebar, locate **“Recent AI decisions”** card.
+3. With a fresh account or cleared storage, verify:
+   - The card shows the empty state text:
+     - “No recent submissions yet.”
+4. Use the **Input Panel** to submit a valid trade idea:
+   - Fill all required fields and click **“Submit Trade Inputs”**.
+5. Confirm the **Recent AI decisions** card updates:
+   - A new row appears with:
+     - Symbol (e.g., `AAPL`)
+     - Action (BUY/SELL) pill
+     - Confidence % (if present)
+     - Capital at risk % (from input)
+     - Horizon (DAY/WEEK/MONTH/YEAR)
+     - Time of submission
+6. Submit 2–3 more ideas and verify:
+   - Newest entries appear at the top.
+   - Only the last few items (up to 6) are shown.
+
+### 6. Test API Functions
 1. Open browser console
 2. Verify no API errors
 3. Check network tab for API calls:
@@ -220,7 +253,7 @@ npm run dev
    - `/tools/scan_all` should be called
    - Mock data should be used if API unavailable
 
-### 6. Test 4K Support
+### 7. Test 4K Support
 1. Open browser DevTools
 2. Set viewport to 2560x1440 or 3840x2160
 3. Verify:
@@ -229,7 +262,7 @@ npm run dev
    - Larger components
    - Better readability
 
-### 7. Test Responsive Design
+### 8. Test Responsive Design
 1. Test on mobile viewport (375px)
 2. Test on tablet viewport (768px)
 3. Test on desktop viewport (1920px)
