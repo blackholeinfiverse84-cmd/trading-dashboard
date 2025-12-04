@@ -1,4 +1,4 @@
-import React, { useState, useMemo, lazy, Suspense, useRef } from 'react'
+import React, { useState, useMemo, lazy, Suspense, useRef, useEffect } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { useAuth } from '../contexts/AuthContext'
 import { useToast } from '../contexts/ToastContext'
@@ -36,6 +36,11 @@ const ComponentLoader = () => (
 )
 
 const Dashboard = () => {
+  // Ensure dashboard always starts at top on load/refresh
+  useEffect(() => {
+    window.scrollTo({ top: 0, behavior: 'auto' })
+  }, [])
+
   const [decisionData, setDecisionData] = useState(null)
   const [riskContext, setRiskContext] = useState(() => {
     const saved = JSON.parse(localStorage.getItem('trading:riskPrefs') || '{}')
