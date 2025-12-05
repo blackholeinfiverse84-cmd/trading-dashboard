@@ -386,21 +386,75 @@
   .allocation-tabs {
     width: 100%;
     justify-content: space-between;
+    gap: var(--spacing-xs);
   }
 
   .view-mode-btn,
   .allocation-tab {
     flex: 1;
     text-align: center;
-    font-size: 0.7rem;
-    padding: 0.4rem 0.7rem;
+    font-size: 0.75rem;
+    padding: 0.5rem 0.5rem;
+    min-height: 40px; /* Better touch target */
   }
 
   .aum-value {
-    font-size: 1.25rem;
+    font-size: 1.1rem;
+  }
+
+  .aum-label {
+    font-size: 0.75rem;
   }
 
   .chart-section {
-    min-height: 220px;
+    min-height: 250px;
+    padding: var(--spacing-sm);
+  }
+
+  .allocation-content {
+    gap: var(--spacing-md);
+  }
+
+  .legend-section {
+    max-height: 300px;
+    overflow-y: auto;
+  }
+
+  .legend-item {
+    padding: var(--spacing-xs) var(--spacing-sm);
+    font-size: 0.85rem;
+  }
+
+  .legend-item-button {
+    min-height: 44px; /* Better touch target */
+  }
+
+  .chart-center-label {
+    font-size: 0.9rem;
+  }
+
+  .chart-center-name {
+    font-size: 1rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .view-mode-btn,
+  .allocation-tab {
+    font-size: 0.7rem;
+    padding: 0.4rem 0.3rem;
+  }
+
+  .chart-section {
+    min-height: 200px;
+    padding: var(--spacing-xs);
+  }
+
+  .legend-item {
+    font-size: 0.8rem;
+  }
+
+  .aum-value {
+    font-size: 1rem;
   }
 }

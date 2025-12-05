@@ -1,9 +1,10 @@
 import React, { useState, useMemo, lazy, Suspense, useRef, useEffect } from 'react'
-import { useNavigate } from 'react-router-dom'
+import { useNavigate, useLocation } from 'react-router-dom'
 import { useAuth } from '../contexts/AuthContext'
 import { useToast } from '../contexts/ToastContext'
 import { LangGraphClient } from '../services/langGraphClient'
 import { useKeyboardShortcuts } from '../hooks/useKeyboardShortcuts'
+import { useIsMobile } from '../hooks/useIsMobile'
 import ThemeToggle from './ThemeToggle'
 import LiveFeed from './LiveFeed'
 import ActionPanel from './ActionPanel'
@@ -16,6 +17,12 @@ import RecentDecisions from './RecentDecisions'
 import Button from './common/Button'
 import ChartToolbar from './common/ChartToolbar'
 import ScrollToTop from './common/ScrollToTop'
+import HomePage from './pages/HomePage'
+import TradingPage from './pages/TradingPage'
+import PortfolioPage from './pages/PortfolioPage'
+import AnalyticsPage from './pages/AnalyticsPage'
+import MorePage from './pages/MorePage'
+import BottomNav from './layout/BottomNav'
 import './Dashboard.css'
 
 // Lazy load components below the fold for better initial load performance
@@ -100,10 +107,12 @@ const Dashboard = () => {
   }), [decisionData, riskContext])
 
   const navigate = useNavigate()
+  const location = useLocation()
   const { user, logout } = useAuth()
   const { addToast } = useToast()
   const displayName = user?.username || 'Guest Trader'
   const [activeTool, setActiveTool] = useState('cursor')
+  const isMobile = useIsMobile()
 
   const handleLogout = () => {
     logout()
@@ -153,79 +162,166 @@ const Dashboard = () => {
     'home': () => scrollToTop(),
   }, [addToast])
 
-  return (
-    <div className="dashboard">
-      <ChartToolbar onToolChange={handleToolChange} initialTool={activeTool} />
-      <div className="dashboard-header">
-        <div className="dashboard-title">
-          <h1>Trading Dashboard</h1>
-          <p className="text-muted">Multi-asset trading interface</p>
-        </div>
-        <div className="dashboard-header-right">
-          <div className="dashboard-status">
-            <span className="status-indicator"></span>
-            <span>Live</span>
-          </div>
-          <div className="dashboard-user-section">
-            <div className="dashboard-user-pill">
-              <span className="dashboard-user-avatar">{displayName.charAt(0).toUpperCase()}</span>
-              <div className="dashboard-username">
-                <span className="text-muted">Signed in as</span>
-                <strong>{displayName}</strong>
-              </div>
+  // Determine which page to show based on route (mobile) or show all (desktop)
+  const getCurrentPage = () => {
+    if (!isMobile) {
+      // Desktop: Show everything (current behavior)
+      return 'all'
+    }
+
+    // Mobile: Show specific page based on route
+    const path = location.pathname
+    if (path === '/dashboard/trading' || path.startsWith('/dashboard/trading')) {
+      return 'trading'
+    }
+    if (path === '/dashboard/portfolio' || path.startsWith('/dashboard/portfolio')) {
+      return 'portfolio'
+    }
+    if (path === '/dashboard/analytics' || path.startsWith('/dashboard/analytics')) {
+      return 'analytics'
+    }
+    if (path === '/dashboard/more' || path.startsWith('/dashboard/more')) {
+      return 'more'
+    }
+    // Default to home
+    return 'home'
+  }
+
+  const currentPage = getCurrentPage()
+
+  // Render mobile-specific page or desktop full view
+  const renderContent = () => {
+    if (!isMobile) {
+      // Desktop: Show everything
+      return (
+        <>
+          <ChartToolbar onToolChange={handleToolChange} initialTool={activeTool} />
+          <div className="dashboard-header">
+            <div className="dashboard-title">
+              <h1>Trading Dashboard</h1>
+              <p className="text-muted">Multi-asset trading interface</p>
             </div>
-            <Button variant="secondary" size="sm" onClick={handleLogout}>
-              Logout
-            </Button>
+            <div className="dashboard-header-right">
+              <div className="dashboard-status">
+                <span className="status-indicator"></span>
+                <span>Live</span>
+              </div>
+              <div className="dashboard-user-section">
+                <div className="dashboard-user-pill">
+                  <span className="dashboard-user-avatar">{displayName.charAt(0).toUpperCase()}</span>
+                  <div className="dashboard-username">
+                    <span className="text-muted">Signed in as</span>
+                    <strong>{displayName}</strong>
+                  </div>
+                </div>
+                <Button variant="secondary" size="sm" onClick={handleLogout}>
+                  Logout
+                </Button>
+              </div>
+              <ThemeToggle />
+            </div>
           </div>
-          <ThemeToggle />
-        </div>
-      </div>
 
-      <LangGraphSyncBar risk={riskContext} />
+          {!isMobile && <LangGraphSyncBar risk={riskContext} />}
 
-      <div className="dashboard-grid">
-        <div className="dashboard-column dashboard-column-main">
-          <LiveFeed signals={dashboardSignals} activeTool={activeTool} />
-          <div className="dashboard-row">
-            <InsightsPanel latestTrade={decisionData} risk={riskContext} />
-            <Suspense fallback={<ComponentLoader />}>
-              <FeedbackInsights risk={riskContext} />
-            </Suspense>
+          <div className="dashboard-grid">
+            <div className="dashboard-column dashboard-column-main">
+              <LiveFeed signals={dashboardSignals} activeTool={activeTool} />
+              <div className="dashboard-row">
+                <InsightsPanel latestTrade={decisionData} risk={riskContext} />
+                <Suspense fallback={<ComponentLoader />}>
+                  <FeedbackInsights risk={riskContext} />
+                </Suspense>
+              </div>
+              <Suspense fallback={<ComponentLoader />}>
+                <Scorecards risk={riskContext} />
+              </Suspense>
+              <div className="dashboard-bottom-section">
+                <Suspense fallback={<ComponentLoader />}>
+                  <LangGraphReport />
+                </Suspense>
+                <Suspense fallback={<ComponentLoader />}>
+                  <MarketEvents />
+                </Suspense>
+              </div>
+              <Suspense fallback={<ComponentLoader />}>
+                <MultiAssetBoard risk={riskContext} />
+              </Suspense>
+            </div>
+            
+            <div className="dashboard-column dashboard-column-sidebar">
+              <AssetAllocation portfolioData={dashboardSignals} />
+              <PortfolioOverview data={dashboardSignals.portfolio} />
+              <InputPanel onSubmit={handleInputSubmit} />
+              <ActionPanel
+                decisionData={decisionData}
+                onDecisionUpdate={handleDecisionUpdate}
+                risk={riskContext}
+              />
+              <RecentDecisions refreshKey={decisionData?.id || decisionData?.timestamp} />
+            </div>
           </div>
-          <Suspense fallback={<ComponentLoader />}>
-            <Scorecards risk={riskContext} />
-          </Suspense>
-          <div className="dashboard-bottom-section">
-            <Suspense fallback={<ComponentLoader />}>
-              <LangGraphReport />
-            </Suspense>
-            <Suspense fallback={<ComponentLoader />}>
-              <MarketEvents />
-            </Suspense>
+        </>
+      )
+    }
+
+    // Mobile: Show specific page
+    return (
+      <>
+        {/* Simplified Mobile Header */}
+        <div className="dashboard-header mobile-header">
+          <div className="dashboard-title">
+            <h1>Trading Dashboard</h1>
           </div>
-          <Suspense fallback={<ComponentLoader />}>
-            <MultiAssetBoard risk={riskContext} />
-          </Suspense>
+          <div className="dashboard-header-right">
+            <div className="dashboard-user-section">
+              <span className="dashboard-user-avatar">{displayName.charAt(0).toUpperCase()}</span>
+            </div>
+          </div>
         </div>
-        
-        <div className="dashboard-column dashboard-column-sidebar">
-          <AssetAllocation portfolioData={dashboardSignals} />
-          
-          <PortfolioOverview data={dashboardSignals.portfolio} />
-          <InputPanel onSubmit={handleInputSubmit} />
-          <ActionPanel
+
+        {/* Page Content */}
+        {currentPage === 'home' && (
+          <HomePage
+            dashboardSignals={dashboardSignals}
+            riskContext={riskContext}
             decisionData={decisionData}
-            onDecisionUpdate={handleDecisionUpdate}
-            risk={riskContext}
           />
-          <RecentDecisions refreshKey={decisionData?.id || decisionData?.timestamp} />
-        </div>
-      </div>
+        )}
+        {currentPage === 'trading' && (
+          <TradingPage
+            dashboardSignals={dashboardSignals}
+            activeTool={activeTool}
+            decisionData={decisionData}
+            riskContext={riskContext}
+            onInputSubmit={handleInputSubmit}
+            onDecisionUpdate={handleDecisionUpdate}
+          />
+        )}
+        {currentPage === 'portfolio' && (
+          <PortfolioPage
+            dashboardSignals={dashboardSignals}
+            decisionData={decisionData}
+          />
+        )}
+        {currentPage === 'analytics' && (
+          <AnalyticsPage riskContext={riskContext} />
+        )}
+        {currentPage === 'more' && (
+          <MorePage riskContext={riskContext} />
+        )}
+      </>
+    )
+  }
+
+  return (
+    <div className={`dashboard ${isMobile ? 'mobile' : 'desktop'}`}>
+      {renderContent()}
+      {isMobile && <BottomNav />}
       <Suspense fallback={null}>
         <FloatingAIAssistant />
       </Suspense>
-      <ScrollToTop />
+      {!isMobile && <ScrollToTop />}
     </div>
   )
 }

@@ -33,7 +33,7 @@ function App() {
             
             {/* Authenticated routes */}
             <Route
-              path="/dashboard"
+              path="/dashboard/*"
               element={
                 <ProtectedRoute>
                   <Dashboard />

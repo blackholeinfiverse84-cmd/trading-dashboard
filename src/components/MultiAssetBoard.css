@@ -139,6 +139,37 @@
 }
 
 @media (max-width: 768px) {
+  .multi-asset-header {
+    flex-direction: column;
+    gap: var(--spacing-sm);
+  }
+
+  .asset-tabs {
+    width: 100%;
+    justify-content: stretch;
+  }
+
+  .asset-tab {
+    flex: 1;
+    min-height: 40px; /* Better touch target */
+  }
+
+  .multi-asset-search {
+    width: 100%;
+    max-width: 100%;
+  }
+
+  .asset-table-wrapper {
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+  }
+
+  .asset-table {
+    min-width: 600px; /* Allow horizontal scroll */
+  }
+}
+
+@media (max-width: 480px) {
   .asset-tabs {
     width: 100%;
     justify-content: space-between;

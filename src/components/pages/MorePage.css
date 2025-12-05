@@ -1,0 +1,20 @@
+.more-page {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-md);
+  padding: var(--spacing-sm);
+}
+
+.more-settings {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-sm);
+}
+
+@media (max-width: 480px) {
+  .more-page {
+    padding: var(--spacing-xs);
+    gap: var(--spacing-sm);
+  }
+}
+

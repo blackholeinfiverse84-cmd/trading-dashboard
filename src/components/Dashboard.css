@@ -7,6 +7,11 @@
   position: relative;
 }
 
+.dashboard.mobile {
+  padding: 0;
+  padding-bottom: 60px; /* Space for bottom nav */
+}
+
 .dashboard-header {
   display: flex;
   justify-content: space-between;
@@ -189,41 +194,132 @@
   }
 }
 
+/* Mobile-specific styles - already defined above, removing duplicate */
+
+.dashboard.mobile .mobile-header {
+  padding: var(--spacing-sm);
+  flex-direction: row;
+  align-items: center;
+  justify-content: space-between;
+  border-bottom: 1px solid var(--border-primary);
+  position: sticky;
+  top: 0;
+  background: var(--bg-primary);
+  z-index: 100;
+}
+
+.dashboard.mobile .mobile-header .dashboard-title h1 {
+  font-size: 1.1rem;
+  margin: 0;
+}
+
+.dashboard.mobile .mobile-header .dashboard-title p {
+  display: none; /* Hide subtitle on mobile */
+}
+
+.dashboard.mobile .mobile-header .dashboard-header-right {
+  gap: var(--spacing-xs);
+}
+
+.dashboard.mobile .mobile-header .dashboard-user-section {
+  width: auto;
+}
+
+.dashboard.mobile .mobile-header .dashboard-user-avatar {
+  width: 32px;
+  height: 32px;
+  font-size: 0.85rem;
+}
+
+.dashboard.mobile .mobile-header .dashboard-username {
+  display: none; /* Hide username text on mobile header */
+}
+
+.dashboard.mobile .dashboard-header .dashboard-status,
+.dashboard.mobile .dashboard-header .dashboard-user-section button,
+.dashboard.mobile .dashboard-header .ThemeToggle {
+  display: none; /* Hide extra elements on mobile */
+}
+
 @media (max-width: 768px) {
-  .dashboard {
-    padding: var(--spacing-md);
+  .dashboard:not(.mobile) {
+    padding: var(--spacing-sm);
   }
   
-  .dashboard-header {
+  .dashboard:not(.mobile) .dashboard-header {
     flex-direction: column;
     align-items: flex-start;
-    gap: var(--spacing-md);
+    gap: var(--spacing-sm);
+    padding-bottom: var(--spacing-sm);
   }
 
+  .dashboard:not(.mobile) .dashboard-header-right {
+    width: 100%;
+    justify-content: space-between;
+    flex-wrap: wrap;
+  }
 
-  
-  .dashboard-title h1 {
-    font-size: 1.5rem;
+  .dashboard:not(.mobile) .dashboard-user-section {
+    width: 100%;
+    justify-content: space-between;
+  }
+
+  .dashboard:not(.mobile) .dashboard-title h1 {
+    font-size: 1.25rem;
+  }
+
+  .dashboard:not(.mobile) .dashboard-title p {
+    font-size: 0.75rem;
+  }
+
+  .dashboard:not(.mobile) .dashboard-row {
+    grid-template-columns: 1fr;
+    gap: var(--spacing-sm);
+  }
+
+  .dashboard:not(.mobile) .dashboard-grid {
+    gap: var(--spacing-sm);
+  }
+
+  .dashboard:not(.mobile) .dashboard-column {
+    gap: var(--spacing-sm);
   }
 }
 
 @media (max-width: 600px) {
   .dashboard {
-    padding: var(--spacing-sm);
+    padding: var(--spacing-xs);
   }
 
+  .dashboard-header {
+    margin-bottom: var(--spacing-xs);
+  }
 
   .dashboard-title h1 {
-    font-size: 1.35rem;
+    font-size: 1.1rem;
   }
 
   .dashboard-title p {
-    font-size: 0.9rem;
+    font-size: 0.7rem;
+  }
+
+  .dashboard-user-avatar {
+    width: 24px;
+    height: 24px;
+    font-size: 0.7rem;
+  }
+
+  .dashboard-username {
+    font-size: 0.7rem;
   }
 
   .card-padding-lg,
   .card-padding-xl {
-    padding: var(--spacing-md);
+    padding: var(--spacing-sm);
+  }
+
+  .card-padding-md {
+    padding: var(--spacing-sm);
   }
 }
 

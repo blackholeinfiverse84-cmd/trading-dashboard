@@ -623,6 +623,49 @@
 }
 
 @media (max-width: 768px) {
+  .scorecards-controls {
+    flex-direction: column;
+    align-items: stretch;
+    gap: var(--spacing-sm);
+  }
+
+  .scorecards-sort {
+    width: 100%;
+  }
+
+  .scorecards-sort select {
+    flex: 1;
+    min-width: 0;
+  }
+
+  .refresh-btn {
+    width: 100%;
+    min-height: 44px; /* Better touch target */
+  }
+
+  .scorecards-table-wrapper {
+    max-height: 500px;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+  }
+
+  .scorecards-table {
+    font-size: 0.8rem;
+    min-width: 800px; /* Allow horizontal scroll on mobile */
+  }
+
+  .scorecards-table th,
+  .scorecards-table td {
+    padding: 8px 10px;
+    font-size: 0.75rem;
+  }
+
+  .scorecards-table th {
+    font-size: 0.7rem;
+  }
+}
+
+@media (max-width: 480px) {
   .scorecards-table {
     font-size: 0.8rem;
   }
