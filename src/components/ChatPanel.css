@@ -1,7 +1,7 @@
 .chat-panel-card {
-  height: 420px; /* Reduced from 520px */
-  max-height: 420px; /* Reduced from 520px */
-  min-height: 320px; /* Reduced from 420px */
+  flex: 1; /* Allow it to grow and fill space */
+  min-height: 320px; /* Minimum height */
+  max-height: none; /* Remove max-height restriction */
   display: flex;
   flex-direction: column;
   overflow: hidden;
@@ -40,8 +40,9 @@
   background: linear-gradient(135deg, rgba(0, 122, 255, 0.1) 0%, rgba(88, 86, 214, 0.08) 100%);
   color: var(--text-primary);
   border-radius: var(--radius-full);
-  padding: 0.3rem var(--spacing-md);
-  font-size: 0.8rem;
+  padding: 0.5rem var(--spacing-lg); /* Increased padding */
+  font-size: 0.95rem; /* Increased from 0.8rem */
+  font-weight: 500; /* Added weight for better readability */
   cursor: pointer;
   transition: all var(--transition-fast);
   position: relative;
@@ -121,12 +122,18 @@
   display: flex;
   align-items: center;
   gap: var(--spacing-sm);
-  font-size: 0.75rem;
+  font-size: 0.9rem; /* Increased from 0.75rem */
   color: var(--text-tertiary);
+}
+
+.chat-time {
+  font-size: 0.85rem; /* Explicit size for time */
+  font-weight: 400;
 }
 
 .chat-role {
   font-weight: 600;
+  font-size: 0.95rem; /* Added explicit size */
   color: var(--text-primary);
   display: flex;
   align-items: center;
@@ -144,16 +151,19 @@
 .chat-badge {
   background-color: rgba(255, 149, 0, 0.15);
   color: var(--accent-warning);
-  padding: 0.1rem 0.4rem;
+  padding: 0.2rem 0.6rem; /* Increased padding */
   border-radius: var(--radius-full);
-  font-size: 0.65rem;
+  font-size: 0.75rem; /* Increased from 0.65rem */
+  font-weight: 500; /* Added weight */
   text-transform: uppercase;
 }
 
 .chat-message-content {
   margin: 0;
   color: var(--text-primary);
-  line-height: 1.5;
+  line-height: 1.6; /* Increased from 1.5 */
+  font-size: 1rem; /* Added explicit font size - base size */
+  font-weight: 400;
 }
 
 .chat-rich {
@@ -166,7 +176,8 @@
 
 .chat-rich-summary {
   margin: 0 0 var(--spacing-xs); /* Reduced from sm */
-  font-weight: 500;
+  font-weight: 600; /* Increased from 500 */
+  font-size: 1rem; /* Added explicit size */
   color: var(--text-primary);
 }
 
@@ -182,7 +193,7 @@
 .chat-rich-details li {
   display: flex;
   justify-content: space-between;
-  font-size: 0.9rem;
+  font-size: 1rem; /* Increased from 0.9rem */
   color: var(--text-secondary);
 }
 
@@ -230,27 +241,36 @@
   background-color: rgba(255, 59, 48, 0.15);
   border: 1px solid var(--accent-error);
   color: var(--accent-error);
-  padding: var(--spacing-sm);
+  padding: var(--spacing-md); /* Increased padding */
   border-radius: var(--radius-md);
-  font-size: 0.85rem;
+  font-size: 1rem; /* Increased from 0.85rem */
+  font-weight: 500; /* Added weight */
 }
 
 .chat-input-row {
   display: flex;
-  gap: var(--spacing-xs); /* Reduced from sm */
+  gap: var(--spacing-sm); /* Increased from xs */
   margin-top: var(--spacing-xs); /* Add small top margin */
+  align-items: flex-end; /* Align button with input */
+}
+
+.chat-input-row .btn {
+  font-size: 1rem; /* Ensure button text is readable */
+  padding: var(--spacing-md) var(--spacing-lg); /* Match input padding */
+  min-height: 56px; /* Match input height */
 }
 
 .chat-input {
   flex: 1;
-  padding: var(--spacing-sm) var(--spacing-md);
+  padding: var(--spacing-md) var(--spacing-lg); /* Increased padding */
   background: linear-gradient(135deg, rgba(0, 122, 255, 0.05) 0%, rgba(88, 86, 214, 0.03) 100%);
   border: 1px solid rgba(0, 122, 255, 0.2);
   border-radius: var(--radius-md);
   color: var(--text-primary);
   font-family: inherit;
+  font-size: 1rem; /* Added explicit font size */
   resize: none;
-  min-height: 48px;
+  min-height: 56px; /* Increased from 48px */
   transition: all var(--transition-normal);
 }
 

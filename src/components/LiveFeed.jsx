@@ -6,6 +6,7 @@ import { useChartDrawing } from '../hooks/useChartDrawing'
 import AssetSearch from './AssetSearch'
 import TimeIntervalSelector from './common/TimeIntervalSelector'
 import { useToast } from '../contexts/ToastContext'
+import { useTheme } from '../contexts/ThemeContext'
 import './LiveFeed.css'
 
 // Infer a clean asset-type label from the symbol for the header strip
@@ -68,7 +69,7 @@ const LiveFeed = ({ signals, activeTool = 'cursor' }) => {
   const targetLineRef = useRef(null)
   const drawingOverlayRef = useRef(null)
   const crosshairObserverRef = useRef(null)
-  const { feed, error: feedError, source } = useLiveFeed(selectedSymbol)
+  const { feed, error: feedError, source } = useLiveFeed(selectedSymbol, selectedInterval)
   const { addToast } = useToast()
   const lastErrorRef = useRef('')
   const mockFeedToastShownRef = useRef(false)
@@ -81,6 +82,7 @@ const LiveFeed = ({ signals, activeTool = 'cursor' }) => {
   // Alerts and orders state
   const [alerts, setAlerts] = useState([])
   const [orders, setOrders] = useState([])
+  const { theme } = useTheme()
   
   // Chart drawing hook
   const {
@@ -189,22 +191,27 @@ const LiveFeed = ({ signals, activeTool = 'cursor' }) => {
   useEffect(() => {
     if (!chartContainerRef.current) return
 
+    const isDark = theme === 'dark'
+
     const containerHeight = chartContainerRef.current?.clientHeight || 400
     chartRef.current = createChart(chartContainerRef.current, {
       layout: {
-        background: { type: ColorType.Solid, color: '#131722' },
-        textColor: '#d1d4dc',
+        background: {
+          type: ColorType.Solid,
+          color: isDark ? '#131722' : '#ffffff',
+        },
+        textColor: isDark ? '#1f2933'.replace('#1f2933', '#d1d4dc') : '#0f172a',
         fontSize: 12,
         fontFamily: '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif',
       },
       grid: {
         vertLines: { 
-          color: 'rgba(42, 46, 57, 0.6)',
+          color: isDark ? 'rgba(42, 46, 57, 0.6)' : 'rgba(226, 232, 240, 0.9)',
           style: 1, // Solid lines
           visible: true,
         },
         horzLines: { 
-          color: 'rgba(42, 46, 57, 0.6)',
+          color: isDark ? 'rgba(42, 46, 57, 0.6)' : 'rgba(226, 232, 240, 0.9)',
           style: 1, // Solid lines
           visible: true,
         },
@@ -212,17 +219,17 @@ const LiveFeed = ({ signals, activeTool = 'cursor' }) => {
       crosshair: { 
         mode: 0,
         vertLine: {
-          color: '#758696',
+          color: isDark ? '#758696' : '#94a3b8',
           width: 1,
           style: 3, // Dashed line
-          labelBackgroundColor: 'rgba(30, 34, 45, 0.95)',
+          labelBackgroundColor: isDark ? 'rgba(30, 34, 45, 0.95)' : 'rgba(241, 245, 249, 0.95)',
           labelVisible: true,
         },
         horzLine: {
-          color: '#758696',
+          color: isDark ? '#758696' : '#94a3b8',
           width: 1,
           style: 3, // Dashed line
-          labelBackgroundColor: 'rgba(30, 34, 45, 0.95)',
+          labelBackgroundColor: isDark ? 'rgba(30, 34, 45, 0.95)' : 'rgba(241, 245, 249, 0.95)',
           labelVisible: true,
         },
       },
@@ -317,7 +324,7 @@ const LiveFeed = ({ signals, activeTool = 'cursor' }) => {
 
     // Add volume series (hidden by default)
     volumeSeriesRef.current = chartRef.current.addHistogramSeries({
-      color: '#26a69a',
+      color: isDark ? '#26a69a' : '#22c55e',
       priceFormat: {
         type: 'volume',
       },
@@ -351,17 +358,21 @@ const LiveFeed = ({ signals, activeTool = 'cursor' }) => {
       
       // Style crosshair labels for better visibility
       const styleCrosshairLabels = () => {
-        const labels = chartElement.querySelectorAll('[class*="pane-legend"], [class*="crosshair"], [class*="label"]')
+        const labels = chartElement.querySelectorAll('[class*="pane-legend"], [class*=\"crosshair\"], [class*=\"label\"]')
         labels.forEach((label) => {
           if (label instanceof HTMLElement) {
-            label.style.background = 'rgba(30, 34, 45, 0.95)'
-            label.style.border = '1px solid rgba(38, 166, 154, 0.4)'
+            label.style.background = isDark ? 'rgba(30, 34, 45, 0.95)' : 'rgba(241, 245, 249, 0.95)'
+            label.style.border = isDark
+              ? '1px solid rgba(38, 166, 154, 0.4)'
+              : '1px solid rgba(148, 163, 184, 0.6)'
             label.style.borderRadius = '4px'
             label.style.padding = '6px 10px'
             label.style.backdropFilter = 'blur(8px)'
             label.style.webkitBackdropFilter = 'blur(8px)'
-            label.style.boxShadow = '0 4px 12px rgba(0, 0, 0, 0.4), 0 0 0 1px rgba(38, 166, 154, 0.2) inset'
-            label.style.color = '#d1d4dc'
+            label.style.boxShadow = isDark
+              ? '0 4px 12px rgba(0, 0, 0, 0.4), 0 0 0 1px rgba(38, 166, 154, 0.2) inset'
+              : '0 4px 12px rgba(15, 23, 42, 0.15), 0 0 0 1px rgba(148, 163, 184, 0.4) inset'
+            label.style.color = isDark ? '#d1d4dc' : '#0f172a'
             label.style.fontFamily = '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif'
             label.style.fontWeight = '500'
             label.style.webkitFontSmoothing = 'antialiased'
@@ -376,18 +387,18 @@ const LiveFeed = ({ signals, activeTool = 'cursor' }) => {
                 const text = el.textContent || ''
                 // If it looks like a price (contains numbers and possibly decimal)
                 if (/^\d+\.?\d*$/.test(text.trim())) {
-                  el.style.color = '#ffffff'
+                  el.style.color = isDark ? '#ffffff' : '#0f172a'
                   el.style.fontWeight = '700'
                   el.style.fontSize = '14px'
                   el.style.fontFamily = "'Courier New', monospace"
                 } else if (text.length <= 6 && /^[A-Z]+$/.test(text.trim())) {
                   // Symbol
-                  el.style.color = '#758696'
+                  el.style.color = isDark ? '#758696' : '#64748b'
                   el.style.fontSize = '11px'
                   el.style.fontWeight = '400'
                 } else if (/\d{2}:\d{2}/.test(text)) {
                   // Time
-                  el.style.color = '#758696'
+                  el.style.color = isDark ? '#758696' : '#64748b'
                   el.style.fontSize = '11px'
                   el.style.fontWeight = '400'
                 }
@@ -462,16 +473,22 @@ const LiveFeed = ({ signals, activeTool = 'cursor' }) => {
 
     return () => {
       window.removeEventListener('resize', handleResize)
-      container.removeEventListener('wheel', handleWheel)
-      container.removeEventListener('touchstart', preventBrowserZoom)
-      container.removeEventListener('touchmove', preventBrowserZoom)
+      container.removeEventListener('wheel', handleWheel, { passive: false })
+      container.removeEventListener('touchstart', preventBrowserZoom, { passive: false })
+      container.removeEventListener('touchmove', preventBrowserZoom, { passive: false })
       if (crosshairObserverRef.current) {
         crosshairObserverRef.current.disconnect()
         crosshairObserverRef.current = null
       }
       chartRef.current?.remove()
+      // Reset refs when chart is destroyed
+      candleSeriesRef.current = null
+      lineSeriesRef.current = null
+      areaSeriesRef.current = null
+      emaSeriesRef.current = null
+      volumeSeriesRef.current = null
     }
-  }, [])
+  }, [theme])
 
   // Set up drawing event listeners
   // Use refs to avoid recreating listeners on every callback change
@@ -586,9 +603,9 @@ const LiveFeed = ({ signals, activeTool = 'cursor' }) => {
     }
 
     return () => {
-      container.removeEventListener('mousedown', handleMouseDownWrapper)
-      container.removeEventListener('mousemove', handleMouseMoveWrapper)
-      container.removeEventListener('mouseup', handleMouseUpWrapper)
+      container.removeEventListener('mousedown', handleMouseDownWrapper, { passive: false })
+      container.removeEventListener('mousemove', handleMouseMoveWrapper, { passive: true })
+      container.removeEventListener('mouseup', handleMouseUpWrapper, { passive: false })
       container.style.cursor = 'default'
     }
   }, [activeTool]) // Only depend on activeTool, not the callbacks
@@ -596,6 +613,15 @@ const LiveFeed = ({ signals, activeTool = 'cursor' }) => {
   // Track if this is the first data load to auto-fit only once
   const isInitialLoadRef = useRef(true)
   const updateTimeoutRef = useRef(null)
+  const lastThemeRef = useRef(theme)
+  
+  // Reset initial load flag when theme changes (chart will be recreated)
+  useEffect(() => {
+    if (lastThemeRef.current !== theme) {
+      isInitialLoadRef.current = true
+      lastThemeRef.current = theme
+    }
+  }, [theme])
   
   // Memoize candle data to prevent unnecessary updates
   const memoizedCandles = useMemo(() => candles, [candles.length, candles[0]?.time, candles[candles.length - 1]?.time])
@@ -608,6 +634,13 @@ const LiveFeed = ({ signals, activeTool = 'cursor' }) => {
     
     updateTimeoutRef.current = setTimeout(() => {
       if (!data.length) return
+      
+      // Wait a bit for chart to be fully initialized after theme change
+      if (!chartRef.current || !candleSeriesRef.current) {
+        // Retry after a short delay if chart isn't ready
+        setTimeout(() => updateChartData(data), 100)
+        return
+      }
 
       // Candles
       if (candleSeriesRef.current) {
@@ -628,7 +661,7 @@ const LiveFeed = ({ signals, activeTool = 'cursor' }) => {
         areaSeriesRef.current.setData(lineData)
       }
 
-      // Only auto-fit on very first load
+      // Only auto-fit on very first load or after theme change
       if (isInitialLoadRef.current && chartRef.current) {
         chartRef.current.timeScale().fitContent()
         isInitialLoadRef.current = false
@@ -637,7 +670,7 @@ const LiveFeed = ({ signals, activeTool = 'cursor' }) => {
   }, [])
   
   useEffect(() => {
-    if (memoizedCandles.length) {
+    if (memoizedCandles.length && chartRef.current && candleSeriesRef.current) {
       updateChartData(memoizedCandles)
     }
     
@@ -646,7 +679,7 @@ const LiveFeed = ({ signals, activeTool = 'cursor' }) => {
         clearTimeout(updateTimeoutRef.current)
       }
     }
-  }, [memoizedCandles, updateChartData])
+  }, [memoizedCandles, updateChartData, theme])
 
   // Switch visible series based on chartType
   useEffect(() => {
@@ -669,15 +702,15 @@ const LiveFeed = ({ signals, activeTool = 'cursor' }) => {
     }
   }, [chartType])
 
-  // Regenerate candles when interval changes
+  // Regenerate candles when interval changes - fallback to mock if no real data
   useEffect(() => {
-    if (selectedSymbol) {
+    if (selectedSymbol && !feed) {
       const mock = getMockCandles(selectedSymbol, signals?.risk?.horizon || 'week', selectedInterval)
       setCandles(mock.candles)
       setActiveSymbol(mock.symbol)
       setLastUpdate(new Date())
     }
-  }, [selectedInterval, selectedSymbol, signals?.risk?.horizon])
+  }, [selectedInterval, selectedSymbol, signals?.risk?.horizon, feed])
 
   // Re-enable chart interactions when switching to cursor mode
   useEffect(() => {
@@ -750,7 +783,7 @@ const LiveFeed = ({ signals, activeTool = 'cursor' }) => {
       emaSeriesRef.current.setData([])
       emaSeriesRef.current.applyOptions({ visible: false })
     }
-  }, [candles, calculateEMA, showEma])
+  }, [candles, calculateEMA, showEma, theme])
 
   // Update volume when candles change
   useEffect(() => {
@@ -764,7 +797,7 @@ const LiveFeed = ({ signals, activeTool = 'cursor' }) => {
     } else if (volumeSeriesRef.current && !showVolume) {
       volumeSeriesRef.current.setData([])
     }
-  }, [candles, showVolume])
+  }, [candles, showVolume, theme])
 
   // Convert screen coordinates to price
   const screenToPrice = useCallback((clientY) => {
@@ -1197,6 +1230,7 @@ const LiveFeed = ({ signals, activeTool = 'cursor' }) => {
       title=""
       subtitle=""
       variant="elevated"
+      padding="none"
       className="live-feed-card tradingview-style"
     >
       {/* Top Bar - TradingView Style */}

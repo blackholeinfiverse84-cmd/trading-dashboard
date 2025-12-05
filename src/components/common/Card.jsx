@@ -17,10 +17,16 @@ const Card = ({
 }) => {
   const cardClasses = `card card-${variant} card-padding-${padding} ${hover ? 'card-hover' : ''} ${onClick ? 'card-clickable' : ''} ${className}`
   
+  const handleClick = (e) => {
+    if (onClick) {
+      onClick(e)
+    }
+  }
+
   return (
     <motion.div
       className={cardClasses}
-      onClick={onClick}
+      onClick={handleClick}
       whileHover={hover ? { y: -2 } : {}}
       transition={{ duration: 0.2 }}
       {...props}

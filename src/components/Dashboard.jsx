@@ -19,7 +19,7 @@ import ScrollToTop from './common/ScrollToTop'
 import './Dashboard.css'
 
 // Lazy load components below the fold for better initial load performance
-const ChatPanel = lazy(() => import('./ChatPanel'))
+const FloatingAIAssistant = lazy(() => import('./FloatingAIAssistant'))
 const MultiAssetBoard = lazy(() => import('./MultiAssetBoard'))
 const FeedbackInsights = lazy(() => import('./FeedbackInsights'))
 const MarketEvents = lazy(() => import('./MarketEvents'))
@@ -196,17 +196,16 @@ const Dashboard = () => {
           <Suspense fallback={<ComponentLoader />}>
             <Scorecards risk={riskContext} />
           </Suspense>
+          <div className="dashboard-bottom-section">
+            <Suspense fallback={<ComponentLoader />}>
+              <LangGraphReport />
+            </Suspense>
+            <Suspense fallback={<ComponentLoader />}>
+              <MarketEvents />
+            </Suspense>
+          </div>
           <Suspense fallback={<ComponentLoader />}>
             <MultiAssetBoard risk={riskContext} />
-          </Suspense>
-          <Suspense fallback={<ComponentLoader />}>
-            <LangGraphReport />
-          </Suspense>
-          <Suspense fallback={<ComponentLoader />}>
-            <MarketEvents />
-          </Suspense>
-          <Suspense fallback={<ComponentLoader />}>
-            <ChatPanel />
           </Suspense>
         </div>
         
@@ -223,6 +222,9 @@ const Dashboard = () => {
           <RecentDecisions refreshKey={decisionData?.id || decisionData?.timestamp} />
         </div>
       </div>
+      <Suspense fallback={null}>
+        <FloatingAIAssistant />
+      </Suspense>
       <ScrollToTop />
     </div>
   )

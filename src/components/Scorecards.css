@@ -164,7 +164,9 @@
 
 .scorecards-table-wrapper {
   overflow-x: auto;
+  overflow-y: auto;
   width: 100%;
+  max-height: 400px; /* Limit height, make it scrollable */
 }
 
 .scorecards-table {
@@ -188,11 +190,11 @@
 }
 
 .scorecards-table th {
-  padding: 12px 16px;
+  padding: 10px 12px; /* Reduced padding */
   text-align: left;
   font-weight: 600;
   color: #758696;
-  font-size: 0.75rem;
+  font-size: 0.7rem; /* Slightly smaller font */
   text-transform: uppercase;
   letter-spacing: 0.1em;
   background: transparent;
@@ -258,7 +260,7 @@
 }
 
 .scorecards-table td {
-  padding: 14px 16px;
+  padding: 10px 12px; /* Reduced padding for more compact rows */
   vertical-align: middle;
   color: #d1d4dc;
 }

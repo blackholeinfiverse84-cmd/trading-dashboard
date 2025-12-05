@@ -3,13 +3,16 @@ import { getLiveFeed } from '../services/api'
 
 const WS_URL = import.meta.env.VITE_FEED_WS_URL
 
-export const useLiveFeed = (symbol = null) => {
+export const useLiveFeed = (symbol = null, interval = 5) => {
   const [data, setData] = useState(null)
   const [error, setError] = useState(null)
   const [source, setSource] = useState('polling')
   const wsRef = useRef(null)
   const reconnectTimeout = useRef(null)
   const symbolRef = useRef(symbol)
+  const intervalRef = useRef(interval)
+
+  // We send minutes to the backend; it maps to provider intervals
 
   const connectWebSocket = () => {
     if (!WS_URL || wsRef.current) return
@@ -48,34 +51,44 @@ export const useLiveFeed = (symbol = null) => {
     }
   }
 
-  const fetchPolling = async (symbolToFetch = null) => {
+  const fetchPolling = async (symbolToFetch = null, intervalMinutes = null) => {
     try {
-      const currentSymbol = symbolToFetch || symbolRef.current
-      const response = await getLiveFeed(currentSymbol)
+      const currentSymbol = symbolToFetch || symbolRef.current || 'AAPL'
+      const currentInterval = intervalMinutes !== null ? intervalMinutes : intervalRef.current
+
+      // Fetch real candlestick data from Node backend (Yahoo Finance proxy)
+      const response = await getLiveFeed(currentSymbol, currentInterval)
       setData(response)
       setError(null)
+      setSource('yfinance') // Indicate we're using yfinance data
     } catch (err) {
       console.error('Polling feed error:', err)
-      setError('Unable to reach live feed.')
+      setError('Unable to reach live candlestick feed.')
     }
   }
 
-  // Update symbol ref when it changes and fetch immediately
+  // Update refs when they change
   useEffect(() => {
     symbolRef.current = symbol
-    // Fetch immediately when symbol changes
+    intervalRef.current = interval
+    // Fetch immediately when symbol or interval changes
     if (symbol) {
-      fetchPolling(symbol)
+      fetchPolling(symbol, interval)
     }
-  }, [symbol])
+  }, [symbol, interval])
 
   useEffect(() => {
     connectWebSocket()
 
+    // Poll every 30 seconds for real-time updates (adjust as needed)
     const interval = setInterval(() => {
       fetchPolling()
-    }, 10000)
-    fetchPolling()
+    }, 30000)
+    
+    // Initial fetch
+    if (symbol) {
+      fetchPolling(symbol, interval)
+    }
 
     return () => {
       clearInterval(interval)

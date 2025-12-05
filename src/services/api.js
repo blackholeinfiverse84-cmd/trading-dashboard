@@ -1,7 +1,7 @@
 import axios from 'axios'
 
 // API Configuration
-const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || 'http://localhost:3000/api'
+const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || 'http://localhost:5000/api'
 const AUTH_API_BASE_URL = import.meta.env.VITE_AUTH_API_BASE_URL || 'http://localhost:5000/api'
 
 // Create axios instance for trading APIs
@@ -73,17 +73,21 @@ apiClient.interceptors.response.use(
 // API Service Functions
 
 /**
- * Get live predictions feed from Krishna's endpoint
- * @param {string} symbol - Optional symbol to fetch data for
- * @returns {Promise} Live predictions data
+ * Get live candlestick data from Node backend (Yahoo Finance proxy).
+ * @param {string} symbol - Stock symbol to fetch data for (e.g., AAPL, MSFT, TCS.NS)
+ * @param {number} intervalMinutes - Interval in minutes (1, 5, 15, 60, 1440)
+ * @returns {Promise<{symbol: string, candles: Array}>}
  */
-export const getLiveFeed = async (symbol = null) => {
+export const getLiveFeed = async (symbol = 'AAPL', intervalMinutes = 5) => {
   try {
-    const url = symbol ? `/feed/live?symbol=${encodeURIComponent(symbol)}` : '/feed/live'
+    const safeSymbol = symbol || 'AAPL'
+    const url = `/market/candles?symbol=${encodeURIComponent(safeSymbol)}&interval=${encodeURIComponent(
+      intervalMinutes
+    )}`
     const response = await apiClient.get(url)
     return response.data
   } catch (error) {
-    console.error('Error fetching live feed:', error)
+    console.error('Error fetching live feed from backend:', error)
     throw error
   }
 }

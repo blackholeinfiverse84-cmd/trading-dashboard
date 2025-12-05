@@ -5,6 +5,10 @@ const cors = require('cors');
 require('dotenv').config();
 
 const authRoutes = require('./routes/authRoutes');
+const marketRoutes = require('./routes/marketRoutes');
+const toolsRoutes = require('./routes/toolsRoutes');
+const chatRoutes = require('./routes/chatRoutes');
+const analyticsRoutes = require('./routes/analyticsRoutes');
 
 const app = express();
 
@@ -31,6 +35,10 @@ mongoose.connection.on('error', (err) => {
 
 // Routes
 app.use('/api/auth', authRoutes);
+app.use('/api/market', marketRoutes);
+app.use('/api/tools', toolsRoutes);
+app.use('/api/chat', chatRoutes);
+app.use('/api/analytics', analyticsRoutes);
 
 // Health check
 app.get('/api/health', (req, res) => {

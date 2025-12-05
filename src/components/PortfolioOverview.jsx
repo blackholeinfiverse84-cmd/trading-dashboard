@@ -2,6 +2,13 @@ import React, { memo } from 'react'
 import Card from './common/Card'
 import './PortfolioOverview.css'
 
+const formatNumber = (value = 0) => {
+  if (value >= 100000) {
+    return (value / 100000).toFixed(1) + 'L'
+  }
+  return value.toLocaleString()
+}
+
 const mockPortfolio = {
   totalEquity: 2450000,
   dailyPnL: 18500,
@@ -78,13 +85,6 @@ const PortfolioOverview = memo(({ data = mockPortfolio }) => {
 })
 
 PortfolioOverview.displayName = 'PortfolioOverview'
-
-const formatNumber = (value = 0) => {
-  if (value >= 100000) {
-    return (value / 100000).toFixed(1) + 'L'
-  }
-  return value.toLocaleString()
-}
 
 export default PortfolioOverview
 

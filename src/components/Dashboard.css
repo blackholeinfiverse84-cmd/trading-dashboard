@@ -131,9 +131,10 @@
 
 .dashboard-grid {
   display: grid;
-  grid-template-columns: minmax(0, 2fr) minmax(260px, 1fr); /* Reduced sidebar min */
+  grid-template-columns: minmax(0, 2fr) minmax(260px, 1fr); /* Original proportions */
   gap: var(--spacing-sm); /* Further reduced */
   align-items: start;
+  min-height: calc(100vh - 150px); /* Fill viewport height minus header */
 }
 
 .dashboard .card {
@@ -152,6 +153,19 @@
 
 .dashboard-column-sidebar {
   min-width: 0; /* Prevents grid overflow */
+  margin-top: 0; /* Push up all sidebar components */
+}
+
+.dashboard-bottom-section {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: var(--spacing-sm);
+}
+
+@media (max-width: 1200px) {
+  .dashboard-bottom-section {
+    grid-template-columns: 1fr;
+  }
 }
 
 /* Responsive Design */

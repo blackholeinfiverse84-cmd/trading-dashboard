@@ -24,6 +24,7 @@ const ActionPanel = ({ decisionData, onDecisionUpdate, risk }) => {
     if (decisionData) {
       addDecision(decisionData)
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [decisionData])
 
   const addDecision = (decision) => {

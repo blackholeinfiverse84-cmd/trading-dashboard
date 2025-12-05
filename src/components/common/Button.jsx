@@ -15,10 +15,16 @@ const Button = ({
 }) => {
   const baseClasses = `btn btn-${variant} btn-${size} ${fullWidth ? 'btn-full-width' : ''} ${disabled ? 'btn-disabled' : ''}`
   
+  const handleClick = (e) => {
+    if (onClick && !disabled) {
+      onClick(e)
+    }
+  }
+
   return (
     <motion.button
       className={baseClasses}
-      onClick={onClick}
+      onClick={handleClick}
       disabled={disabled}
       type={type}
       whileHover={!disabled ? { scale: 1.02 } : {}}

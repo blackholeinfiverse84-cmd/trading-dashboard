@@ -13,7 +13,7 @@ const QUICK_ACTIONS = [
   'Teach me about stop-loss strategies.',
 ]
 
-const ChatPanel = () => {
+const ChatPanel = ({ hideTitle = false }) => {
   const [messages, setMessages] = useState([
     {
       id: 1,
@@ -103,8 +103,8 @@ const ChatPanel = () => {
 
   return (
     <Card
-      title="Uniguru AI Assistant"
-      subtitle="Your intelligent trading companion"
+      title={hideTitle ? undefined : "Uniguru AI Assistant"}
+      subtitle={hideTitle ? undefined : "Your intelligent trading companion"}
       className="chat-panel-card"
       padding="none"
     >
